@@ -1,11 +1,116 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id_brand       Int             @id @default(autoincrement())
+  name           String
+  img            String
+  categoryBrands CategoryBrand[]
+
+  @@map("brand")
+}
+
+model Category {
+  id_category    Int             @id @default(autoincrement())
+  name           String
+  categoryBrands CategoryBrand[]
+
+  @@map("category")
+}
+
+model CategoryBrand {
+  id_categoryBrand Int       @id @default(autoincrement())
+  id_brand         Int
+  id_category      Int
+  product          Product[]
+
+  brand    Brand    @relation(fields: [id_brand], references: [id_brand])
+  category Category @relation(fields: [id_category], references: [id_category])
+
+  @@unique([id_brand, id_category])
+  @@map("categoryBrandMapping")
+}
+
+model Product {
+  id_product           Int           @id @default(autoincrement())
+  id_categoryBrand     Int
+  name                 String
+  thumbnail            String
+  chip                 String
+  price                Int
+  original_price       Int
+  battery              String
+  quantity             Int
+  new_release          Boolean
+  screen               String
+  front_camera         String
+  rear_camera          String
+  img                  Json
+  storage              Json
+  color                Json
+  categoryBrandMapping CategoryBrand @relation(fields: [id_categoryBrand], references: [id_categoryBrand])
+
+  orderItem OrderItem[]
+
+  @@map("product")
+}
+
+model Color {
+  id_color Int    @id @default(autoincrement())
+  name     String
+  hex      String
+
+  @@map("color")
+}
+
+model Storage {
+  id_storage Int    @id @default(autoincrement())
+  name       String
+
+  @@map("storage")
+}
+
+model User {
+  id_user  Int      @id @default(autoincrement())
+  name     String
+  email    String
+  password String
+  birthday DateTime
+  address  String
+  phone    String
+  role     Boolean
+
+  @@map("user")
+}
+
+model Order {
+  id_order       Int         @id @default(autoincrement())
+  phone          String
+  address        String
+  payment_method String
+  delivery_by    String
+  total          Float
+  created_date   DateTime
+  OrderItem      OrderItem[]
+
+  @@map("order")
+}
+
+model OrderItem {
+  id_orderItem Int @id @default(autoincrement())
+  id_order     Int
+  id_product   Int
+
+  product Product @relation(fields: [id_product], references: [id_product])
+  order   Order   @relation(fields: [id_order], references: [id_order])
+
+  @@map("orderItem")
 }

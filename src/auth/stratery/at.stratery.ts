@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends
-    PassportStrategy(Strategy) {
+    PassportStrategy(Strategy, 'jwt-at') {
     constructor(config: ConfigService) {
         super({
             jwtFromRequest:
