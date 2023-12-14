@@ -4,22 +4,19 @@ import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ColorInterface, StorageInterface } from './interface';
+import { ProductRepository } from './product.repository';
 
 @Injectable()
 export class ProductService {
 
-  constructor(private cloudinary: CloudinaryService) { }
+  constructor(private cloudinary: CloudinaryService,
+    private productRepository: ProductRepository) { }
 
   prisma = new PrismaClient();
 
   async create(createProduct: CreateProductDto, res: any, files: Array<Express.Multer.File>) {
 
-    const checkCategoryBrand = await this.prisma.categoryBrand.findFirst({
-      where: {
-        id_brand: Number(createProduct.id_brand),
-        id_category: Number(createProduct.id_category)
-      }
-    })
+    const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
 
     if (!checkCategoryBrand) {
       errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
@@ -94,7 +91,7 @@ export class ProductService {
 
   async findAll(res: any) {
     try {
-      const checkProduct = await this.prisma.product.findMany()
+      const checkProduct = await this.productRepository.findAll()
 
       if (!!!checkProduct.length) {
         errCode(res, checkProduct, "Không tìm thấy product nào!")
@@ -106,12 +103,8 @@ export class ProductService {
     }
   }
 
-  async findOne(id: number, res) {
-    const checkProduct = await this.prisma.product.findUnique({
-      where: {
-        id_product: id
-      }
-    })
+  async findOne(id: number, res: any) {
+    const checkProduct = await this.productRepository.findOne(id);
 
     if (!checkProduct) {
       errCode(res, checkProduct, "Không tìm thấy sản phẩm")
@@ -121,16 +114,30 @@ export class ProductService {
     successCode(res, checkProduct)
   }
 
-  update(id: number, updateProductDto) {
-    return `This action updates a #${id} product`;
+  async updateThumbnail(id: number, img: Express.Multer.File, res: any) {
+    try {
+      const checkProduct = await this.productRepository.findOne(id)
+
+      if (!checkProduct) {
+        errCode(res, checkProduct, "Không tìm thấy product!")
+        return
+      }
+
+      await this.cloudinary.deleteImage(checkProduct.thumbnail)
+
+      const imgUrl: string = await this.cloudinary.uploadImage(img)
+
+      await this.productRepository.updateThumbnail(id, imgUrl)
+
+      successCode(res, imgUrl)
+
+    } catch (error) {
+
+    }
   }
 
   async deleteProduct(id_product: number, res: any) {
-    const checkProduct = await this.prisma.product.findUnique({
-      where: {
-        id_product: id_product
-      }
-    })
+    const checkProduct = await this.productRepository.findOne(id_product)
 
     if (!checkProduct) {
       errCode(res, "", "Không tìm thấy sản phẩm")
@@ -146,11 +153,7 @@ export class ProductService {
       });
     }
 
-    await this.prisma.product.delete({
-      where: {
-        id_product: id_product
-      }
-    })
+    await this.productRepository.deleteProduct(id_product)
 
 
     successCode(res, '')

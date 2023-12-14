@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Response, UploadedFiles } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { successCode } from 'src/response';
 import { CreateProductDto } from './dto';
 
@@ -27,9 +27,10 @@ export class ProductController {
     return this.productService.findOne(+id, res);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  @UseInterceptors(FileInterceptor('img'))
+  @Patch('/update-thumbnail-product/:id')
+  updateThumbnail(@Param('id') id: string, @UploadedFile() file: Express.Multer.File, @Response() res: any) {
+    return this.productService.updateThumbnail(+id, file,res);
   }
 
   @Delete('/delete-product/:id_product')

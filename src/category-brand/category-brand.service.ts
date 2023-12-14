@@ -3,9 +3,12 @@ import { CreateCategoryBrandDto } from './dto/create-category-brand.dto';
 import { UpdateCategoryBrandDto } from './dto/update-category-brand.dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
+import { CategoryBrandRepository } from './category-brand.repository';
 
 @Injectable()
 export class CategoryBrandService {
+
+  constructor(private categoryBrandRepository: CategoryBrandRepository) { }
 
   prisma = new PrismaClient()
 
@@ -17,9 +20,7 @@ export class CategoryBrandService {
         id_category: categoryBrand.id_category
       };
 
-      await this.prisma.categoryBrand.create({
-        data: newData
-      });
+      await this.categoryBrandRepository.createCategoryBrand(newData)
 
       successCode(res, newData)
 
@@ -30,7 +31,7 @@ export class CategoryBrandService {
 
   async findAll(res: any) {
     try {
-      const checkCategoryBrand = await this.prisma.categoryBrand.findMany()
+      const checkCategoryBrand = await this.categoryBrandRepository.findAll()
 
       if (!!!checkCategoryBrand.length) {
         errCode(res, checkCategoryBrand, "Không tìm thấy loại sản phẩm!")
@@ -45,22 +46,14 @@ export class CategoryBrandService {
 
   async deleteCategoryBrand(id_categoryBrand: number, res: any) {
     try {
-      const checkCategory = await this.prisma.categoryBrand.findUnique({
-        where: {
-          id_categoryBrand: id_categoryBrand
-        }
-      })
+      const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand)
 
       if (!checkCategory) {
         errCode(res, checkCategory, "Không tìm thấy loại sản phẩm theo hãng!")
         return
       }
 
-      await this.prisma.categoryBrand.delete({
-        where: {
-          id_categoryBrand: id_categoryBrand
-        }
-      })
+      await this.categoryBrandRepository.deleteCategoryBrand(id_categoryBrand)
 
       successCode(res, '')
     } catch (error) {
@@ -71,11 +64,7 @@ export class CategoryBrandService {
   async updateCategoryBrand(res: any, categoryBrand: CreateCategoryBrandDto, id_categoryBrand: number) {
     try {
 
-      const checkCategory = await this.prisma.categoryBrand.findUnique({
-        where: {
-          id_categoryBrand: id_categoryBrand
-        }
-      })
+      const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand)
 
       if (!checkCategory) {
         errCode(res, id_categoryBrand, "Không tìm thấy loại sản phẩm!")
@@ -84,12 +73,7 @@ export class CategoryBrandService {
 
       const newData: CreateCategoryBrandDto = categoryBrand
 
-      await this.prisma.categoryBrand.update({
-        where: {
-          id_categoryBrand: id_categoryBrand
-        },
-        data: newData
-      })
+      await this.categoryBrandRepository.updateCategoryBrand(newData, id_categoryBrand)
 
       successCode(res, newData)
     } catch (error) {

@@ -1,31 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { UpdateBrandDto } from './dto/update-brand.dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import {BrandDto, CreateBrandInterface } from './dto';
+import { BrandRepository } from './brand.repository';
 
 @Injectable()
 export class BrandService {
 
 
-  constructor(private cloudinary: CloudinaryService) { }
-  prisma = new PrismaClient()
+  constructor(private cloudinary: CloudinaryService,
+    private brandRepository: BrandRepository) { }
 
-  async createBrand(res: any, brand: CreateBrandDto, img: Express.Multer.File) {
+  async createBrand(res: any, brand: CreateBrandInterface, img: Express.Multer.File) {
     try {
 
       const imgUrl: string = await this.cloudinary.uploadImage(img)
 
-      const newData = {
+      const newData: BrandDto = {
         name: brand.name, // Use the provided name parameter directly
         img: imgUrl
       };
 
 
-      await this.prisma.brand.create({
-        data: newData
-      });
+      await this.brandRepository.createBrand(newData)
       successCode(res, newData)
     } catch (error) {
       failCode(res, error.message)
@@ -33,11 +31,8 @@ export class BrandService {
   }
 
   async removeBrand(res, id: number) {
-    const checkBrand = await this.prisma.brand.findUnique({
-      where: {
-        id_brand: id,
-      }
-    })
+
+    const checkBrand = await this.brandRepository.findBrandById(id)
 
     if (!checkBrand) {
       errCode(res, id, "Không tìm thấy hãng")
@@ -47,17 +42,13 @@ export class BrandService {
 
     await this.cloudinary.deleteImage(checkBrand.img)
 
-    await this.prisma.brand.delete({
-      where: {
-        id_brand: id,
-      }
-    })
+    await this.brandRepository.deleteBrand(id)
 
     successCode(res, "")
   }
 
   async getBrandList(res: any) {
-    const checkBrand = await this.prisma.brand.findMany()
+    const checkBrand = await this.brandRepository.getBrandList()
 
     if (!checkBrand) {
       errCode(res, checkBrand, "Không tìm thấy hãng")
@@ -67,21 +58,18 @@ export class BrandService {
     successCode(res, checkBrand)
   }
 
-  async updateBrand(res: any, brand: CreateBrandDto, img: Express.Multer.File, id_brand: number) {
+  async updateBrand(res: any, brand: CreateBrandInterface, img: Express.Multer.File, id_brand: number) {
     try {
 
-      const checkBrand = await this.prisma.brand.findUnique({
-        where: {
-          id_brand: id_brand,
-        }
-      })
-  
+      const checkBrand = await this.brandRepository.findBrandById(id_brand)
+
       if (!checkBrand) {
         errCode(res, id_brand, "Không tìm thấy hãng")
         return
       }
 
       let isValid: boolean = false
+
       if (img) isValid = true
 
       if (isValid) {
@@ -90,32 +78,22 @@ export class BrandService {
 
         const imgUrl: string = await this.cloudinary.uploadImage(img)
 
-        const newData = {
+        const newData: BrandDto = {
           name: brand.name,
           img: imgUrl
         };
 
-        await this.prisma.brand.update({
-          where: {
-            id_brand: id_brand
-          },
-          data: newData
-        })
+        await this.brandRepository.updateBrand(newData, id_brand)
         successCode(res, newData)
 
-      }else{
+      } else {
 
         const newData = {
           name: brand.name,
           img: checkBrand.img
         };
 
-        await this.prisma.brand.update({
-          where: {
-            id_brand: id_brand
-          },
-          data: newData
-        })
+        await this.brandRepository.updateBrand(newData, id_brand)
         successCode(res, newData)
       }
 

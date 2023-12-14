@@ -1,11 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Response, UseInterceptors, UploadedFile, UseGuards, Put } from '@nestjs/common';
 import { BrandService } from './brand.service';
-import { UpdateBrandDto } from './dto/update-brand.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateBrandDto } from './dto/create-brand.dto';
-import { AtGuard } from 'src/guards/at.guards';
 import { PublicGuard } from 'src/guards/jwt-public.guards';
 import { ApiTags } from '@nestjs/swagger';
+import { BrandDto, CreateBrandInterface } from './dto';
 
 @ApiTags("Brand")
 @Controller('brand')
@@ -14,7 +12,7 @@ export class BrandController {
 
   @Post("/create-brand")
   @UseInterceptors(FileInterceptor('img'))
-  createBrand(@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: CreateBrandDto) {
+  createBrand(@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: BrandDto) {
     return this.brandService.createBrand(res, body, file);
   }
 
@@ -31,7 +29,7 @@ export class BrandController {
 
   @Put("/update-brand/:id_brand")
   @UseInterceptors(FileInterceptor('img'))
-  updateBrand(@Param('id_brand') id_brand: string ,@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: CreateBrandDto) {
+  updateBrand(@Param('id_brand') id_brand: string ,@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: CreateBrandInterface) {
     return this.brandService.updateBrand(res, body, file, +id_brand);
   }
 

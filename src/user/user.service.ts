@@ -1,38 +1,134 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaClient } from '@prisma/client';
-import { errCode, successCode } from 'src/response';
+import { errCode, failCode, successCode } from 'src/response';
+import { CreateUserInterface } from './interface';
+import { UserDTO } from './dto';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
 
-  prisma = new PrismaClient();
+    constructor(private userRepository: UserRepository) { }
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+    prisma = new PrismaClient()
 
-  async getUserList(res: any) {
-    const checkUserList = await this.prisma.user.findMany()
+    async createUser(res: any, user: CreateUserInterface) {
+        try {
 
-    if (!!!checkUserList.length) {
-      errCode(res, checkUserList, "Không có dữ liệu người dùng!")
+            const checkEmailUser = await this.userRepository.findMailUser(user.email)
+
+            if (checkEmailUser) {
+                errCode(res, checkEmailUser.email, "Email đã tồn tại!")
+                return
+            }
+
+            let birthDay: Date
+
+            if (typeof user.birthday === "string") {
+                birthDay = new Date(user.birthday)
+            }
+
+            const newData: UserDTO = {
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                birthday: birthDay,
+                address: user.address,
+                phone: user.phone,
+                role: false
+            }
+
+
+            await this.userRepository.createUser(newData)
+
+
+            successCode(res, newData)
+        } catch (error) {
+            failCode(res, error.message)
+        }
     }
 
+    async getUserList(res: any) {
+        try {
+            const checkUser = await this.userRepository.getUserList()
 
-    successCode(res, checkUserList)
-  }
+            if (!!!checkUser.length) {
+                errCode(res, checkUser, "Danh sách user rỗng!")
+                return
+            }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+            successCode(res, checkUser)
+        } catch (error) {
+            failCode(res, error.message)
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+        }
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+    async findProduct(res: any, id: number) {
+        try {
+            const checkUser = await this.userRepository.findProduct(id)
+
+            if (!checkUser) {
+                errCode(res, checkUser, "Không tìm thấy user")
+                return
+            }
+
+            successCode(res, checkUser)
+        } catch (error) {
+            failCode(res, error.message)
+
+        }
+    }
+
+    async deleteUser(res: any, id: number) {
+        try {
+            const checkUser = await this.userRepository.findProduct(id)
+
+            if (!checkUser) {
+                errCode(res, checkUser, "Không tìm thấy user")
+                return
+            }
+
+            await this.userRepository.delete(id)
+
+            successCode(res, "")
+        } catch (error) {
+            failCode(res, error.message)
+
+        }
+    }
+
+    async updateUser(res: any, id: number, user: CreateUserInterface) {
+        try {
+            const checkEmailUser = await this.userRepository.findMailUser(user.email)
+
+            if (checkEmailUser) {
+                errCode(res, checkEmailUser.email, "Email đã tồn tại!")
+                return
+            }
+
+            let birthDay: Date
+
+            if (typeof user.birthday === "string") {
+                birthDay = new Date(user.birthday)
+            }
+
+            const newData: UserDTO = {
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                birthday: birthDay,
+                address: user.address,
+                phone: user.phone,
+                role: false
+            }
+
+            await this.userRepository.updateUser(id, newData)
+
+            successCode(res, newData)
+        } catch (error) {
+            failCode(res, error.message)
+
+        }
+    }
 }

@@ -3,9 +3,12 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
+import { CategoryRepository } from './category.repository';
 
 @Injectable()
 export class CategoryService {
+
+  constructor(private categoryRepository: CategoryRepository) { }
 
   prisma = new PrismaClient()
 
@@ -14,14 +17,12 @@ export class CategoryService {
     try {
 
 
-      const newData = {
+      const newData: CreateCategoryDto = {
         name: category.name,
       };
 
 
-      await this.prisma.category.create({
-        data: newData
-      });
+      await this.categoryRepository.createCategory(newData)
       successCode(res, newData)
     } catch (error) {
       failCode(res, error.message)
@@ -30,7 +31,7 @@ export class CategoryService {
 
   async getCategoryList(res: any) {
     try {
-      const checkCategory = await this.prisma.category.findMany()
+      const checkCategory = await this.categoryRepository.getCategoryList()
 
       if (!!!checkCategory.length) {
         errCode(res, checkCategory, "Không tìm thấy loại sản phẩm!")
@@ -47,23 +48,14 @@ export class CategoryService {
 
   async updateCategory(res: any, category: CreateCategoryDto, id_category: number) {
     try {
-      const checkCategory = this.prisma.category.findUnique({
-        where: {
-          id_category: id_category
-        }
-      })
+      const checkCategory = await this.categoryRepository.findCategory(id_category)
 
       if (!checkCategory) {
         errCode(res, id_category, "Không tìm thấy loại sản phẩm!")
         return
       }
 
-      await this.prisma.category.update({
-        where: {
-          id_category: id_category
-        },
-        data: category
-      })
+      await this.categoryRepository.updateCategory(id_category, category)
 
       successCode(res, category)
     } catch (error) {
@@ -74,23 +66,15 @@ export class CategoryService {
 
   async deleteCategory(id_category: number, res: any) {
     try {
-      const checkCategory = await this.prisma.category.findUnique({
-        where: {
-          id_category: id_category
-        }
-      })
+      const checkCategory = await this.categoryRepository.findCategory(id_category)
 
       if (!checkCategory) {
         errCode(res, checkCategory, "Không tìm thấy loại sản phẩm!")
         return
       }
 
-      await this.prisma.category.delete({
-        where: {
-          id_category: id_category
-        }
-      })
-
+      await this.categoryRepository.deleteCategory(id_category)
+      
       successCode(res, '')
     } catch (error) {
       failCode(res, error.message)
