@@ -21,7 +21,6 @@ export class BrandController {
     return this.brandService.removeBrand(res,+id_brand);
   }
 
-  @UseGuards(PublicGuard)
   @Get('/brand-list')
   getBrandList(@Response() res: any, ) {
     return this.brandService.getBrandList(res);
