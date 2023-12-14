@@ -7,8 +7,16 @@ export class UserRepository {
     prisma = new PrismaClient();
 
     async createUser(data: UserDTO) {
-        return this.prisma.user.create({
+        return await this.prisma.user.create({
             data
+        })
+    }
+
+    async findUserById(id: number) {
+        return await this.prisma.user.findUnique({
+            where: {
+                id_user: id
+            }
         })
     }
 

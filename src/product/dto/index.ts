@@ -1,7 +1,6 @@
 
 
 export class CreateProductDto {
-
     id_brand: number;
     id_category: number;
     name: string;
@@ -28,10 +27,25 @@ export class ProductInterface {
     price: number;
     original_price: Number;
     battery: string;
-    type: string;
     quantity: number;
     new_release: boolean;
-    screen: number;
+    screen: string;
+    front_camera: string;
+    rear_camera: string;
+}
+
+export class ProductDTO {
+    id_product: number;
+    id_categoryBrand: number;
+    name: string;
+    thumbnail: string;
+    chip: string;
+    price: number;
+    original_price: Number;
+    battery: string;
+    quantity: number;
+    new_release: boolean;
+    screen: string;
     front_camera: string;
     rear_camera: string;
 }
