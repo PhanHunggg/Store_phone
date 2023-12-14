@@ -3,7 +3,7 @@ import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { successCode } from 'src/response';
-import { CreateProductDto } from './dto';
+import { CreateProductInterface } from './dto';
 
 
 @ApiTags("Product")
@@ -13,7 +13,7 @@ export class ProductController {
 
   @Post('/create-product')
   @UseInterceptors(FilesInterceptor('img', 10))
-  createProduct(@Body() createProductDto: CreateProductDto, @Response() res: any, @UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
+  createProduct(@Body() createProductDto: CreateProductInterface, @Response() res: any, @UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
     return this.productService.create(createProductDto, res, files);
   }
 
@@ -38,11 +38,4 @@ export class ProductController {
     return this.productService.deleteProduct(+id_product, res);
   }
 
-  @Post('/test')
-  @UseInterceptors(FilesInterceptor('files', 10))
-  uploadFile(@UploadedFiles() files: Array<Express.Multer.File>, @Response() res: any, @UploadedFile() thumbnail: Express.Multer.File) {
-    const newData: any = files.map(ele => (ele.originalname));
-    newData.thumbnail = thumbnail;
-    return successCode(res, newData)
-  }
 }

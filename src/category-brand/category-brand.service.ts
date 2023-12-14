@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryBrandDto } from './dto/create-category-brand.dto';
-import { UpdateCategoryBrandDto } from './dto/update-category-brand.dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CategoryBrandRepository } from './category-brand.repository';

@@ -1,19 +1,35 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { ColorInterface, StorageInterface } from "../interface";
 
 
-export class CreateProductDto {
+export class CreateProductInterface {
+    @ApiProperty({ description: "id_brand", type: Number })
     id_brand: number;
+    @ApiProperty({ description: "id_category", type: Number })
     id_category: number;
+    @ApiProperty({ description: "name", type: String })
     name: string;
+    @ApiProperty({ description: "chip", type: String })
     chip: string;
+    @ApiProperty({ description: "price", type: Number })
     price: number;
+    @ApiProperty({ description: "original_price", type: Number })
     original_price: number;
+    @ApiProperty({ description: "battery", type: String })
     battery: string;
+    @ApiProperty({ description: "quantity", type: Number })
     quantity: number;
+    @ApiProperty({ description: "new_release", type: Boolean })
     new_release: boolean | string;
+    @ApiProperty({ description: "screen", type: String })
     screen: string;
+    @ApiProperty({ description: "front_camera", type: String })
     front_camera: string;
+    @ApiProperty({ description: "rear_camera", type: String })
     rear_camera: string;
+    @ApiProperty({ description: "color", type: Array<ColorInterface> })
     color: any[];
+    @ApiProperty({ description: "storage", type: Array<StorageInterface> })
     storage: any[];
 
 

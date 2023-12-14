@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import {BrandDto, CreateBrandInterface } from './dto';
+import { BrandDto, CreateBrandInterface } from './dto';
 import { BrandRepository } from './brand.repository';
 
 @Injectable()
@@ -101,6 +101,20 @@ export class BrandService {
       // await this.prisma.brand.create({
       //   data: newData
       // });
+    } catch (error) {
+      failCode(res, error.message)
+    }
+  }
+
+  async findBrand(res: any, id: number) {
+    try {
+      const brand = await this.brandRepository.findBrandById(id)
+      
+      if (!brand) {
+        errCode(res, id, "Không tìm thấy brand!")
+        return
+      }
+      successCode(res, brand)
     } catch (error) {
       failCode(res, error.message)
     }

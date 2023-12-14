@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto, ProductInterface } from './dto';
+import { CreateProductInterface } from './dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -14,7 +14,7 @@ export class ProductService {
 
   prisma = new PrismaClient();
 
-  async create(createProduct: CreateProductDto, res: any, files: Array<Express.Multer.File>) {
+  async create(createProduct: CreateProductInterface, res: any, files: Array<Express.Multer.File>) {
 
     const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
 

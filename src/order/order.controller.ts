@@ -23,6 +23,17 @@ export class OrderController {
     return this.orderService.findAllOrderItem(res);
   }
 
+  @Get('/find-order/:id')
+  findOrderById(@Response() res: any, @Param('id') id: string): Promise<void> {
+    return this.orderService.findOrderById(res, +id);
+  }
+
+  
+  @Get('/find-order-item/:id')
+  findOrderItemById(@Response() res: any, @Param('id') id: string): Promise<void> {
+    return this.orderService.findOrderItemById(res, +id);
+  }
+
   @Delete('/delete-order/:id')
   deleteOrder(@Response() res: any, @Param('id') id: string) {
     return this.orderService.deleteOrder(res, +id);

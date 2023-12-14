@@ -21,7 +21,13 @@ export class ColorController {
   }
 
   @Delete('/delete-color/:id')
-  remove(@Param('id') id: string,@Response() res: any) {
-    return this.colorService.remove(+id,res);
+  remove(@Param('id') id: string, @Response() res: any) {
+    return this.colorService.remove(+id, res);
+  }
+
+  @Get('/find-color/:id')
+  findColor(@Param('id') id: string, @Response() res: any) {
+    return this.colorService.findColor(res, +id);
+
   }
 }

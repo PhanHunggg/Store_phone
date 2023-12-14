@@ -49,5 +49,15 @@ export class ColorService {
     }
   }
 
+  async findColor(res: any, id: number) {
+    try {
+      const color = await this.colorRepository.findColor(id)
+
+      successCode(res, color)
+    } catch (error) {
+      failCode(res, error.message)
+    }
+  }
+
 
 }

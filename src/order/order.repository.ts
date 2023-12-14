@@ -18,13 +18,21 @@ export class OrderRepository {
         })
     }
 
+    async findOrderItemById(id: number) {
+        return await this.prisma.orderItem.findUnique({
+            where: {
+                id_orderItem: id
+            }
+        })
+    }
+
     async findAllOrderItem() {
         return await this.prisma.orderItem.findMany()
     }
 
     async findManyOrderItems(id: number) {
         return await this.prisma.orderItem.findMany({
-            where:{
+            where: {
                 id_order: id
             }
         })
@@ -39,7 +47,7 @@ export class OrderRepository {
         return await this.prisma.orderItem.create({ data })
     }
 
-    
+
     async deleteOrderItem(id: number) {
         return await this.prisma.orderItem.delete({
             where: {

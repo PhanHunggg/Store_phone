@@ -74,8 +74,22 @@ export class CategoryService {
       }
 
       await this.categoryRepository.deleteCategory(id_category)
-      
+
       successCode(res, '')
+    } catch (error) {
+      failCode(res, error.message)
+    }
+  }
+
+  async findCategory(res: any, id: number) {
+    try {
+      const category = await this.categoryRepository.findCategory(id)
+
+      if (!category) {
+        errCode(res, id, "Không tìm thấy category!")
+        return
+      }
+      successCode(res, category)
     } catch (error) {
       failCode(res, error.message)
     }

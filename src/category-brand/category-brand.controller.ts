@@ -2,7 +2,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Put } from '@nestjs/common';
 import { CategoryBrandService } from './category-brand.service';
 import { CreateCategoryBrandDto } from './dto/create-category-brand.dto';
-import { UpdateCategoryBrandDto } from './dto/update-category-brand.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags("CategoryBrand")

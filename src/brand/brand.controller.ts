@@ -8,7 +8,7 @@ import { BrandDto, CreateBrandInterface } from './dto';
 @ApiTags("Brand")
 @Controller('brand')
 export class BrandController {
-  constructor(private readonly brandService: BrandService) {}
+  constructor(private readonly brandService: BrandService) { }
 
   @Post("/create-brand")
   @UseInterceptors(FileInterceptor('img'))
@@ -18,19 +18,25 @@ export class BrandController {
 
   @Delete('/delete-brand/:id_brand')
   removeBrand(@Response() res: any, @Param('id_brand') id_brand: string) {
-    return this.brandService.removeBrand(res,+id_brand);
+    return this.brandService.removeBrand(res, +id_brand);
   }
 
   @Get('/brand-list')
-  getBrandList(@Response() res: any, ) {
+  getBrandList(@Response() res: any,) {
     return this.brandService.getBrandList(res);
   }
 
   @Put("/update-brand/:id_brand")
   @UseInterceptors(FileInterceptor('img'))
-  updateBrand(@Param('id_brand') id_brand: string ,@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: CreateBrandInterface) {
+  updateBrand(@Param('id_brand') id_brand: string, @Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: CreateBrandInterface) {
     return this.brandService.updateBrand(res, body, file, +id_brand);
   }
 
-  
+
+  @Get('/find-brand/:id')
+  findBrand(@Response() res: any, @Param('id') id: string) {
+    return this.brandService.findBrand(res, +id);
+  }
+
+
 }
