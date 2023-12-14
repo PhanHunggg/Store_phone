@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
 import { CreateColorDto } from './dto/create-color.dto';
 import { UpdateColorDto } from './dto/update-color.dto';
+import { ColorRepository } from './color.repository';
+import { ColorInterface } from './interface';
+import { errCode, failCode, successCode } from 'src/response';
 
 @Injectable()
 export class ColorService {
-  create(createColorDto: CreateColorDto) {
-    return 'This action adds a new color';
+
+  constructor(private colorRepository: ColorRepository) { }
+
+  async create(createColorDto: ColorInterface, res) {
+    try {
+      await this.colorRepository.create(createColorDto)
+      successCode(res, createColorDto)
+    } catch (error) {
+      failCode(res, error.message)
+    }
   }
 
-  findAll() {
-    return `This action returns all color`;
+  async getColorList(res: any) {
+    try {
+      const checkColor = await this.colorRepository.getColorList()
+
+      if (!!!checkColor.length) {
+        errCode(res, checkColor, "Không tìm thấy danh sách màu!")
+        return
+      }
+
+      successCode(res, checkColor)
+    } catch (error) {
+      failCode(res, error.message)
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} color`;
+  async remove(id: number, res) {
+    try {
+      const checkColor = await this.colorRepository.deleteColor(id)
+      if (!checkColor) {
+        errCode(res, checkColor, "Không tìm thấy màu!")
+      }
+
+      await this.colorRepository.deleteColor(id)
+
+      successCode(res, '')
+    } catch (error) {
+      failCode(res, error.message)
+    }
   }
 
-  update(id: number, updateColorDto: UpdateColorDto) {
-    return `This action updates a #${id} color`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} color`;
-  }
 }
