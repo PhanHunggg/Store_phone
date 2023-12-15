@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CreateProduct } from "./dto";
+import { CreateProduct, UpdateProduct } from "./dto";
 
 @Injectable()
 export class ProductRepository {
@@ -38,6 +38,15 @@ export class ProductRepository {
             }
         })
 
+    }
+
+    async updateProduct(id: number, data: UpdateProduct) {
+        return await this.prisma.product.update({
+            data,
+            where: {
+                id_product: id
+            }
+        })
     }
 
     async deleteProduct(id_product: number) {

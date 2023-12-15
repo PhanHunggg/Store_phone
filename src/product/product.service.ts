@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProduct, CreateProductInterface } from './dto';
+import { CreateProduct, CreateProductInterface, UpdateProduct, UpdateProductInterface } from './dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { ColorInterface, StorageInterface } from './interface';
+
 import { ProductRepository } from './product.repository';
 
 @Injectable()
@@ -139,6 +139,43 @@ export class ProductService {
     successCode(res, '')
 
 
+  }
+
+  async updateProduct(res, id: number, product: UpdateProductInterface) {
+    const checkProduct = await this.productRepository.findOne(id);
+
+    if (!checkProduct) {
+      errCode(res, checkProduct, "Không tìm thấy sản phẩm")
+      return
+    }
+
+
+    const checkCategoryBrand = await this.productRepository.findCategoryBrand(product.id_brand, product.id_category)
+
+    if (!checkCategoryBrand) {
+      errCode(res, product, "Không tìm thấy loại và hãng sản phẩm.")
+      return
+    }
+
+    const newData: UpdateProduct = {
+      id_categoryBrand: checkCategoryBrand.id_categoryBrand,
+      name: product.name,
+      chip: product.chip,
+      price: product.price,
+      original_price: product.original_price,
+      battery: product.battery,
+      quantity: product.quantity,
+      new_release: product.new_release,
+      screen: product.screen,
+      front_camera: product.front_camera,
+      rear_camera: product.rear_camera,
+      storage: product.storage,
+      color: product.color
+    }
+
+    await this.productRepository.updateProduct(id, newData)
+
+    successCode(res, newData)
   }
 
 

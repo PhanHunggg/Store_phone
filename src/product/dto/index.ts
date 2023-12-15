@@ -39,20 +39,20 @@ export class CreateProductInterface {
 
 }
 
-export class ProductInterface {
-    id_categoryBrand: number;
-    name: string;
-    thumbnail: string;
-    chip: string;
-    price: number;
-    original_price: Number;
-    battery: string;
-    quantity: number;
-    new_release: boolean;
-    screen: string;
-    front_camera: string;
-    rear_camera: string;
-}
+// export class ProductInterface {
+//     id_categoryBrand: number;
+//     name: string;
+//     thumbnail: string;
+//     chip: string;
+//     price: number;
+//     original_price: Number;
+//     battery: string;
+//     quantity: number;
+//     new_release: boolean;
+//     screen: string;
+//     front_camera: string;
+//     rear_camera: string;
+// }
 
 export class ProductDTO {
     id_product: number;
@@ -73,9 +73,9 @@ export class ProductDTO {
 export class CreateProduct {
     categoryBrandMapping: {
         connect: {
-          id_categoryBrand: number;
+            id_categoryBrand: number;
         }
-      };
+    };
     name: string;
     thumbnail: string;
     chip: string;
@@ -90,6 +90,39 @@ export class CreateProduct {
     img: any[];
     storage: any[];
     color: any[];
+}
+
+export interface UpdateProductInterface {
+    id_brand: number;
+    id_category: number;
+    name: string;
+    chip: string;
+    price: number;
+    original_price: number;
+    battery: string;
+    quantity: number;
+    new_release: boolean;
+    screen: string;
+    front_camera: string;
+    rear_camera: string;
+    storage: any[]
+    color: any[]
+}
+
+export interface UpdateProduct{
+    id_categoryBrand: number;
+    name: string;
+    chip: string;
+    price: number;
+    original_price: number;
+    battery: string;
+    quantity: number;
+    new_release: boolean;
+    screen: string;
+    front_camera: string;
+    rear_camera: string;
+    storage: any[]
+    color: any[]
 }
 
 // export class CreateProductInterface {
