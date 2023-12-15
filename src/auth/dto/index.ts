@@ -4,7 +4,7 @@ export class loginInterFace {
     @ApiProperty({ description: "email", type: String })
     email: string;
 
-    @ApiProperty({ description: "mat_khau", type: String })
+    @ApiProperty({ description: "password", type: String })
     password: string;
 }
 
@@ -49,4 +49,9 @@ export class UserDTO {
     address: string;
     phone: string;
     role: boolean;
+}
+
+export interface UpdatePassInterface {
+    id_user: number;
+    password: string;
 }

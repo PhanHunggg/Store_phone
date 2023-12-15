@@ -11,10 +11,11 @@ import { CreateProductInterface } from './dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
+
+
   @Post('/create-product')
-  @UseInterceptors(FilesInterceptor('img', 10))
-  createProduct(@Body() createProductDto: CreateProductInterface, @Response() res: any, @UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
-    return this.productService.create(createProductDto, res, files);
+  createProduct2(@Body() createProductDto: CreateProductInterface, @Response() res: any, ): Promise<void> {
+    return this.productService.createProduct(createProductDto, res);
   }
 
   @Get('/product-list')
@@ -37,5 +38,16 @@ export class ProductController {
   deleteProduct(@Param('id_product') id_product: string, @Response() res: any) {
     return this.productService.deleteProduct(+id_product, res);
   }
+
+
+
+
+
+
+    // @Post('/create-product')
+  // @UseInterceptors(FilesInterceptor('img', 10))
+  // createProduct(@Body() createProductDto: CreateProductInterface, @Response() res: any, @UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
+  //   return this.productService.create(createProductDto, res, files);
+  // }
 
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductInterface } from './dto';
+import { CreateProduct, CreateProductInterface } from './dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -14,7 +14,9 @@ export class ProductService {
 
   prisma = new PrismaClient();
 
-  async create(createProduct: CreateProductInterface, res: any, files: Array<Express.Multer.File>) {
+
+
+  async createProduct(createProduct: CreateProductInterface, res: any) {
 
     const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
 
@@ -22,19 +24,17 @@ export class ProductService {
       errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
       return
     }
-    const thumbnail: string = await this.cloudinary.uploadImage(files[0])
 
-    const [, ...remainingFiles] = files;
+    let thumbnail: string
+    let arrImg: any[]
 
-    const imageUrls = await Promise.all(remainingFiles.map(async file => {
-      return await this.cloudinary.uploadImage(file);
-    }));
+    if (Array.isArray(createProduct.img)) {
+      thumbnail = createProduct.img[0].url
 
-    const imgJsonArray: any[] = imageUrls.map(img => {
-      return {
-        url: img,
-      };
-    });
+      arrImg = createProduct.img.splice(1)
+
+    }
+
 
     if (createProduct.new_release === "1") {
       createProduct.new_release = true
@@ -42,49 +42,29 @@ export class ProductService {
       createProduct.new_release = false
     }
 
-
-
-    const newData = {
-      id_categoryBrand: checkCategoryBrand.id_categoryBrand,
+    const data: CreateProduct = {
+      categoryBrandMapping: {
+        connect: {
+          id_categoryBrand: checkCategoryBrand.id_categoryBrand
+        }
+      },
       name: createProduct.name,
       thumbnail: thumbnail,
       chip: createProduct.chip,
-      price: createProduct.price,
-      original_price: createProduct.original_price,
+      price: Number(createProduct.price),
+      original_price: Number(createProduct.original_price),
       battery: createProduct.battery,
-      quantity: createProduct.quantity,
+      quantity: Number(createProduct.quantity),
       new_release: createProduct.new_release,
       screen: createProduct.screen,
       front_camera: createProduct.front_camera,
       rear_camera: createProduct.rear_camera,
-      img: imgJsonArray,
+      img: arrImg,
       storage: createProduct.storage,
       color: createProduct.color,
     }
 
-    await this.prisma.product.create({
-      data: {
-        categoryBrandMapping: {
-          connect: {
-            id_categoryBrand: checkCategoryBrand.id_categoryBrand
-          }
-        },
-        name: createProduct.name,
-        thumbnail: thumbnail,
-        chip: createProduct.chip,
-        price: Number(createProduct.price),
-        original_price: Number(createProduct.original_price),
-        battery: createProduct.battery,
-        quantity: Number(createProduct.quantity),
-        new_release: createProduct.new_release,
-        screen: createProduct.screen,
-        front_camera: createProduct.front_camera,
-        rear_camera: createProduct.rear_camera,
-        img: imgJsonArray,
-        storage: createProduct.storage,
-        color: createProduct.color,
-      }
-    })
+    const newData = await this.productRepository.createProduct(data)
 
     successCode(res, newData)
   }
@@ -164,4 +144,80 @@ export class ProductService {
 
 
 
+
+
+  // async create(createProduct: CreateProductInterface, res: any, files: Array<Express.Multer.File>) {
+
+  //   const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
+
+  //   if (!checkCategoryBrand) {
+  //     errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
+  //     return
+  //   }
+  //   const thumbnail: string = await this.cloudinary.uploadImage(files[0])
+
+  //   const [, ...remainingFiles] = files;
+
+  //   const imageUrls = await Promise.all(remainingFiles.map(async file => {
+  //     return await this.cloudinary.uploadImage(file);
+  //   }));
+
+  //   const imgJsonArray: any[] = imageUrls.map(img => {
+  //     return {
+  //       url: img,
+  //     };
+  //   });
+
+  //   if (createProduct.new_release === "1") {
+  //     createProduct.new_release = true
+  //   } else {
+  //     createProduct.new_release = false
+  //   }
+
+
+
+  //   const newData = {
+  //     id_categoryBrand: checkCategoryBrand.id_categoryBrand,
+  //     name: createProduct.name,
+  //     thumbnail: thumbnail,
+  //     chip: createProduct.chip,
+  //     price: createProduct.price,
+  //     original_price: createProduct.original_price,
+  //     battery: createProduct.battery,
+  //     quantity: createProduct.quantity,
+  //     new_release: createProduct.new_release,
+  //     screen: createProduct.screen,
+  //     front_camera: createProduct.front_camera,
+  //     rear_camera: createProduct.rear_camera,
+  //     img: imgJsonArray,
+  //     storage: createProduct.storage,
+  //     color: createProduct.color,
+  //   }
+
+  //   // await this.prisma.product.create({
+  //   //   data: {
+  //   //     categoryBrandMapping: {
+  //   //       connect: {
+  //   //         id_categoryBrand: checkCategoryBrand.id_categoryBrand
+  //   //       }
+  //   //     },
+  //   //     name: createProduct.name,
+  //   //     thumbnail: thumbnail,
+  //   //     chip: createProduct.chip,
+  //   //     price: Number(createProduct.price),
+  //   //     original_price: Number(createProduct.original_price),
+  //   //     battery: createProduct.battery,
+  //   //     quantity: Number(createProduct.quantity),
+  //   //     new_release: createProduct.new_release,
+  //   //     screen: createProduct.screen,
+  //   //     front_camera: createProduct.front_camera,
+  //   //     rear_camera: createProduct.rear_camera,
+  //   //     img: imgJsonArray,
+  //   //     storage: createProduct.storage,
+  //   //     color: createProduct.color,
+  //   //   }
+  //   // })
+
+  //   successCode(res, createProduct)
+  // }
 }

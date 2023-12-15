@@ -7,3 +7,4 @@ export class ColorInterface {
 export class StorageInterface {
     name: string;
 }
+
