@@ -1,18 +1,23 @@
-import { ApiProperty } from "@nestjs/swagger";
-
-export class CreateOrderInterface {
-    @ApiProperty({ description: "id_user", type: Number })
+export interface OrderInterface {
     id_user: number;
-    @ApiProperty({ description: "phone", type: String })
     phone: string;
-    @ApiProperty({ description: "address", type: String })
     address: string;
-    @ApiProperty({ description: "payment_method", type: String })
     payment_method: string;
-    @ApiProperty({ description: "delivery_by", type: String })
     delivery_by: string;
-    @ApiProperty({ description: "total", type: Number })
     total: number;
-    @ApiProperty({ description: "id_product", type: Array<Number> })
+    created_date: Date
+}
+
+export interface OrderItemInterface {
+    id_order: number;
+    id_product: number;
+}
+export interface CreateOrderInterface {
+    id_user: number;
+    phone: string;
+    address: string;
+    payment_method: string;
+    delivery_by: string;
+    total: number;
     id_product: number[]
 }

@@ -1,22 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProduct, CreateProductInterface, UpdateProduct, UpdateProductInterface } from './dto';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-
 import { ProductRepository } from './product.repository';
+import { CategoryBrandRepository } from 'src/category-brand/category-brand.repository';
+import { CategoryBrandInterface } from 'src/category-brand/interface';
+import { CreateProductInterface, CreateProductReqInterface, UpdateProductInterface, UpdateProductReqInterface } from './interface';
 
 @Injectable()
 export class ProductService {
 
   constructor(private cloudinary: CloudinaryService,
-    private productRepository: ProductRepository) { }
+    private productRepository: ProductRepository,
+    private categoryBrandRepository: CategoryBrandRepository) { }
 
   prisma = new PrismaClient();
 
 
 
-  async createProduct(createProduct: CreateProductInterface, res: any) {
+  async createProduct(createProduct: CreateProductReqInterface, res: any) {
 
     const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
 
@@ -42,7 +44,7 @@ export class ProductService {
       createProduct.new_release = false
     }
 
-    const data: CreateProduct = {
+    const data: CreateProductInterface = {
       categoryBrandMapping: {
         connect: {
           id_categoryBrand: checkCategoryBrand.id_categoryBrand
@@ -141,7 +143,7 @@ export class ProductService {
 
   }
 
-  async updateProduct(res, id: number, product: UpdateProductInterface) {
+  async updateProduct(res, id: number, product: UpdateProductReqInterface) {
     const checkProduct = await this.productRepository.findOne(id);
 
     if (!checkProduct) {
@@ -157,7 +159,7 @@ export class ProductService {
       return
     }
 
-    const newData: UpdateProduct = {
+    const newData: UpdateProductInterface = {
       id_categoryBrand: checkCategoryBrand.id_categoryBrand,
       name: product.name,
       chip: product.chip,
@@ -179,82 +181,51 @@ export class ProductService {
   }
 
 
+  async getEquivalentProduct(res: any, id: number) {
+    try {
+      const checkCategoryBrand = await this.categoryBrandRepository.findCategoryBrand(id);
+
+      if (!checkCategoryBrand) {
+        errCode(res, checkCategoryBrand, "Không tìm thấy hãng và loại sản phẩm!")
+        return
+      }
+
+      const productList = await this.productRepository.getEquivalentProduct(id)
+
+      if (!!!productList.length) {
+        errCode(res, productList, "Không tìm thấy Product!")
+        return
+      }
+
+      successCode(res, productList)
+    } catch (error) {
+      failCode(res, error.message)
+    }
+  }
 
 
+  async findByCategoryBrand(res: any, brandCategory: CategoryBrandInterface) {
 
+    try {
+      const checkCategoryBrand = await this.categoryBrandRepository.findByIdBrandIdCategory(brandCategory)
 
-  // async create(createProduct: CreateProductInterface, res: any, files: Array<Express.Multer.File>) {
+      if (!checkCategoryBrand) {
+        errCode(res, checkCategoryBrand, "Không tìm thấy hãng và loại sản phẩm!")
+        return
+      }
 
-  //   const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
+      const productList = await this.productRepository.getEquivalentProduct(checkCategoryBrand.id_categoryBrand)
 
-  //   if (!checkCategoryBrand) {
-  //     errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
-  //     return
-  //   }
-  //   const thumbnail: string = await this.cloudinary.uploadImage(files[0])
+      if (!!!productList.length) {
+        errCode(res, productList, "Không tìm thấy Product!")
+        return
+      }
 
-  //   const [, ...remainingFiles] = files;
+      successCode(res, productList)
 
-  //   const imageUrls = await Promise.all(remainingFiles.map(async file => {
-  //     return await this.cloudinary.uploadImage(file);
-  //   }));
+    } catch (error) {
+      failCode(res, error.message)
+    }
 
-  //   const imgJsonArray: any[] = imageUrls.map(img => {
-  //     return {
-  //       url: img,
-  //     };
-  //   });
-
-  //   if (createProduct.new_release === "1") {
-  //     createProduct.new_release = true
-  //   } else {
-  //     createProduct.new_release = false
-  //   }
-
-
-
-  //   const newData = {
-  //     id_categoryBrand: checkCategoryBrand.id_categoryBrand,
-  //     name: createProduct.name,
-  //     thumbnail: thumbnail,
-  //     chip: createProduct.chip,
-  //     price: createProduct.price,
-  //     original_price: createProduct.original_price,
-  //     battery: createProduct.battery,
-  //     quantity: createProduct.quantity,
-  //     new_release: createProduct.new_release,
-  //     screen: createProduct.screen,
-  //     front_camera: createProduct.front_camera,
-  //     rear_camera: createProduct.rear_camera,
-  //     img: imgJsonArray,
-  //     storage: createProduct.storage,
-  //     color: createProduct.color,
-  //   }
-
-  //   // await this.prisma.product.create({
-  //   //   data: {
-  //   //     categoryBrandMapping: {
-  //   //       connect: {
-  //   //         id_categoryBrand: checkCategoryBrand.id_categoryBrand
-  //   //       }
-  //   //     },
-  //   //     name: createProduct.name,
-  //   //     thumbnail: thumbnail,
-  //   //     chip: createProduct.chip,
-  //   //     price: Number(createProduct.price),
-  //   //     original_price: Number(createProduct.original_price),
-  //   //     battery: createProduct.battery,
-  //   //     quantity: Number(createProduct.quantity),
-  //   //     new_release: createProduct.new_release,
-  //   //     screen: createProduct.screen,
-  //   //     front_camera: createProduct.front_camera,
-  //   //     rear_camera: createProduct.rear_camera,
-  //   //     img: imgJsonArray,
-  //   //     storage: createProduct.storage,
-  //   //     color: createProduct.color,
-  //   //   }
-  //   // })
-
-  //   successCode(res, createProduct)
-  // }
+  }
 }

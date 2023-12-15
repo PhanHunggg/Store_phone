@@ -1,22 +1,24 @@
 
 import { Controller, Get, Post, Body, Patch, Param, Delete, Response, Put } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
+import { CreateCategoryInterface } from './interface';
 
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 
-@ApiTags("Category")
+  @Public()
+  @ApiTags("Category")
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
   @Post("/create-category")
-  createCategory(@Body() createCategoryDto: CreateCategoryDto, @Response() res: any) {
+  createCategory(@Body() createCategoryDto: CreateCategoryInterface, @Response() res: any) {
     return this.categoryService.createCategory(res, createCategoryDto);
   }
 
   @Put("/update-category/:id_category")
-  updateCategory(@Param('id_category') id_category: string, @Body() createCategoryDto: CreateCategoryDto, @Response() res: any) {
+  updateCategory(@Param('id_category') id_category: string, @Body() createCategoryDto: CreateCategoryInterface, @Response() res: any) {
     return this.categoryService.updateCategory(res, createCategoryDto, +id_category);
   }
 

@@ -3,26 +3,29 @@ import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { successCode } from 'src/response';
-import { CreateProductInterface, UpdateProductInterface } from './dto';
+import { CategoryBrandInterface } from 'src/category-brand/interface';
+import { CreateProductReqInterface, UpdateProductReqInterface } from './interface';
+import { Public } from 'src/common/decorators/public.decorator';
 
 
 @ApiTags("Product")
 @Controller('product')
 export class ProductController {
+
   constructor(private readonly productService: ProductService) { }
 
-
-
   @Post('/create-product')
-  createProduct2(@Body() createProductDto: CreateProductInterface, @Response() res: any,): Promise<void> {
+  createProduct2(@Body() createProductDto: CreateProductReqInterface, @Response() res: any,): Promise<void> {
     return this.productService.createProduct(createProductDto, res);
   }
 
+  @Public()
   @Get('/product-list')
   findAll(@Response() res: any): Promise<void> {
     return this.productService.findAll(res);
   }
 
+  @Public()
   @Get('/find-product/:id')
   findOne(@Param('id') id: string, @Response() res: any) {
     return this.productService.findOne(+id, res);
@@ -35,7 +38,7 @@ export class ProductController {
   }
 
   @Patch('/update-product/:id')
-  updateProduct(@Param('id') id: string, @UploadedFile() file: Express.Multer.File, @Response() res: any, @Body() body: UpdateProductInterface) {
+  updateProduct(@Param('id') id: string, @UploadedFile() file: Express.Multer.File, @Response() res: any, @Body() body: UpdateProductReqInterface) {
     return this.productService.updateProduct(res, +id, body);
   }
 
@@ -45,14 +48,17 @@ export class ProductController {
   }
 
 
+  @Public()
+  @Get('/equivalent-product/:id_categoryBrand')
+  getEquivalentProduct(@Response() res: any, @Param('id_categoryBrand') id_categoryBrand: string) {
+    return this.productService.getEquivalentProduct(res, +id_categoryBrand)
+  }
 
+  @Public()
+  @Get('/find-product-category-brand')
+  findByCategoryBrand(@Response() res: any, @Body() body: CategoryBrandInterface) {
+    return this.productService.findByCategoryBrand(res, body)
+  }
 
-
-
-  // @Post('/create-product')
-  // @UseInterceptors(FilesInterceptor('img', 10))
-  // createProduct(@Body() createProductDto: CreateProductInterface, @Response() res: any, @UploadedFiles() files: Array<Express.Multer.File>): Promise<void> {
-  //   return this.productService.create(createProductDto, res, files);
-  // }
 
 }

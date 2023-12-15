@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CreateCategoryDto } from "./dto/create-category.dto";
+import { CreateCategoryInterface } from "./interface";
 
 @Injectable()
 export class CategoryRepository {
     prisma = new PrismaClient();
 
-    async createCategory(data: CreateCategoryDto) {
+    async createCategory(data: CreateCategoryInterface) {
         return this.prisma.category.create({ data });
     }
     async getCategoryList() {
@@ -21,7 +21,7 @@ export class CategoryRepository {
         })
     }
 
-    async updateCategory(id: number, data: CreateCategoryDto) {
+    async updateCategory(id: number, data: CreateCategoryInterface) {
         return this.prisma.category.update({
             where: {
                 id_category: id

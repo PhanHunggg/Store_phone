@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryBrandDto } from './dto/create-category-brand.dto';
+import { CategoryBrandInterface } from './interface';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CategoryBrandRepository } from './category-brand.repository';
@@ -11,10 +11,10 @@ export class CategoryBrandService {
 
   prisma = new PrismaClient()
 
-  async create(categoryBrand: CreateCategoryBrandDto, res: any) {
+  async create(categoryBrand: CategoryBrandInterface, res: any) {
     try {
 
-      const newData: CreateCategoryBrandDto = {
+      const newData: CategoryBrandInterface = {
         id_brand: categoryBrand.id_brand,
         id_category: categoryBrand.id_category
       };
@@ -60,7 +60,7 @@ export class CategoryBrandService {
     }
   }
 
-  async updateCategoryBrand(res: any, categoryBrand: CreateCategoryBrandDto, id_categoryBrand: number) {
+  async updateCategoryBrand(res: any, categoryBrand: CategoryBrandInterface, id_categoryBrand: number) {
     try {
 
       const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand)
@@ -70,7 +70,7 @@ export class CategoryBrandService {
         return
       }
 
-      const newData: CreateCategoryBrandDto = categoryBrand
+      const newData: CategoryBrandInterface = categoryBrand
 
       await this.categoryBrandRepository.updateCategoryBrand(newData, id_categoryBrand)
 

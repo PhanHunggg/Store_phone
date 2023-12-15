@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { OrderDTO, OrderItemDTO } from "./dto";
+import { OrderInterface, OrderItemInterface } from "./interface";
 
 @Injectable()
 export class OrderRepository {
@@ -39,11 +39,11 @@ export class OrderRepository {
     }
 
 
-    async createOrder(data: OrderDTO) {
+    async createOrder(data: OrderInterface) {
         return await this.prisma.order.create({ data })
     }
 
-    async createOrderItem(data: OrderItemDTO) {
+    async createOrderItem(data: OrderItemInterface) {
         return await this.prisma.orderItem.create({ data })
     }
 

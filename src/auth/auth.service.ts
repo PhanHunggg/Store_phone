@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { SignUpInterface, UpdatePassInterface, UserDTO, UserPayloadDTO, loginInterFace } from './dto';
+import { SignUpInterface, UpdatePassInterface, LoginPayloadInterface, LoginInterface } from './interface';
 import { JwtService } from '@nestjs/jwt';
 import { errCode, successCode } from 'src/response';
 import { AuthRepository } from './auth.repository';
@@ -17,7 +17,7 @@ export class AuthService {
 
     prisma = new PrismaClient();
 
-    async login(res, user: loginInterFace) {
+    async login(res, user: LoginInterface) {
         const checkUser = await this.authRepository.checkEmailUser(user.email)
 
         if (!checkUser) {
@@ -39,7 +39,7 @@ export class AuthService {
 
 
 
-        let data: UserPayloadDTO = checkUser
+        let data: LoginPayloadInterface = checkUser
 
         data.accessToken = token
 
@@ -77,7 +77,7 @@ export class AuthService {
         successCode(res, newData)
     }
 
-    async updatePassword(res: any, user: loginInterFace) {
+    async updatePassword(res: any, user: LoginInterface) {
         const checkUser = await this.authRepository.checkEmailUser(user.email)
 
         if (!checkUser) {

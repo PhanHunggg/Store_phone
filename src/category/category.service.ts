@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CreateCategoryInterface } from './interface';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CategoryRepository } from './category.repository';
@@ -13,11 +12,11 @@ export class CategoryService {
   prisma = new PrismaClient()
 
 
-  async createCategory(res: any, category: CreateCategoryDto) {
+  async createCategory(res: any, category: CreateCategoryInterface) {
     try {
 
 
-      const newData: CreateCategoryDto = {
+      const newData: CreateCategoryInterface = {
         name: category.name,
       };
 
@@ -46,7 +45,7 @@ export class CategoryService {
 
 
 
-  async updateCategory(res: any, category: CreateCategoryDto, id_category: number) {
+  async updateCategory(res: any, category: CreateCategoryInterface, id_category: number) {
     try {
       const checkCategory = await this.categoryRepository.findCategory(id_category)
 

@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
-import { CreateUserInterface } from './interface';
-import { UserDTO } from './dto';
+import { CreateUserInterface, UserInterface } from './interface';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -11,42 +10,6 @@ export class UserService {
     constructor(private userRepository: UserRepository) { }
 
     prisma = new PrismaClient()
-
-    async createUser(res: any, user: CreateUserInterface) {
-        try {
-
-            const checkEmailUser = await this.userRepository.findMailUser(user.email)
-
-            if (checkEmailUser) {
-                errCode(res, checkEmailUser.email, "Email đã tồn tại!")
-                return
-            }
-
-            let birthDay: Date
-
-            if (typeof user.birthday === "string") {
-                birthDay = new Date(user.birthday)
-            }
-
-            const newData: UserDTO = {
-                name: user.name,
-                email: user.email,
-                password: user.password,
-                birthday: birthDay,
-                address: user.address,
-                phone: user.phone,
-                role: false
-            }
-
-
-            await this.userRepository.createUser(newData)
-
-
-            successCode(res, newData)
-        } catch (error) {
-            failCode(res, error.message)
-        }
-    }
 
     async getUserList(res: any) {
         try {
@@ -113,7 +76,7 @@ export class UserService {
                 birthDay = new Date(user.birthday)
             }
 
-            const newData: UserDTO = {
+            const newData: UserInterface = {
                 name: user.name,
                 email: user.email,
                 password: user.password,

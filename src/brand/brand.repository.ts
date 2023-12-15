@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { BrandDto } from "./dto";
+import { BrandInterface } from "./interface";
 
 @Injectable()
 export class BrandRepository {
     prisma = new PrismaClient();
 
-    async createBrand(userData: BrandDto) {
+    async createBrand(userData: BrandInterface) {
         return this.prisma.brand.create({ data: userData });
     }
 
@@ -22,7 +22,7 @@ export class BrandRepository {
         return this.prisma.brand.findMany()
     }
 
-    async updateBrand(data: BrandDto, id: number) {
+    async updateBrand(data: BrandInterface, id: number) {
         return this.prisma.brand.update({
             where: {
                 id_brand: id

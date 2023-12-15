@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { BrandDto, CreateBrandInterface } from './dto';
+import { BrandInterface, CreateBrandInterface } from './interface';
 import { BrandRepository } from './brand.repository';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class BrandService {
 
       const imgUrl: string = await this.cloudinary.uploadImage(img)
 
-      const newData: BrandDto = {
+      const newData: BrandInterface = {
         name: brand.name, // Use the provided name parameter directly
         img: imgUrl
       };
@@ -78,7 +78,7 @@ export class BrandService {
 
         const imgUrl: string = await this.cloudinary.uploadImage(img)
 
-        const newData: BrandDto = {
+        const newData: BrandInterface = {
           name: brand.name,
           img: imgUrl
         };

@@ -3,7 +3,7 @@ import { BrandService } from './brand.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicGuard } from 'src/guards/jwt-public.guards';
 import { ApiTags } from '@nestjs/swagger';
-import { BrandDto, CreateBrandInterface } from './dto';
+import { BrandInterface, CreateBrandInterface } from './interface';
 
 @ApiTags("Brand")
 @Controller('brand')
@@ -12,7 +12,7 @@ export class BrandController {
 
   @Post("/create-brand")
   @UseInterceptors(FileInterceptor('img'))
-  createBrand(@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: BrandDto) {
+  createBrand(@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: BrandInterface) {
     return this.brandService.createBrand(res, body, file);
   }
 

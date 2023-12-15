@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { errCode, failCode, successCode } from 'src/response';
-import { CreateOrderInterface } from './interface';
-import { ProductDTO } from 'src/product/dto';
+import { CreateOrderInterface, OrderInterface, OrderItemInterface } from './interface';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
-import { OrderDTO, OrderItemDTO } from './dto';
+import { ProductInterface } from 'src/product/interface';
 
 @Injectable()
 export class OrderService {
@@ -86,7 +85,7 @@ export class OrderService {
 
         const arrProduct = createOrder.id_product
 
-        let checkArrProduct: ProductDTO[] = [];
+        let checkArrProduct: ProductInterface[] = [];
 
         for (const productId of arrProduct) {
 
@@ -108,7 +107,7 @@ export class OrderService {
         const currentDate = new Date();
 
 
-        const newDataOrder: OrderDTO = {
+        const newDataOrder: OrderInterface = {
             id_user: createOrder.id_user,
             phone: createOrder.phone,
             address: createOrder.address,
@@ -121,7 +120,7 @@ export class OrderService {
 
         const order = await this.orderRepository.createOrder(newDataOrder)
 
-        let newData: OrderItemDTO;
+        let newData: OrderItemInterface;
 
         for (const id of arrProduct) {
             newData = {

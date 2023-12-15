@@ -1,16 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { UserDTO } from "./dto";
+import { UserInterface } from "./interface";
 
 @Injectable()
 export class UserRepository {
     prisma = new PrismaClient();
-
-    async createUser(data: UserDTO) {
-        return await this.prisma.user.create({
-            data
-        })
-    }
 
     async findUserById(id: number) {
         return await this.prisma.user.findUnique({
@@ -52,7 +46,7 @@ export class UserRepository {
         })
     }
 
-    async updateUser(id: number, data: UserDTO) {
+    async updateUser(id: number, data: UserInterface) {
         return await this.prisma.user.update({
             data,
             where: {

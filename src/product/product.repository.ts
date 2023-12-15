@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CreateProduct, UpdateProduct } from "./dto";
+import { CreateProductInterface, UpdateProductInterface } from "./interface";
 
 @Injectable()
 export class ProductRepository {
@@ -40,7 +40,7 @@ export class ProductRepository {
 
     }
 
-    async updateProduct(id: number, data: UpdateProduct) {
+    async updateProduct(id: number, data: UpdateProductInterface) {
         return await this.prisma.product.update({
             data,
             where: {
@@ -57,7 +57,11 @@ export class ProductRepository {
         })
     }
 
-    async createProduct(data: CreateProduct) {
+    async createProduct(data: CreateProductInterface) {
         return await this.prisma.product.create({ data })
+    }
+
+    async getEquivalentProduct(id: number) {
+        return await this.prisma.product.findMany({ where: { id_categoryBrand: id } })
     }
 }

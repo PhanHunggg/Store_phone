@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateColorDto } from './dto/create-color.dto';
-import { UpdateColorDto } from './dto/update-color.dto';
 import { ColorRepository } from './color.repository';
 import { ColorInterface } from './interface';
 import { errCode, failCode, successCode } from 'src/response';
