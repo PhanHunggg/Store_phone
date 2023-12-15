@@ -1,10 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Response, UseInterceptors, UploadedFile, UseGuards, Put } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PublicGuard } from 'src/guards/jwt-public.guards';
+import { PublicGuard } from 'src/common/guards/jwt-public.guards';
 import { ApiTags } from '@nestjs/swagger';
 import { BrandInterface, CreateBrandInterface } from './interface';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @ApiTags("Brand")
 @Controller('brand')
 export class BrandController {
