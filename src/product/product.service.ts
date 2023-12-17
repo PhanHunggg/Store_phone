@@ -105,7 +105,6 @@ export class ProductService {
         return
       }
 
-      await this.cloudinary.deleteImage(checkProduct.thumbnail)
 
       const imgUrl: string = await this.cloudinary.uploadImage(img)
 
@@ -126,14 +125,6 @@ export class ProductService {
       return
     }
 
-
-    await this.cloudinary.deleteImage(checkProduct.thumbnail)
-
-    if (Array.isArray(checkProduct.img)) {
-      checkProduct.img.forEach(async (element: { url: string }) => {
-        await this.cloudinary.deleteImage(element.url)
-      });
-    }
 
     await this.productRepository.deleteProduct(id_product)
 

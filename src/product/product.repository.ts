@@ -18,7 +18,17 @@ export class ProductRepository {
     }
 
     async getProductList() {
-        return await this.prisma.product.findMany()
+        return await this.prisma.product.findMany({
+            include: {
+                categoryBrandMapping: {
+                    select: {
+                        id_brand: true ,
+                        id_category: true
+                    }
+                   
+                }
+            }
+        });
     }
 
     async findProduct(id: number) {
