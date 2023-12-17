@@ -12,63 +12,67 @@ import { UpdateProductInterface, UpdateProductReqInterface } from './interface/u
 export class ProductService {
 
   constructor(private cloudinary: CloudinaryService,
-    private productRepository: ProductRepository, ) { }
+    private productRepository: ProductRepository,) { }
 
   prisma = new PrismaClient();
 
 
 
   async createProduct(createProduct: CreateProductReqInterface, res: any) {
+    try {
+      const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.brand, createProduct.categories)
 
-    const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.id_brand, createProduct.id_category)
+      if (!checkCategoryBrand) {
+        errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
+        return
+      }
 
-    if (!checkCategoryBrand) {
-      errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
-      return
+      let thumbnail: string
+      let arrImg: any[]
+
+      if (Array.isArray(createProduct.img)) {
+        thumbnail = createProduct.img[0].url
+
+        arrImg = createProduct.img.splice(1)
+
+      }
+
+
+      if (createProduct.new_release === "1") {
+        createProduct.new_release = true
+      } else {
+        createProduct.new_release = false
+      }
+
+      const data: CreateProductInterface = {
+        categoryBrandMapping: {
+          connect: {
+            id_categoryBrand: checkCategoryBrand.id_categoryBrand
+          }
+        },
+        name: createProduct.name,
+        thumbnail: thumbnail,
+        chip: createProduct.chip,
+        price: Number(createProduct.price),
+        original_price: Number(createProduct.original_price),
+        battery: createProduct.battery,
+        quantity: Number(createProduct.quantity),
+        new_release: createProduct.new_release,
+        screen: createProduct.screen,
+        front_camera: createProduct.front_camera,
+        rear_camera: createProduct.rear_camera,
+        img: arrImg,
+        storage: createProduct.storage,
+        color: createProduct.color,
+      }
+
+      const newData = await this.productRepository.createProduct(data)
+
+      successCode(res, newData)
+    } catch (error) {
+      failCode(res, error.message)
+
     }
-
-    let thumbnail: string
-    let arrImg: any[]
-
-    if (Array.isArray(createProduct.img)) {
-      thumbnail = createProduct.img[0].url
-
-      arrImg = createProduct.img.splice(1)
-
-    }
-
-
-    if (createProduct.new_release === "1") {
-      createProduct.new_release = true
-    } else {
-      createProduct.new_release = false
-    }
-
-    const data: CreateProductInterface = {
-      categoryBrandMapping: {
-        connect: {
-          id_categoryBrand: checkCategoryBrand.id_categoryBrand
-        }
-      },
-      name: createProduct.name,
-      thumbnail: thumbnail,
-      chip: createProduct.chip,
-      price: Number(createProduct.price),
-      original_price: Number(createProduct.original_price),
-      battery: createProduct.battery,
-      quantity: Number(createProduct.quantity),
-      new_release: createProduct.new_release,
-      screen: createProduct.screen,
-      front_camera: createProduct.front_camera,
-      rear_camera: createProduct.rear_camera,
-      img: arrImg,
-      storage: createProduct.storage,
-      color: createProduct.color,
-    }
-
-    const newData = await this.productRepository.createProduct(data)
-
-    successCode(res, newData)
   }
 
   async getProductList(res: any) {
@@ -143,7 +147,7 @@ export class ProductService {
     }
 
 
-    const checkCategoryBrand = await this.productRepository.findCategoryBrand(product.id_brand, product.id_category)
+    const checkCategoryBrand = await this.productRepository.findCategoryBrand(product.brand, product.categories)
 
     if (!checkCategoryBrand) {
       errCode(res, product, "Không tìm thấy loại và hãng sản phẩm.")

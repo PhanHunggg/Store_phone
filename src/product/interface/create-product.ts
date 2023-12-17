@@ -1,7 +1,7 @@
 
 export interface CreateProductReqInterface {
-    id_brand: number;
-    id_category: number;
+    brand: number;
+    categories: number;
     name: string;
     chip: string;
     price: number;
