@@ -43,6 +43,22 @@ export class ProductRepository {
         return await this.prisma.product.findUnique({
             where: {
                 id_product: id
+            },
+            include: {
+                categoryBrandMapping: {
+                    include: {
+                        brand: {
+                            select: {
+                                name: true
+                            }
+                        },
+                        category: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                }
             }
         })
 
