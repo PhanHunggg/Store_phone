@@ -27,8 +27,6 @@ export class AuthService {
             return
         }
 
-
-
         const passwordMatches = await bcrypt.compare(user.password, checkUser.password);
 
         if (!passwordMatches) {
@@ -46,8 +44,6 @@ export class AuthService {
 
         const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
 
-
-
         let data: LoginPayloadInterface = checkUser
 
         data.accessToken = token
@@ -64,6 +60,7 @@ export class AuthService {
             errCode(res, user.email, "Email đã tồn tại")
             return
         }
+        
         if (!user.role) user.role = false
 
         if (typeof user.birthday === "string") {

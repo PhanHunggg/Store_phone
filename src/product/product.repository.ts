@@ -21,15 +21,23 @@ export class ProductRepository {
         return await this.prisma.product.findMany({
             include: {
                 categoryBrandMapping: {
-                    select: {
-                        id_brand: true ,
-                        id_category: true
+                    include: {
+                        brand: {
+                            select: {
+                                name: true
+                            }
+                        },
+                        category: {
+                            select: {
+                                name: true
+                            }
+                        }
                     }
-                   
                 }
             }
         });
     }
+
 
     async findProduct(id: number) {
         return await this.prisma.product.findUnique({
