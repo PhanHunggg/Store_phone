@@ -1,20 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { UserInterface } from "./interface";
+import { UserInterface } from "./interface/user";
 
 @Injectable()
 export class UserRepository {
     prisma = new PrismaClient();
 
-    async findUserById(id: number) {
-        return await this.prisma.user.findUnique({
-            where: {
-                id_user: id
-            }
-        })
-    }
 
-    async findMailUser(email: any) {
+    async findUserByEmail(email: any) {
         return await this.prisma.user.findFirst(
             {
                 where: {
@@ -30,7 +23,7 @@ export class UserRepository {
 
     }
 
-    async findProduct(id: number) {
+    async findUser(id: number) {
         return await this.prisma.user.findUnique({
             where: {
                 id_user: id

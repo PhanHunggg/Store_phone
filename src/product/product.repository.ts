@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CreateProductInterface, UpdateProductInterface } from "./interface";
+import { UpdateProductInterface } from "./interface/update-product";
+import { CreateProductInterface } from "./interface/create-product";
+import { CategoryBrandInterface } from "src/category-brand/interface";
 
 @Injectable()
 export class ProductRepository {
@@ -15,11 +17,11 @@ export class ProductRepository {
         })
     }
 
-    async findAll() {
+    async getProductList() {
         return await this.prisma.product.findMany()
     }
 
-    async findOne(id: number) {
+    async findProduct(id: number) {
         return await this.prisma.product.findUnique({
             where: {
                 id_product: id
@@ -63,5 +65,14 @@ export class ProductRepository {
 
     async getEquivalentProduct(id: number) {
         return await this.prisma.product.findMany({ where: { id_categoryBrand: id } })
+    }
+
+    async findByIdBrandIdCategory(brandCategory: CategoryBrandInterface) {
+        return await this.prisma.categoryBrand.findFirst({
+            where: {
+                id_brand: brandCategory.id_brand,
+                id_category: brandCategory.id_category
+            }
+        })
     }
 }

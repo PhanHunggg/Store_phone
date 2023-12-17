@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Response } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserInterface } from './interface';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateUserInterface } from './interface/update-user';
 
 @ApiTags("User")
 @Controller('user')
@@ -15,9 +15,9 @@ export class UserController {
   }
 
   @Get("/find-user/:id")
-  findOne(@Response() res: any, @Param('id') id: string) {
+  findUser(@Response() res: any, @Param('id') id: string) {
 
-    return this.userService.findProduct(res, +id);
+    return this.userService.findUser(res, +id);
   }
 
   @Delete("/delete-user/:id")
@@ -27,7 +27,7 @@ export class UserController {
   }
 
   @Put("/update-user/:id")
-  updateUser(@Response() res: any, @Param('id') id: string, @Body() body: CreateUserInterface) {
+  updateUser(@Response() res: any, @Param('id') id: string, @Body() body: UpdateUserInterface) {
 
     return this.userService.updateUser(res, +id, body);
   }

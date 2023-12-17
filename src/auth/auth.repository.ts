@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { SignUpInterface, UpdatePassInterface, LoginInterface } from "./interface";
+import { UpdatePassInterface } from "./interface/update-pass";
+import { SignUpInterface } from "./interface/sign-up";
 
 @Injectable()
 export class AuthRepository {
     prisma = new PrismaClient();
 
-    async createUser(userData: SignUpInterface) {
+    async signUp(userData: SignUpInterface) {
         return this.prisma.user.create({ data: userData });
     }
 

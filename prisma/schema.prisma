@@ -71,12 +71,6 @@ model Color {
   @@map("color")
 }
 
-model Storage {
-  id_storage Int    @id @default(autoincrement())
-  name       String
-
-  @@map("storage")
-}
 
 model User {
   id_user  Int      @id @default(autoincrement())

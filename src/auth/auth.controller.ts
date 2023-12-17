@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Post, Put, Response } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignUpInterface, LoginInterface } from './interface';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
+import { LoginInterface } from './interface/login';
+import { SignUpInterface } from './interface/sign-up';
 
 @ApiTags("Auth")
 @Controller('auth')

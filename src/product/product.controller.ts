@@ -4,8 +4,9 @@ import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { successCode } from 'src/response';
 import { CategoryBrandInterface } from 'src/category-brand/interface';
-import { CreateProductReqInterface, UpdateProductReqInterface } from './interface';
 import { Public } from 'src/common/decorators/public.decorator';
+import { CreateProductReqInterface } from './interface/create-product';
+import { UpdateProductReqInterface } from './interface/update-product';
 
 
 @ApiTags("Product")
@@ -15,20 +16,20 @@ export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
   @Post('/create-product')
-  createProduct2(@Body() createProductDto: CreateProductReqInterface, @Response() res: any,): Promise<void> {
+  createProduct(@Body() createProductDto: CreateProductReqInterface, @Response() res: any,): Promise<void> {
     return this.productService.createProduct(createProductDto, res);
   }
 
   @Public()
   @Get('/product-list')
-  findAll(@Response() res: any): Promise<void> {
-    return this.productService.findAll(res);
+  getProductList(@Response() res: any): Promise<void> {
+    return this.productService.getProductList(res);
   }
 
   @Public()
   @Get('/find-product/:id')
-  findOne(@Param('id') id: string, @Response() res: any) {
-    return this.productService.findOne(+id, res);
+  findProduct(@Param('id') id: string, @Response() res: any) {
+    return this.productService.findProduct(+id, res);
   }
 
   @UseInterceptors(FileInterceptor('img'))

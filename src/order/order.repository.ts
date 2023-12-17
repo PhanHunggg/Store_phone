@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { OrderInterface, OrderItemInterface } from "./interface";
+import { OrderInterface } from "./interface/order";
+import { OrderItemInterface } from "./interface/order-item";
 
 @Injectable()
 export class OrderRepository {
     prisma = new PrismaClient();
 
-    async findAll() {
+    async getOrderList() {
         return await this.prisma.order.findMany()
     }
 
@@ -26,11 +27,11 @@ export class OrderRepository {
         })
     }
 
-    async findAllOrderItem() {
+    async getOrderItemList() {
         return await this.prisma.orderItem.findMany()
     }
 
-    async findManyOrderItems(id: number) {
+    async findManyOrderItem(id: number) {
         return await this.prisma.orderItem.findMany({
             where: {
                 id_order: id

@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { errCode, failCode, successCode } from 'src/response';
-import { CreateOrderInterface, OrderInterface, OrderItemInterface } from './interface';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
-import { ProductInterface } from 'src/product/interface';
+import { ProductInterface } from 'src/product/interface/product';
+import { CreateOrderInterface } from './interface/create-order';
+import { OrderInterface } from './interface/order';
+import { OrderItemInterface } from './interface/order-item';
 
 @Injectable()
 export class OrderService {
@@ -13,9 +15,9 @@ export class OrderService {
         private userRepository: UserRepository) { }
 
 
-    async findAllOrder(res: any) {
+    async getOrderList(res: any) {
         try {
-            const checkOrderAll = await this.orderRepository.findAll();
+            const checkOrderAll = await this.orderRepository.getOrderList();
 
             if (!!!checkOrderAll.length) {
                 errCode(res, '', "Không tìm thấy order nào!")
@@ -28,9 +30,9 @@ export class OrderService {
         }
     }
 
-    async findAllOrderItem(res: any) {
+    async getOrderItemList(res: any) {
         try {
-            const checkOrderItem = await this.orderRepository.findAllOrderItem();
+            const checkOrderItem = await this.orderRepository.getOrderItemList();
 
             if (!!!checkOrderItem.length) {
                 errCode(res, checkOrderItem, "Không tìm thấy sản phẩm order nào!")
@@ -74,7 +76,7 @@ export class OrderService {
 
     async createOrder(res: any, createOrder: CreateOrderInterface) {
 
-        const checkUser = await this.userRepository.findUserById(createOrder.id_user)
+        const checkUser = await this.userRepository.findUser(createOrder.id_user)
 
         if (!checkUser) {
             errCode(res, checkUser, "Không tìm thấy user!");
@@ -85,13 +87,10 @@ export class OrderService {
 
         const arrProduct = createOrder.id_product
 
-        let checkArrProduct: ProductInterface[] = [];
 
         for (const productId of arrProduct) {
 
-            const checkProduct = await this.productRepository.findOne(productId);
-
-            checkArrProduct.push(checkProduct);
+            const checkProduct = await this.productRepository.findProduct(productId);
 
             if (!checkProduct) {
                 isValid = true;
@@ -145,7 +144,7 @@ export class OrderService {
                 return
             }
 
-            const arrOrderItem = await this.orderRepository.findManyOrderItems(checkOrder.id_order)
+            const arrOrderItem = await this.orderRepository.findManyOrderItem(checkOrder.id_order)
 
             for (const item of arrOrderItem) {
                 await this.orderRepository.deleteOrderItem(item.id_orderItem)

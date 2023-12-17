@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
-import { CreateUserInterface, UserInterface } from './interface';
 import { UserRepository } from './user.repository';
+import { UpdateUserInterface } from './interface/update-user';
+import { UserInterface } from './interface/user';
 
 @Injectable()
 export class UserService {
@@ -27,9 +28,9 @@ export class UserService {
         }
     }
 
-    async findProduct(res: any, id: number) {
+    async findUser(res: any, id: number) {
         try {
-            const checkUser = await this.userRepository.findProduct(id)
+            const checkUser = await this.userRepository.findUser(id)
 
             if (!checkUser) {
                 errCode(res, checkUser, "Không tìm thấy user")
@@ -45,7 +46,7 @@ export class UserService {
 
     async deleteUser(res: any, id: number) {
         try {
-            const checkUser = await this.userRepository.findProduct(id)
+            const checkUser = await this.userRepository.findUser(id)
 
             if (!checkUser) {
                 errCode(res, checkUser, "Không tìm thấy user")
@@ -61,9 +62,10 @@ export class UserService {
         }
     }
 
-    async updateUser(res: any, id: number, user: CreateUserInterface) {
+    async updateUser(res: any, id: number, user: UpdateUserInterface) {
         try {
-            const checkEmailUser = await this.userRepository.findMailUser(user.email)
+
+            const checkEmailUser = await this.userRepository.findUserByEmail(user.email)
 
             if (checkEmailUser) {
                 errCode(res, checkEmailUser.email, "Email đã tồn tại!")

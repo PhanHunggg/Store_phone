@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Response } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderInterface } from './interface';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateOrderInterface } from './interface/create-order';
 
 @ApiTags("Order")
 @Controller('order')
@@ -9,8 +9,8 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) { }
 
   @Get('/order-list')
-  findAllOrder(@Response() res: any): Promise<void> {
-    return this.orderService.findAllOrder(res);
+  getOrderList(@Response() res: any): Promise<void> {
+    return this.orderService.getOrderList(res);
   }
 
   @Post("/create-order")
@@ -19,8 +19,8 @@ export class OrderController {
   }
 
   @Get('/order-item-list')
-  findAllOrderItem(@Response() res: any): Promise<void> {
-    return this.orderService.findAllOrderItem(res);
+  getOrderItemList(@Response() res: any): Promise<void> {
+    return this.orderService.getOrderItemList(res);
   }
 
   @Get('/find-order/:id')

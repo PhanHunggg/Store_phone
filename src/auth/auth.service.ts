@@ -1,11 +1,13 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
-import { SignUpInterface, UpdatePassInterface, LoginPayloadInterface, LoginInterface } from './interface';
 import { JwtService } from '@nestjs/jwt';
 import { errCode, successCode } from 'src/response';
 import { AuthRepository } from './auth.repository';
 import * as bcrypt from 'bcrypt';
+import { LoginInterface, LoginPayloadInterface } from './interface/login';
+import { SignUpInterface } from './interface/sign-up';
+import { UpdatePassInterface } from './interface/update-pass';
 
 @Injectable()
 export class AuthService {
@@ -34,8 +36,15 @@ export class AuthService {
             return;
         }
 
+        const dataAccess = {
+            id: checkUser.id_user,
+            name: checkUser.name,
+            email: checkUser.email,
+            password: checkUser.password
+        }
 
-        const token = this.jwtService.sign({ data: checkUser }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
+
+        const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
 
 
 
@@ -61,13 +70,25 @@ export class AuthService {
             user.birthday = new Date(user.birthday)
         }
 
-        const token = this.jwtService.sign({ data: user }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
 
         const hash = await this.hashData(user.password);
 
         user.password = hash
 
-        await this.authRepository.createUser(user)
+        const userSignUp = await this.authRepository.signUp(user)
+
+
+        const dataAccess = {
+            id: userSignUp.id_user,
+            name: userSignUp.name,
+            email: userSignUp.email,
+            password: userSignUp.password
+        }
+
+        const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
+
+
+
 
         const newData = {
             ...user,

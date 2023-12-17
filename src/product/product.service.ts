@@ -5,14 +5,14 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ProductRepository } from './product.repository';
 import { CategoryBrandRepository } from 'src/category-brand/category-brand.repository';
 import { CategoryBrandInterface } from 'src/category-brand/interface';
-import { CreateProductInterface, CreateProductReqInterface, UpdateProductInterface, UpdateProductReqInterface } from './interface';
+import { CreateProductInterface, CreateProductReqInterface } from './interface/create-product';
+import { UpdateProductInterface, UpdateProductReqInterface } from './interface/update-product';
 
 @Injectable()
 export class ProductService {
 
   constructor(private cloudinary: CloudinaryService,
-    private productRepository: ProductRepository,
-    private categoryBrandRepository: CategoryBrandRepository) { }
+    private productRepository: ProductRepository, ) { }
 
   prisma = new PrismaClient();
 
@@ -71,9 +71,9 @@ export class ProductService {
     successCode(res, newData)
   }
 
-  async findAll(res: any) {
+  async getProductList(res: any) {
     try {
-      const checkProduct = await this.productRepository.findAll()
+      const checkProduct = await this.productRepository.getProductList()
 
       if (!!!checkProduct.length) {
         errCode(res, checkProduct, "Không tìm thấy product nào!")
@@ -85,8 +85,8 @@ export class ProductService {
     }
   }
 
-  async findOne(id: number, res: any) {
-    const checkProduct = await this.productRepository.findOne(id);
+  async findProduct(id: number, res: any) {
+    const checkProduct = await this.productRepository.findProduct(id);
 
     if (!checkProduct) {
       errCode(res, checkProduct, "Không tìm thấy sản phẩm")
@@ -98,7 +98,7 @@ export class ProductService {
 
   async updateThumbnail(id: number, img: Express.Multer.File, res: any) {
     try {
-      const checkProduct = await this.productRepository.findOne(id)
+      const checkProduct = await this.productRepository.findProduct(id)
 
       if (!checkProduct) {
         errCode(res, checkProduct, "Không tìm thấy product!")
@@ -119,7 +119,7 @@ export class ProductService {
   }
 
   async deleteProduct(id_product: number, res: any) {
-    const checkProduct = await this.productRepository.findOne(id_product)
+    const checkProduct = await this.productRepository.findProduct(id_product)
 
     if (!checkProduct) {
       errCode(res, "", "Không tìm thấy sản phẩm")
@@ -144,7 +144,7 @@ export class ProductService {
   }
 
   async updateProduct(res, id: number, product: UpdateProductReqInterface) {
-    const checkProduct = await this.productRepository.findOne(id);
+    const checkProduct = await this.productRepository.findProduct(id);
 
     if (!checkProduct) {
       errCode(res, checkProduct, "Không tìm thấy sản phẩm")
@@ -183,12 +183,6 @@ export class ProductService {
 
   async getEquivalentProduct(res: any, id: number) {
     try {
-      const checkCategoryBrand = await this.categoryBrandRepository.findCategoryBrand(id);
-
-      if (!checkCategoryBrand) {
-        errCode(res, checkCategoryBrand, "Không tìm thấy hãng và loại sản phẩm!")
-        return
-      }
 
       const productList = await this.productRepository.getEquivalentProduct(id)
 
@@ -207,7 +201,7 @@ export class ProductService {
   async findByCategoryBrand(res: any, brandCategory: CategoryBrandInterface) {
 
     try {
-      const checkCategoryBrand = await this.categoryBrandRepository.findByIdBrandIdCategory(brandCategory)
+      const checkCategoryBrand = await this.productRepository.findByIdBrandIdCategory(brandCategory)
 
       if (!checkCategoryBrand) {
         errCode(res, checkCategoryBrand, "Không tìm thấy hãng và loại sản phẩm!")
