@@ -8,7 +8,20 @@ export class OrderRepository {
     prisma = new PrismaClient();
 
     async getOrderList() {
-        return await this.prisma.order.findMany()
+        return await this.prisma.order.findMany({
+            include: {
+                OrderItem: {
+                    select: {
+                        id_orderItem: true,
+                        product: {
+                            select: {
+                                name: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     async findOrderById(id: number) {
