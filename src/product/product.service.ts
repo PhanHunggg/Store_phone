@@ -32,11 +32,8 @@ export class ProductService {
 
       if (Array.isArray(createProduct.img)) {
         thumbnail = createProduct.img[0].url
-
         arrImg = createProduct.img.splice(1)
-
       }
-
 
       if (createProduct.new_release === "1") {
         createProduct.new_release = true
@@ -81,6 +78,7 @@ export class ProductService {
 
       if (!!!checkProduct.length) {
         errCode(res, checkProduct, "Không tìm thấy product nào!")
+        return
       }
 
       successCode(res, checkProduct)
@@ -139,13 +137,12 @@ export class ProductService {
   }
 
   async updateProduct(res, id: number, product: UpdateProductReqInterface) {
-    const checkProduct = await this.productRepository.findProduct(id);
 
+    const checkProduct = await this.productRepository.findProduct(id);
     if (!checkProduct) {
       errCode(res, checkProduct, "Không tìm thấy sản phẩm")
       return
     }
-
 
     const checkCategoryBrand = await this.productRepository.findCategoryBrand(product.brand, product.categories)
 
@@ -169,9 +166,7 @@ export class ProductService {
       storage: product.storage,
       color: product.color
     }
-
     await this.productRepository.updateProduct(id, newData)
-
     successCode(res, newData)
   }
 

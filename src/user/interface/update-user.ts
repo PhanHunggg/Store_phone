@@ -6,5 +6,6 @@ export interface UpdateUserInterface {
     birthday: Date | string;
     address: string;
     phone: string;
+    role: boolean;
 
 }

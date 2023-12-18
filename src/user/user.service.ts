@@ -20,7 +20,6 @@ export class UserService {
                 errCode(res, checkUser, "Danh sách user rỗng!")
                 return
             }
-
             successCode(res, checkUser)
         } catch (error) {
             failCode(res, error.message)
@@ -36,7 +35,6 @@ export class UserService {
                 errCode(res, checkUser, "Không tìm thấy user")
                 return
             }
-
             successCode(res, checkUser)
         } catch (error) {
             failCode(res, error.message)
@@ -64,7 +62,6 @@ export class UserService {
 
     async updateUser(res: any, id: number, user: UpdateUserInterface) {
         try {
-
             const checkUserById = await this.userRepository.findUser(id);
 
             if (user.email !== checkUserById.email) {
@@ -76,13 +73,13 @@ export class UserService {
                     return
                 }
             }
-
-
             let birthDay: Date
 
             if (typeof user.birthday === "string") {
                 birthDay = new Date(user.birthday)
             }
+
+            if (!user.role) user.role = false
 
             const newData: UserInterface = {
                 name: user.name,
@@ -91,7 +88,7 @@ export class UserService {
                 birthday: birthDay,
                 address: user.address,
                 phone: user.phone,
-                role: false
+                role: user.role
             }
 
             await this.userRepository.updateUser(id, newData)

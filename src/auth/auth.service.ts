@@ -53,27 +53,22 @@ export class AuthService {
     }
 
     async signUp(res: any, user: SignUpInterface) {
-
         const checkEmail = await this.authRepository.checkEmailUser(user.email)
 
         if (checkEmail) {
             errCode(res, user.email, "Email đã tồn tại")
             return
         }
-        
-        if (!user.role) user.role = false
 
+        if (!user.role) user.role = false
+        
         if (typeof user.birthday === "string") {
             user.birthday = new Date(user.birthday)
         }
 
-
         const hash = await this.hashData(user.password);
-
         user.password = hash
-
         const userSignUp = await this.authRepository.signUp(user)
-
 
         const dataAccess = {
             id: userSignUp.id_user,
@@ -84,18 +79,15 @@ export class AuthService {
 
         const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
 
-
-
-
         const newData = {
             ...user,
             accessToken: token
         }
-
         successCode(res, newData)
     }
 
     async updatePassword(res: any, user: LoginInterface) {
+        
         const checkUser = await this.authRepository.checkEmailUser(user.email)
 
         if (!checkUser) {
