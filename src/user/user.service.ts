@@ -65,12 +65,18 @@ export class UserService {
     async updateUser(res: any, id: number, user: UpdateUserInterface) {
         try {
 
-            const checkEmailUser = await this.userRepository.findUserByEmail(user.email)
+            const checkUserById = await this.userRepository.findUser(id);
 
-            if (checkEmailUser) {
-                errCode(res, checkEmailUser.email, "Email đã tồn tại!")
-                return
+            if (user.email !== checkUserById.email) {
+
+                const checkEmailUser = await this.userRepository.findUserByEmail(user.email)
+
+                if (checkEmailUser) {
+                    errCode(res, checkEmailUser.email, "Email đã tồn tại!")
+                    return
+                }
             }
+
 
             let birthDay: Date
 
