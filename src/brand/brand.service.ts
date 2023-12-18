@@ -12,14 +12,11 @@ export class BrandService {
   constructor(private cloudinary: CloudinaryService,
     private brandRepository: BrandRepository) { }
 
-  async createBrand(res: any, brand: CreateBrandInterface, img: Express.Multer.File) {
+  async createBrand(res: any, brand: CreateBrandInterface,) {
     try {
-
-      const imgUrl: string = await this.cloudinary.uploadImage(img)
-
       const newData: BrandInterface = {
-        name: brand.name, // Use the provided name parameter directly
-        img: imgUrl
+        name: brand.name,
+        img: brand.banner
       };
 
 
@@ -58,7 +55,7 @@ export class BrandService {
     successCode(res, checkBrand)
   }
 
-  async updateBrand(res: any, brand: CreateBrandInterface, img: Express.Multer.File, id_brand: number) {
+  async updateBrand(res: any, brand: CreateBrandInterface, id_brand: number) {
     try {
 
       const checkBrand = await this.brandRepository.findBrandById(id_brand)
@@ -68,39 +65,14 @@ export class BrandService {
         return
       }
 
-      let isValid: boolean = false
+      const newData: BrandInterface = {
+        name: brand.name,
+        img: brand.banner
+      };
+      await this.brandRepository.updateBrand(newData, id_brand)
 
-      if (img) isValid = true
+      successCode(res, newData)
 
-      if (isValid) {
-
-        await this.cloudinary.deleteImage(checkBrand.img)
-
-        const imgUrl: string = await this.cloudinary.uploadImage(img)
-
-        const newData: BrandInterface = {
-          name: brand.name,
-          img: imgUrl
-        };
-
-        await this.brandRepository.updateBrand(newData, id_brand)
-        successCode(res, newData)
-
-      } else {
-
-        const newData = {
-          name: brand.name,
-          img: checkBrand.img
-        };
-
-        await this.brandRepository.updateBrand(newData, id_brand)
-        successCode(res, newData)
-      }
-
-
-      // await this.prisma.brand.create({
-      //   data: newData
-      // });
     } catch (error) {
       failCode(res, error.message)
     }
@@ -109,7 +81,7 @@ export class BrandService {
   async findBrand(res: any, id: number) {
     try {
       const brand = await this.brandRepository.findBrandById(id)
-      
+
       if (!brand) {
         errCode(res, id, "Không tìm thấy brand!")
         return

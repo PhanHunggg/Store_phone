@@ -13,9 +13,8 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) { }
 
   @Post("/create-brand")
-  @UseInterceptors(FileInterceptor('img'))
-  createBrand(@Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: BrandInterface) {
-    return this.brandService.createBrand(res, body, file);
+  createBrand(@Response() res: any, @Body() body: CreateBrandInterface) {
+    return this.brandService.createBrand(res, body);
   }
 
   @Delete('/delete-brand/:id_brand')
@@ -29,9 +28,8 @@ export class BrandController {
   }
 
   @Put("/update-brand/:id_brand")
-  @UseInterceptors(FileInterceptor('img'))
-  updateBrand(@Param('id_brand') id_brand: string, @Response() res: any, @UploadedFile() file: Express.Multer.File, @Body() body: CreateBrandInterface) {
-    return this.brandService.updateBrand(res, body, file, +id_brand);
+  updateBrand(@Param('id_brand') id_brand: string, @Response() res: any, @Body() body: CreateBrandInterface) {
+    return this.brandService.updateBrand(res, body, +id_brand);
   }
 
 

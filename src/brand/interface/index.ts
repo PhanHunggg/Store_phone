@@ -7,4 +7,5 @@ export interface BrandInterface {
 
 export interface CreateBrandInterface {
     name: string
+    banner: string
 }

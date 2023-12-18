@@ -32,16 +32,18 @@ export class ColorService {
     }
   }
 
-  async remove(id: number, res) {
+  async remove(id: number, res: any) {
     try {
-      const checkColor = await this.colorRepository.deleteColor(id)
-      if (!checkColor) {
-        errCode(res, checkColor, "Không tìm thấy màu!")
-      }
+    const checkColor = await this.colorRepository.findColor(id)
 
-      await this.colorRepository.deleteColor(id)
+    if (!checkColor) {
+      errCode(res, checkColor, "Không tìm thấy màu!")
+      return
+    }
 
-      successCode(res, '')
+    await this.colorRepository.deleteColor(id)
+
+    successCode(res, '')
     } catch (error) {
       failCode(res, error.message)
     }
