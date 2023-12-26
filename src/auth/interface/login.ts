@@ -1,9 +1,19 @@
-export interface LoginInterface {
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
+
+export class LoginInterface {
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: "email", type: String })
     email: string;
+
+    @IsNotEmpty()
+    @IsString()
+    @ApiProperty({ description: "password", type: String })
     password: string;
 }
 
-export interface LoginPayloadInterface {
+export class LoginPayloadInterface {
     id_user: number;
     name: string;
     email: string;

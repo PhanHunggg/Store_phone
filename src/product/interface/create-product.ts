@@ -1,5 +1,5 @@
 
-export interface CreateProductReqInterface {
+export class CreateProductReqInterface {
     brand: number;
     categories: number;
     name: string;

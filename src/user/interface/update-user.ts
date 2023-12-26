@@ -1,5 +1,5 @@
 
-export interface UpdateUserInterface {
+export class UpdateUserInterface {
     name: string;
     email: string;
     password: string;

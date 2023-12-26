@@ -17,6 +17,12 @@ export class AuthController {
   login(@Response() res: any, @Body() body: LoginInterface) {
     return this.authService.login(res, body);
   }
+  
+  @Public()
+  @Post("/admin-login")
+  loginAdmin(@Response() res: any, @Body() body: LoginInterface) {
+    return this.authService.loginAdmin(res, body);
+  }
 
   @Public()
   @Post("/sign-up")
@@ -34,6 +40,12 @@ export class AuthController {
   @Put('/reset-password/:token')
   resetPass(@Response() res: any,@Param('token') token: string, @Body() body: ResetPassInterface) {
     return this.authService.resetPass(res, token, body);
+  }
+
+  @Public()
+  @Put('/verify-email/:token')
+  verifyEmail(@Response() res: any,@Param('token') token: string) {
+    return this.authService.verifyEmail(res, token);
   }
 
 

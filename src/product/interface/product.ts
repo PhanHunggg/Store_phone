@@ -1,5 +1,5 @@
 
-export interface ProductInterface {
+export class ProductInterface {
     id_product: number;
     id_categoryBrand: number;
     name: string;

@@ -1,5 +1,5 @@
 
-export interface UpdatePassInterface {
+export class UpdatePassInterface {
     id_user: number;
     password: string;
 }

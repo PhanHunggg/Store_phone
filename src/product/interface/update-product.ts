@@ -1,4 +1,4 @@
-export interface UpdateProductReqInterface {
+export class UpdateProductReqInterface {
     brand: number;
     categories: number;
     name: string;
@@ -15,7 +15,7 @@ export interface UpdateProductReqInterface {
     color: any[]
 }
 
-export interface UpdateProductInterface {
+export class UpdateProductInterface {
     id_categoryBrand: number;
     name: string;
     chip: string;

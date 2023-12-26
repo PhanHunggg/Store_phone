@@ -1,4 +1,4 @@
 
-export interface CreateCategoryInterface {
+export class CreateCategoryInterface {
     name: string;
 }

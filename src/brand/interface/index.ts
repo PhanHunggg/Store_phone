@@ -1,11 +1,11 @@
 
-export interface BrandInterface {
+export class BrandInterface {
     name: string
     img: string
 }
 
 
-export interface CreateBrandInterface {
+export class CreateBrandInterface {
     name: string
     banner: string
 }
