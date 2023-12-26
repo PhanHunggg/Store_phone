@@ -71,17 +71,18 @@ model Color {
   @@map("color")
 }
 
-
 model User {
-  id_user  Int      @id @default(autoincrement())
-  name     String
-  email    String
-  password String
-  birthday DateTime
-  address  String
-  phone    String
-  role     Boolean
-  order    Order[]
+  id_user             Int       @id @default(autoincrement())
+  name                String
+  email               String
+  password            String
+  birthday            DateTime
+  address             String
+  phone               String
+  role                Boolean
+  resetPasswordToken  String?
+  resetPasswordExpire DateTime?
+  order               Order[]
 
   @@map("user")
 }
@@ -97,7 +98,7 @@ model Order {
   created_date   DateTime
   OrderItem      OrderItem[]
 
-  user           User?       @relation(fields: [id_user], references: [id_user])
+  user User? @relation(fields: [id_user], references: [id_user])
 
   @@map("order")
 }

@@ -15,13 +15,23 @@ export class AuthRepository {
         return this.prisma.user.findFirst({ where: { email: email } })
     };
 
-    async updatePassword(user: UpdatePassInterface) {
-        return this.prisma.user.update({
+    async checkUserByToken(token: string) {
+        return await this.prisma.user.findFirst({
             where: {
-                id_user: user.id_user
+                resetPasswordToken: token,
+            }
+        })
+    }
+
+    async resetPass(password: string, id: number) {
+        return await this.prisma.user.update({
+            where: {
+                id_user: id
             },
             data: {
-                password: user.password
+                password: password,
+                resetPasswordToken: null,
+                resetPasswordExpire: null
             }
         })
     }
