@@ -39,6 +39,11 @@ export class AuthService {
             return;
         }
 
+        if (!checkUser.verifyEmail) {
+            errCode(res, checkUser.verifyEmail, "Email chưa được xác thực!");
+            return;
+        }
+
         const dataAccess = {
             id: checkUser.id_user,
             name: checkUser.name,
@@ -77,6 +82,11 @@ export class AuthService {
             return;
         }
 
+        if (!checkUser.verifyEmail) {
+            errCode(res, checkUser.verifyEmail, "Email chưa được xác thực!");
+            return;
+        }
+
         const dataAccess = {
             id: checkUser.id_user,
             name: checkUser.name,
@@ -102,7 +112,9 @@ export class AuthService {
             return
         }
 
-        if (!user.role) user.role = false
+        if (!user.role) {
+            user.role = false
+        }
 
         if (typeof user.birthday === "string") {
             user.birthday = new Date(user.birthday)
@@ -139,7 +151,7 @@ export class AuthService {
             password: userSignUp.password
         }
 
-        const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
+        const token = this.createToken(dataAccess, "SECRET_KEY", "7d")
 
         const newData = {
             ...user,
@@ -176,8 +188,6 @@ export class AuthService {
 
         successCode(res, tokenForgot)
 
-
-
     }
 
     async createTokenForgotPass(email: string, checkUser: AuthDto, res: any) {
@@ -190,7 +200,7 @@ export class AuthService {
             return
         } else {
 
-            const newTokenPass = this.jwtService.sign({ data: email }, { secret: this.config.get("FORGOT_PASS"), expiresIn: "15m" })
+            const newTokenPass = this.createToken(email, "FORGOT_PASS", "15m")
 
             const updateResetPass = await this.prisma.user.update({
                 where: {

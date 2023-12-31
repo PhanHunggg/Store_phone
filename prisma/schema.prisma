@@ -58,8 +58,6 @@ model Product {
   color                Json
   categoryBrandMapping CategoryBrand @relation(fields: [id_categoryBrand], references: [id_categoryBrand])
 
-  orderItem OrderItem[]
-
   @@map("product")
 }
 
@@ -80,8 +78,8 @@ model User {
   address             String
   phone               String
   role                Boolean
-  verifyEmail          Boolean?
-  verifyEmailToken     String?
+  verifyEmail         Boolean?
+  verifyEmailToken    String?
   resetPasswordToken  String?
   resetPasswordExpire DateTime?
   order               Order[]
@@ -90,28 +88,18 @@ model User {
 }
 
 model Order {
-  id_order       Int         @id @default(autoincrement())
+  id_order       Int      @id @default(autoincrement())
   id_user        Int
+  name           String
   phone          String
   address        String
   payment_method String
   delivery_by    String
   total          Float
   created_date   DateTime
-  OrderItem      OrderItem[]
+  productItem    Json
 
   user User? @relation(fields: [id_user], references: [id_user])
 
   @@map("order")
-}
-
-model OrderItem {
-  id_orderItem Int @id @default(autoincrement())
-  id_order     Int
-  id_product   Int
-
-  product Product @relation(fields: [id_product], references: [id_product])
-  order   Order   @relation(fields: [id_order], references: [id_order])
-
-  @@map("orderItem")
 }

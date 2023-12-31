@@ -30,49 +30,49 @@ export class OrderService {
         }
     }
 
-    async getOrderItemList(res: any) {
-        try {
-            const checkOrderItem = await this.orderRepository.getOrderItemList();
+    // async getOrderItemList(res: any) {
+    //     try {
+    //         const checkOrderItem = await this.orderRepository.getOrderItemList();
 
-            if (!!!checkOrderItem.length) {
-                errCode(res, checkOrderItem, "Không tìm thấy sản phẩm order nào!")
-                return
-            }
+    //         if (!!!checkOrderItem.length) {
+    //             errCode(res, checkOrderItem, "Không tìm thấy sản phẩm order nào!")
+    //             return
+    //         }
 
-            successCode(res, checkOrderItem)
+    //         successCode(res, checkOrderItem)
 
-        } catch (error) {
+    //     } catch (error) {
 
-        }
-    }
+    //     }
+    // }
 
-    async findOrderById(res: any, id: number) {
-        try {
-            const order = await this.orderRepository.findOrderById(id)
+    // async findOrderById(res: any, id: number) {
+    //     try {
+    //         const order = await this.orderRepository.findOrderById(id)
 
-            if (!order) {
-                errCode(res, id, "Không tìm thấy order!")
-                return
-            }
-            successCode(res, order)
-        } catch (error) {
-            failCode(res, error.message)
-        }
-    }
+    //         if (!order) {
+    //             errCode(res, id, "Không tìm thấy order!")
+    //             return
+    //         }
+    //         successCode(res, order)
+    //     } catch (error) {
+    //         failCode(res, error.message)
+    //     }
+    // }
 
-    async findOrderItemById(res: any, id: number) {
-        try {
-            const order = await this.orderRepository.findOrderItemById(id)
+    // async findOrderItemById(res: any, id: number) {
+    //     try {
+    //         const order = await this.orderRepository.findOrderItemById(id)
 
-            if (!order) {
-                errCode(res, id, "Không tìm thấy orderItem!")
-                return
-            }
-            successCode(res, order)
-        } catch (error) {
-            failCode(res, error.message)
-        }
-    }
+    //         if (!order) {
+    //             errCode(res, id, "Không tìm thấy orderItem!")
+    //             return
+    //         }
+    //         successCode(res, order)
+    //     } catch (error) {
+    //         failCode(res, error.message)
+    //     }
+    // }
 
     async createOrder(res: any, createOrder: CreateOrderInterface) {
 
@@ -83,80 +83,43 @@ export class OrderService {
             return
         }
 
-        let isValid = false;
-
-        const arrProduct = createOrder.id_product
-
-
-        for (const productId of arrProduct) {
-
-            const checkProduct = await this.productRepository.findProduct(productId);
-
-            if (!checkProduct) {
-                isValid = true;
-                break;
-            }
-        }
-
-        if (isValid) {
-            errCode(res, createOrder.id_product, "Không tìm thấy sản phẩm!");
-            return;
-        }
-
         const currentDate = new Date();
 
-
         const newDataOrder: OrderInterface = {
-            id_user: createOrder.id_user,
-            phone: createOrder.phone,
-            address: createOrder.address,
-            payment_method: createOrder.payment_method,
-            delivery_by: createOrder.delivery_by,
-            total: createOrder.total,
+            ...createOrder,
             created_date: currentDate
         }
 
 
         const order = await this.orderRepository.createOrder(newDataOrder)
 
-        let newData: OrderItemInterface;
-
-        for (const id of arrProduct) {
-            newData = {
-                id_order: order.id_order,
-                id_product: id
-            }
-
-            await this.orderRepository.createOrderItem(newData)
-        }
-
 
         successCode(res, order);
     }
 
-    async deleteOrder(res: any, id: number): Promise<void> {
-        try {
+    // async deleteOrder(res: any, id: number): Promise<void> {
+    //     try {
 
-            const checkOrder = await this.orderRepository.findOrderById(id);
+    //         const checkOrder = await this.orderRepository.findOrderById(id);
 
-            if (!checkOrder) {
-                errCode(res, checkOrder, "Không tìm thấy order!")
-                return
-            }
+    //         if (!checkOrder) {
+    //             errCode(res, checkOrder, "Không tìm thấy order!")
+    //             return
+    //         }
 
-            const arrOrderItem = await this.orderRepository.findManyOrderItem(checkOrder.id_order)
+    //         const arrOrderItem = await this.orderRepository.findManyOrderItem(checkOrder.id_order)
 
-            for (const item of arrOrderItem) {
-                await this.orderRepository.deleteOrderItem(item.id_orderItem)
-            }
+    //         for (const item of arrOrderItem) {
+    //             await this.orderRepository.deleteOrderItem(item.id_orderItem)
+    //         }
 
 
-            await this.orderRepository.deleteOrder(id)
+    //         await this.orderRepository.deleteOrder(id)
 
-            successCode(res, '')
-        } catch (error) {
-            failCode(res, error.message)
-        }
-    }
+    //         successCode(res, '')
+    //     } catch (error) {
+    //         failCode(res, error.message)
+    //     }
+    // }
 
 }
