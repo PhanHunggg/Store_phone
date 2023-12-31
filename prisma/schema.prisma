@@ -101,5 +101,6 @@ model Order {
 
   user User? @relation(fields: [id_user], references: [id_user])
 
+
   @@map("order")
 }

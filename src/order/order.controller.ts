@@ -20,15 +20,11 @@ export class OrderController {
     
   }
 
-  @Get('/order-item-list')
-  getOrderItemList(@Response() res: any) {
-    // return this.orderService.getOrderItemList(res);
-    
-  }
+ 
 
   @Get('/find-order/:id')
   findOrderById(@Response() res: any, @Param('id') id: string) {
-    // return this.orderService.findOrderById(res, +id);
+    return this.orderService.findOrderById(res, +id);
     
   }
 

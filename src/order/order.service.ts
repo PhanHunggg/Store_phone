@@ -30,36 +30,6 @@ export class OrderService {
         }
     }
 
-    // async getOrderItemList(res: any) {
-    //     try {
-    //         const checkOrderItem = await this.orderRepository.getOrderItemList();
-
-    //         if (!!!checkOrderItem.length) {
-    //             errCode(res, checkOrderItem, "Không tìm thấy sản phẩm order nào!")
-    //             return
-    //         }
-
-    //         successCode(res, checkOrderItem)
-
-    //     } catch (error) {
-
-    //     }
-    // }
-
-    // async findOrderById(res: any, id: number) {
-    //     try {
-    //         const order = await this.orderRepository.findOrderById(id)
-
-    //         if (!order) {
-    //             errCode(res, id, "Không tìm thấy order!")
-    //             return
-    //         }
-    //         successCode(res, order)
-    //     } catch (error) {
-    //         failCode(res, error.message)
-    //     }
-    // }
-
     async findOrderByIdUser(res: any, id: number) {
         try {
             const order = await this.orderRepository.findOrderByIdUser(id)
@@ -121,5 +91,22 @@ export class OrderService {
     //         failCode(res, error.message)
     //     }
     // }
+
+    async findOrderById(res: any, id: number) {
+        try {
+            const checkOrder = await this.orderRepository.findOrderById(id);
+
+            if (!checkOrder) {
+                errCode(res, checkOrder, "Không tìm thấy order!")
+                return
+            }
+
+            successCode(res, checkOrder)
+
+        } catch (error) {
+            failCode(res, error.message)
+
+        }
+    }
 
 }

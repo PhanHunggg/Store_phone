@@ -16,6 +16,15 @@ export class OrderRepository {
         })
     }
 
+    async findOrderById(id: number) {
+        return await this.prisma.order.findUnique({
+            where: {
+                id_order: id
+            }
+        })
+    }
+
+
     async getOrderList() {
         return await this.prisma.order.findMany()
     }
