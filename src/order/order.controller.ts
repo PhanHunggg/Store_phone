@@ -33,9 +33,9 @@ export class OrderController {
   }
 
   
-  @Get('/find-order-item/:id')
-  findOrderItemById(@Response() res: any, @Param('id') id: string) {
-    // return this.orderService.findOrderItemById(res, +id);
+  @Get('/find-order-user/:id_user')
+  findOrderByIdUser(@Response() res: any, @Param('id_user') id_user: string) {
+    return this.orderService.findOrderByIdUser(res, +id_user);
     
   }
 

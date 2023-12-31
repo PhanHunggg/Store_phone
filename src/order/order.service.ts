@@ -60,19 +60,19 @@ export class OrderService {
     //     }
     // }
 
-    // async findOrderItemById(res: any, id: number) {
-    //     try {
-    //         const order = await this.orderRepository.findOrderItemById(id)
+    async findOrderByIdUser(res: any, id: number) {
+        try {
+            const order = await this.orderRepository.findOrderByIdUser(id)
 
-    //         if (!order) {
-    //             errCode(res, id, "Không tìm thấy orderItem!")
-    //             return
-    //         }
-    //         successCode(res, order)
-    //     } catch (error) {
-    //         failCode(res, error.message)
-    //     }
-    // }
+            if (!order) {
+                errCode(res, id, "Không tìm thấy order!")
+                return
+            }
+            successCode(res, order)
+        } catch (error) {
+            failCode(res, error.message)
+        }
+    }
 
     async createOrder(res: any, createOrder: CreateOrderInterface) {
 

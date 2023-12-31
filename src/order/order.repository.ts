@@ -8,10 +8,10 @@ export class OrderRepository {
     prisma = new PrismaClient();
 
 
-    async findOrderById(id: number) {
-        return await this.prisma.order.findUnique({
+    async findOrderByIdUser(id: number) {
+        return await this.prisma.order.findMany({
             where: {
-                id_order: id
+                id_user: id
             }
         })
     }
