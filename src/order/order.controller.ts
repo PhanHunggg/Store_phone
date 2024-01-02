@@ -11,34 +11,34 @@ export class OrderController {
   @Get('/order-list')
   getOrderList(@Response() res: any) {
     return this.orderService.getOrderList(res);
-    
+
   }
 
   @Post("/create-order")
   createOrder(@Response() res: any, @Body() body: CreateOrderInterface) {
     return this.orderService.createOrder(res, body);
-    
+
   }
 
- 
+
 
   @Get('/find-order/:id')
   findOrderById(@Response() res: any, @Param('id') id: string) {
     return this.orderService.findOrderById(res, +id);
-    
+
   }
 
-  
+
   @Get('/find-order-user/:id_user')
   findOrderByIdUser(@Response() res: any, @Param('id_user') id_user: string) {
     return this.orderService.findOrderByIdUser(res, +id_user);
-    
+
   }
 
-  @Delete('/delete-order/:id')
-  deleteOrder(@Response() res: any, @Param('id') id: string) {
-    // return this.orderService.deleteOrder(res, +id);
-    
+  @Delete('/delete-order/:id_order')
+  deleteOrder(@Response() res: any, @Param('id_order') id_order: string) {
+    return this.orderService.deleteOrder(res, +id_order);
+
   }
 
 }

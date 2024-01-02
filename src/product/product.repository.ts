@@ -8,15 +8,6 @@ import { CategoryBrandInterface } from "src/category-brand/interface";
 export class ProductRepository {
     prisma = new PrismaClient();
 
-    async findCategoryBrand(id_brand: number, id_category: number) {
-        return await this.prisma.categoryBrand.findFirst({
-            where: {
-                id_brand: Number(id_brand),
-                id_category: Number(id_category)
-            }
-        })
-    }
-
     async getProductList() {
         return await this.prisma.product.findMany({
             include: {
@@ -36,6 +27,14 @@ export class ProductRepository {
                 }
             }
         });
+    }
+
+    async findProductByCategoryBrand(id: number) {
+        return await this.prisma.product.findMany({
+            where: {
+                id_categoryBrand: id
+            }
+        })
     }
 
 
@@ -99,14 +98,5 @@ export class ProductRepository {
 
     async getEquivalentProduct(id: number) {
         return await this.prisma.product.findMany({ where: { id_categoryBrand: id } })
-    }
-
-    async findByIdBrandIdCategory(brandCategory: CategoryBrandInterface) {
-        return await this.prisma.categoryBrand.findFirst({
-            where: {
-                id_brand: brandCategory.id_brand,
-                id_category: brandCategory.id_category
-            }
-        })
     }
 }

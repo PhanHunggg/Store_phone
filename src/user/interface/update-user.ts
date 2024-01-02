@@ -1,11 +1,4 @@
+import { PartialType } from "@nestjs/swagger";
+import { UserInterface } from "./user";
 
-export class UpdateUserInterface {
-    name: string;
-    email: string;
-    password: string;
-    birthday: Date | string;
-    address: string;
-    phone: string;
-    role: boolean;
-
-}
+export class UpdateUserInterface extends PartialType(UserInterface) {}

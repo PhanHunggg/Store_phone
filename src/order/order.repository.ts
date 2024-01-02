@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { OrderInterface } from "./interface/order";
-import { OrderItemInterface } from "./interface/order-item";
 
 @Injectable()
 export class OrderRepository {

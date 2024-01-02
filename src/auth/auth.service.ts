@@ -6,8 +6,7 @@ import { errCode, successCode } from 'src/response';
 import { AuthRepository } from './auth.repository';
 import * as bcrypt from 'bcrypt';
 import { LoginInterface, LoginPayloadInterface } from './interface/login';
-import { SignUpInterface } from './interface/sign-up';
-import { UpdatePassInterface } from './interface/update-pass';
+import { SignUpInterface, SignUpReqInterface } from './interface/sign-up';
 import { ForgotPasswordInterface } from './interface/forgot-password';
 import { AuthDto } from './dto';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -104,7 +103,7 @@ export class AuthService {
 
     }
 
-    async signUp(res: any, user: SignUpInterface) {
+    async signUp(res: any, user: SignUpReqInterface) {
         const checkEmail = await this.authRepository.checkEmailUser(user.email)
 
         if (checkEmail) {
@@ -125,8 +124,14 @@ export class AuthService {
 
         const tokenEmail = this.createToken(user.email, "VERIFY_EMAIL", "3d")
 
-        const newDataSignUp = {
-            ...user,
+        const newDataSignUp: SignUpInterface = {
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            birthday: user.birthday,
+            address: user.address,
+            phone: user.phone,
+            role: user.role,
             verifyEmail: false,
             verifyEmailToken: tokenEmail
         }
@@ -156,7 +161,6 @@ export class AuthService {
         const newData = {
             ...user,
             accessToken: token,
-            tokenEmail
         }
         successCode(res, newData)
     }

@@ -37,4 +37,12 @@ export class CategoryRepository {
             }
         })
     }
+
+    async findPhoneCategory() {
+        return this.prisma.category.findFirst({
+            where: {
+                name: "Phone"
+            }
+        })
+    }
 }

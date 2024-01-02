@@ -3,16 +3,21 @@ import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ProductRepository } from './product.repository';
-import { CategoryBrandRepository } from 'src/category-brand/category-brand.repository';
 import { CategoryBrandInterface } from 'src/category-brand/interface';
 import { CreateProductInterface, CreateProductReqInterface } from './interface/create-product';
 import { UpdateProductInterface, UpdateProductReqInterface } from './interface/update-product';
+import { BrandRepository } from 'src/brand/brand.repository';
+import { CategoryRepository } from 'src/category/category.repository';
+import { CategoryBrandRepository } from 'src/category-brand/category-brand.repository';
 
 @Injectable()
 export class ProductService {
 
   constructor(private cloudinary: CloudinaryService,
-    private productRepository: ProductRepository,) { }
+    private productRepository: ProductRepository,
+    private brandRepository: BrandRepository,
+    private categoryRepository: CategoryRepository,
+    private categoryBrandRepository: CategoryBrandRepository) { }
 
   prisma = new PrismaClient();
 
@@ -20,7 +25,13 @@ export class ProductService {
 
   async createProduct(createProduct: CreateProductReqInterface, res: any) {
     try {
-      const checkCategoryBrand = await this.productRepository.findCategoryBrand(createProduct.brand, createProduct.categories)
+
+      const categoryBrand: CategoryBrandInterface = {
+        id_brand: createProduct.brand,
+        id_category: createProduct.categories
+      }
+
+      const checkCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand)
 
       if (!checkCategoryBrand) {
         errCode(res, createProduct, "Không tìm thấy loại và hãng sản phẩm.")
@@ -33,12 +44,6 @@ export class ProductService {
       if (Array.isArray(createProduct.img)) {
         thumbnail = createProduct.img[0].url
         arrImg = createProduct.img.splice(1)
-      }
-
-      if (createProduct.new_release === "1") {
-        createProduct.new_release = true
-      } else {
-        createProduct.new_release = false
       }
 
       const data: CreateProductInterface = {
@@ -144,7 +149,14 @@ export class ProductService {
       return
     }
 
-    const checkCategoryBrand = await this.productRepository.findCategoryBrand(product.brand, product.categories)
+
+    const categoryBrand: CategoryBrandInterface = {
+      id_brand: product.brand,
+      id_category: product.categories
+    }
+
+    const checkCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand)
+
 
     if (!checkCategoryBrand) {
       errCode(res, product, "Không tìm thấy loại và hãng sản phẩm.")
@@ -191,7 +203,7 @@ export class ProductService {
   async findByCategoryBrand(res: any, brandCategory: CategoryBrandInterface) {
 
     try {
-      const checkCategoryBrand = await this.productRepository.findByIdBrandIdCategory(brandCategory)
+      const checkCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(brandCategory)
 
       if (!checkCategoryBrand) {
         errCode(res, checkCategoryBrand, "Không tìm thấy hãng và loại sản phẩm!")
@@ -211,5 +223,42 @@ export class ProductService {
       failCode(res, error.message)
     }
 
+  }
+
+  async findProductByBrand(res: any, id_brand: number) {
+    const checkBrand = await this.brandRepository.findBrandById(id_brand);
+
+    if (!checkBrand) {
+      errCode(res, checkBrand, "Không tìm thấy hãng!")
+      return;
+    }
+
+    const checkCategory = await this.categoryRepository.findPhoneCategory();
+
+    if (!checkCategory) {
+      errCode(res, checkCategory, "Không tìm thấy loại sản phẩm!")
+      return;
+    }
+
+    const brandCategory: CategoryBrandInterface = {
+      id_brand: checkBrand.id_brand,
+      id_category: checkCategory.id_category
+    }
+
+    const checkCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(brandCategory)
+
+    if (!checkCategoryBrand) {
+      errCode(res, checkCategoryBrand, "Không tìm thấy loại và hãng sản phẩm!")
+      return;
+    }
+
+    const productList = await this.productRepository.findProductByCategoryBrand(checkCategoryBrand.id_categoryBrand);
+
+    if (!productList) {
+      errCode(res, productList, "Không tìm thấy danh sách sản phẩm!")
+      return;
+    }
+
+    successCode(res, productList)
   }
 }

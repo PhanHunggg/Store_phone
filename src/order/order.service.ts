@@ -3,10 +3,8 @@ import { OrderRepository } from './order.repository';
 import { errCode, failCode, successCode } from 'src/response';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
-import { ProductInterface } from 'src/product/interface/product';
 import { CreateOrderInterface } from './interface/create-order';
 import { OrderInterface } from './interface/order';
-import { OrderItemInterface } from './interface/order-item';
 
 @Injectable()
 export class OrderService {
@@ -67,30 +65,23 @@ export class OrderService {
         successCode(res, order);
     }
 
-    // async deleteOrder(res: any, id: number): Promise<void> {
-    //     try {
+    async deleteOrder(res: any, id: number): Promise<void> {
+        try {
 
-    //         const checkOrder = await this.orderRepository.findOrderById(id);
+            const checkOrder = await this.orderRepository.findOrderById(id);
 
-    //         if (!checkOrder) {
-    //             errCode(res, checkOrder, "Không tìm thấy order!")
-    //             return
-    //         }
+            if (!checkOrder) {
+                errCode(res, checkOrder, "Không tìm thấy order!")
+                return
+            }
 
-    //         const arrOrderItem = await this.orderRepository.findManyOrderItem(checkOrder.id_order)
+            await this.orderRepository.deleteOrder(id)
 
-    //         for (const item of arrOrderItem) {
-    //             await this.orderRepository.deleteOrderItem(item.id_orderItem)
-    //         }
-
-
-    //         await this.orderRepository.deleteOrder(id)
-
-    //         successCode(res, '')
-    //     } catch (error) {
-    //         failCode(res, error.message)
-    //     }
-    // }
+            successCode(res, '')
+        } catch (error) {
+            failCode(res, error.message)
+        }
+    }
 
     async findOrderById(res: any, id: number) {
         try {

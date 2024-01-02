@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LoginInterface } from './interface/login';
-import { SignUpInterface } from './interface/sign-up';
+import { SignUpReqInterface } from './interface/sign-up';
 import { ForgotPasswordInterface } from './interface/forgot-password';
 import { ResetPassInterface } from './interface/reset-pass';
 
@@ -26,7 +26,7 @@ export class AuthController {
 
   @Public()
   @Post("/sign-up")
-  signUp(@Response() res: any, @Body() body: SignUpInterface) {
+  signUp(@Response() res: any, @Body() body: SignUpReqInterface) {
     return this.authService.signUp(res, body);
   }
 
