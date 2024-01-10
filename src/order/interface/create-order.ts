@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsNotEmpty, IsString, IsNumber, IsArray, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsString, IsNumber, IsArray } from "class-validator";
 
 
 export class ProductItem {
@@ -15,7 +14,6 @@ export class ProductItem {
     color: string;
 
     @IsNotEmpty()
-    @IsNumber()
     @ApiProperty({ description: "price", type: Number })
     price: number;
 
@@ -25,13 +23,11 @@ export class ProductItem {
     storage: string;
 
     @IsNotEmpty()
-    @IsNumber()
     @ApiProperty({ description: "quantity", type: Number })
     quantity: number;
 }
 export class CreateOrderInterface {
     @IsNotEmpty()
-    @IsNumber()
     @ApiProperty({ description: "id_user", type: Number })
     id_user: number;
 
@@ -61,7 +57,6 @@ export class CreateOrderInterface {
     delivery_by: string;
 
     @IsNotEmpty()
-    @IsNumber()
     @ApiProperty({ description: "total", type: Number })
     total: number;
 

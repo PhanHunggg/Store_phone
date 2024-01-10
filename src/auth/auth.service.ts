@@ -2,7 +2,7 @@ import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nest
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { errCode, successCode } from 'src/response';
+import { errCode, failCode, successCode } from 'src/response';
 import { AuthRepository } from './auth.repository';
 import * as bcrypt from 'bcrypt';
 import { LoginInterface, LoginPayloadInterface } from './interface/login';
@@ -279,7 +279,7 @@ export class AuthService {
             successCode(res, '')
 
         } catch (error) {
-
+            failCode(res, error.message)
         }
     }
 
