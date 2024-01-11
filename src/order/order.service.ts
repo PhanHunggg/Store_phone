@@ -43,26 +43,27 @@ export class OrderService {
     }
 
     async createOrder(res: any, createOrder: CreateOrderInterface) {
+        try {
+            const checkUser = await this.userRepository.findUser(createOrder.id_user)
 
-        const checkUser = await this.userRepository.findUser(createOrder.id_user)
+            if (!checkUser) {
+                errCode(res, checkUser, "Không tìm thấy user!");
+                return
+            }
 
-        if (!checkUser) {
-            errCode(res, checkUser, "Không tìm thấy user!");
-            return
+            const currentDate = new Date();
+
+            const newDataOrder: OrderInterface = {
+                ...createOrder,
+                created_date: currentDate
+            }
+
+            const order = await this.orderRepository.createOrder(newDataOrder)
+
+            successCode(res, order);
+        } catch (error) {
+            failCode(res, error.message);
         }
-
-        const currentDate = new Date();
-
-        const newDataOrder: OrderInterface = {
-            ...createOrder,
-            created_date: currentDate
-        }
-
-
-        const order = await this.orderRepository.createOrder(newDataOrder)
-
-
-        successCode(res, order);
     }
 
     async deleteOrder(res: any, id: number): Promise<void> {

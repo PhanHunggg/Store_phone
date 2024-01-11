@@ -13,7 +13,6 @@ export class ProductItem {
     @ApiProperty({ description: "color", type: String })
     color: string;
 
-    @IsNotEmpty()
     @ApiProperty({ description: "price", type: Number })
     price: number;
 
@@ -22,12 +21,10 @@ export class ProductItem {
     @ApiProperty({ description: "storage", type: String })
     storage: string;
 
-    @IsNotEmpty()
     @ApiProperty({ description: "quantity", type: Number })
     quantity: number;
 }
 export class CreateOrderInterface {
-    @IsNotEmpty()
     @ApiProperty({ description: "id_user", type: Number })
     id_user: number;
 
@@ -56,7 +53,6 @@ export class CreateOrderInterface {
     @ApiProperty({ description: "delivery_by", type: String })
     delivery_by: string;
 
-    @IsNotEmpty()
     @ApiProperty({ description: "total", type: Number })
     total: number;
 
