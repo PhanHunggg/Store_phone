@@ -86,7 +86,6 @@ model User {
 
   @@map("user")
 }
-
 model Order {
   id_order       Int      @id @default(autoincrement())
   id_user        Int
@@ -95,12 +94,11 @@ model Order {
   address        String
   payment_method String
   delivery_by    String
-  total          Float
+  total          Int
   created_date   DateTime
   productItem    Json
 
+
   user User? @relation(fields: [id_user], references: [id_user])
-
-
   @@map("order")
 }
