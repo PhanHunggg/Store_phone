@@ -44,7 +44,10 @@ export class OrderService {
 
     async createOrder(res: any, createOrder: CreateOrderInterface) {
         try {
-            const checkUser = await this.userRepository.findUser(createOrder.id_user)
+
+            const idUser = Number(createOrder.id_user);
+
+            const checkUser = await this.userRepository.findUser(idUser)
 
             if (!checkUser) {
                 errCode(res, checkUser, "Không tìm thấy user!");
