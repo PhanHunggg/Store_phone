@@ -46,8 +46,17 @@ export class OrderService {
         try {
 
             const idUser = Number(createOrder.id_user);
-            
+
             createOrder.id_user = idUser;
+            createOrder.total = Number(createOrder.total);
+            createOrder.id_user = idUser;
+
+            for (let i = 0; i <= createOrder.productItem.length; i++) {
+                createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
+
+                createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
+            }
+
 
             const checkUser = await this.userRepository.findUser(idUser)
 
