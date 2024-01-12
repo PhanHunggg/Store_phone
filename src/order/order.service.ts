@@ -46,6 +46,8 @@ export class OrderService {
         try {
 
             const idUser = Number(createOrder.id_user);
+            
+            createOrder.id_user = idUser;
 
             const checkUser = await this.userRepository.findUser(idUser)
 
@@ -55,6 +57,7 @@ export class OrderService {
             }
 
             const currentDate = new Date();
+
 
             const newDataOrder: OrderInterface = {
                 ...createOrder,
