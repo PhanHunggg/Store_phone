@@ -1,0 +1,80 @@
+import { PrismaClient } from "@prisma/client";
+import { UserInterface } from "./interface/user";
+export declare class UserRepository {
+    prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>;
+    findUserByEmail(email: any): Promise<{
+        id_user: number;
+        name: string;
+        email: string;
+        password: string;
+        birthday: Date;
+        address: string;
+        phone: string;
+        role: boolean;
+        verifyEmail: boolean;
+        verifyEmailToken: string;
+        hashedRt: string;
+        resetPasswordToken: string;
+        resetPasswordExpire: Date;
+    }>;
+    getUserList(): Promise<{
+        id_user: number;
+        name: string;
+        email: string;
+        password: string;
+        birthday: Date;
+        address: string;
+        phone: string;
+        role: boolean;
+        verifyEmail: boolean;
+        verifyEmailToken: string;
+        hashedRt: string;
+        resetPasswordToken: string;
+        resetPasswordExpire: Date;
+    }[]>;
+    findUser(id: number): Promise<{
+        id_user: number;
+        name: string;
+        email: string;
+        password: string;
+        birthday: Date;
+        address: string;
+        phone: string;
+        role: boolean;
+        verifyEmail: boolean;
+        verifyEmailToken: string;
+        hashedRt: string;
+        resetPasswordToken: string;
+        resetPasswordExpire: Date;
+    }>;
+    delete(id: number): Promise<{
+        id_user: number;
+        name: string;
+        email: string;
+        password: string;
+        birthday: Date;
+        address: string;
+        phone: string;
+        role: boolean;
+        verifyEmail: boolean;
+        verifyEmailToken: string;
+        hashedRt: string;
+        resetPasswordToken: string;
+        resetPasswordExpire: Date;
+    }>;
+    updateUser(id: number, data: UserInterface): Promise<{
+        id_user: number;
+        name: string;
+        email: string;
+        password: string;
+        birthday: Date;
+        address: string;
+        phone: string;
+        role: boolean;
+        verifyEmail: boolean;
+        verifyEmailToken: string;
+        hashedRt: string;
+        resetPasswordToken: string;
+        resetPasswordExpire: Date;
+    }>;
+}
