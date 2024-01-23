@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import * as express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const port = process.env.PORT || 8080;
 
   app.useGlobalPipes(new ValidationPipe());
 
@@ -18,8 +20,8 @@ async function bootstrap() {
   app.enableCors()
 
   app.use(express.static("."))
-  
-  await app.listen(8080);
+
+  await app.listen(port);
 
 
 }
