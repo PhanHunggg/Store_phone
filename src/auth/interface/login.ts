@@ -23,4 +23,5 @@ export class LoginPayloadInterface {
     phone: string;
     role: boolean;
     accessToken?: string
+    refreshToken?: string
 }

@@ -7,6 +7,9 @@ export class AuthDto {
     address: string;
     phone: string;
     role: boolean;
-    resetPasswordToken: string;
-    resetPasswordExpire: Date;
+    verifyEmail: boolean;
+    verifyEmailToken: string;
+    hashedRt: string
+    resetPasswordToken: string
+    resetPasswordExpire: Date
 }

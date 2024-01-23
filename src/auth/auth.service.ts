@@ -11,6 +11,10 @@ import { ForgotPasswordInterface } from './interface/forgot-password';
 import { AuthDto } from './dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPassInterface } from './interface/reset-pass';
+import { Tokens } from './type/token.type';
+import { JwtPayload } from './type/jwtPayload.type';
+import { refreshTokensInterface } from './interface/refresh-token';
+import { ProfileInterface } from './interface/profile';
 
 @Injectable()
 export class AuthService {
@@ -23,146 +27,202 @@ export class AuthService {
 
     prisma = new PrismaClient();
 
-    async login(res, user: LoginInterface) {
-        const checkUser = await this.authRepository.checkEmailUser(user.email)
+    async profile(res: Response, userId: number): Promise<void> {
+        try {
+            const checkUser = await this.prisma.user.findUnique({
+                where: {
+                    id_user: userId
+                }
+            })
 
-        if (!checkUser) {
-            errCode(res, user, "Tài khoản không đúng!")
-            return
+            if (!checkUser) {
+                errCode(res, '', "Không tìm thấy user!");
+                return
+            }
+
+            const user: ProfileInterface = {
+                id_user: checkUser.id_user,
+                name: checkUser.name,
+                email: checkUser.email,
+                birthday: checkUser.birthday,
+                address: checkUser.address,
+                phone: checkUser.phone
+
+            }
+
+            successCode(res, user)
+        } catch (error) {
+            failCode(res, error.message);
         }
+    }
 
-        const passwordMatches = await bcrypt.compare(user.password, checkUser.password);
+    async login(res: Response, user: LoginInterface) {
+        try {
+            const checkUser = await this.authRepository.checkEmailUser(user.email)
 
-        if (!passwordMatches) {
-            errCode(res, user.password, "Mật khẩu không đúng!");
-            return;
+            if (!checkUser) {
+                errCode(res, user, "Tài khoản không đúng!")
+                return
+            }
+
+            const passwordMatches = await bcrypt.compare(user.password, checkUser.password);
+
+            if (!passwordMatches) {
+                errCode(res, user.password, "Mật khẩu không đúng!");
+                return;
+            }
+
+            if (!checkUser.verifyEmail) {
+                errCode(res, checkUser.verifyEmail, "Email chưa được xác thực!");
+                return;
+            }
+
+            const tokens = await this.getTokens(checkUser)
+
+            await this.updateRtHash(res, checkUser.id_user, tokens.refreshToken)
+
+            let data: LoginPayloadInterface = checkUser
+
+            data.accessToken = tokens.accessToken
+            data.refreshToken = tokens.refreshToken
+
+            successCode(res, data, "Đăng nhập thành công")
+        } catch (error) {
+            failCode(res, error.message)
         }
-
-        if (!checkUser.verifyEmail) {
-            errCode(res, checkUser.verifyEmail, "Email chưa được xác thực!");
-            return;
-        }
-
-        const dataAccess = {
-            id: checkUser.id_user,
-            name: checkUser.name,
-            email: checkUser.email,
-        }
-
-
-        const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
-
-        let data: LoginPayloadInterface = checkUser
-
-        data.accessToken = token
-
-        successCode(res, data, "Đăng nhập thành công")
 
     }
 
-    async loginAdmin(res, user: LoginInterface) {
+    async loginAdmin(res: Response, user: LoginInterface) {
 
-        const checkUser = await this.authRepository.checkEmailUser(user.email)
+        try {
+            const checkUser = await this.authRepository.checkEmailUser(user.email)
 
-        if (!checkUser) {
-            errCode(res, user, "Tài khoản không đúng!")
-            return
+            if (!checkUser) {
+                errCode(res, user, "Tài khoản không đúng!")
+                return
+            }
+
+            if (!checkUser.role) {
+                errCode(res, user, "Tài khoản không phải admin!")
+                return
+            }
+
+            const passwordMatches = await bcrypt.compare(user.password, checkUser.password);
+
+            if (!passwordMatches) {
+                errCode(res, user.password, "Mật khẩu không đúng!");
+                return;
+            }
+
+            if (!checkUser.verifyEmail) {
+                errCode(res, checkUser.verifyEmail, "Email chưa được xác thực!");
+                return;
+            }
+
+            const tokens = await this.getTokens(checkUser);
+
+            await this.updateRtHash(res, checkUser.id_user, tokens.refreshToken)
+
+            let data: LoginPayloadInterface = checkUser
+
+            data.accessToken = tokens.accessToken
+            data.accessToken = tokens.accessToken
+
+            successCode(res, data, "Đăng nhập thành công")
+
+        } catch (error) {
+            failCode(res, error.message)
+
         }
-
-        if (!checkUser.role) {
-            errCode(res, user, "Tài khoản không phải admin!")
-            return
-        }
-
-        const passwordMatches = await bcrypt.compare(user.password, checkUser.password);
-
-        if (!passwordMatches) {
-            errCode(res, user.password, "Mật khẩu không đúng!");
-            return;
-        }
-
-        if (!checkUser.verifyEmail) {
-            errCode(res, checkUser.verifyEmail, "Email chưa được xác thực!");
-            return;
-        }
-
-        const dataAccess = {
-            id: checkUser.id_user,
-            name: checkUser.name,
-            email: checkUser.email,
-        }
-
-
-        const token = this.jwtService.sign({ data: dataAccess }, { secret: this.config.get("SECRET_KEY"), expiresIn: "7d" })
-
-        let data: LoginPayloadInterface = checkUser
-
-        data.accessToken = token
-
-        successCode(res, data, "Đăng nhập thành công")
-
     }
 
     async signUp(res: any, user: SignUpReqInterface) {
-        const checkEmail = await this.authRepository.checkEmailUser(user.email)
+        try {
+            const checkEmail = await this.authRepository.checkEmailUser(user.email)
 
-        if (checkEmail) {
-            errCode(res, user.email, "Email đã tồn tại")
-            return
+            if (checkEmail) {
+                errCode(res, user.email, "Email đã tồn tại")
+                return
+            }
+
+            if (!user.role) {
+                user.role = false
+            }
+
+            if (typeof user.birthday === "string") {
+                user.birthday = new Date(user.birthday)
+            }
+
+            const hash = await this.hashData(user.password);
+            user.password = hash
+
+            const tokenEmail = this.createToken(user.email, "VERIFY_EMAIL", "3d")
+
+            const newDataSignUp: SignUpInterface = {
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                birthday: user.birthday,
+                address: user.address,
+                phone: user.phone,
+                role: user.role,
+                verifyEmail: false,
+                verifyEmailToken: tokenEmail
+            }
+
+            const userSignUp = await this.authRepository.signUp(newDataSignUp)
+
+            if (userSignUp && (!userSignUp.verifyEmail)) {
+                await this.mailService.sendMail({
+                    to: newDataSignUp.email,
+                    subject: "Welcome",
+                    template: './VerifyEmail',
+                    context: {
+                        token: userSignUp.verifyEmailToken
+                    }
+                })
+            }
+
+            const tokens = await this.getTokens(userSignUp)
+
+            await this.updateRtHash(res, userSignUp.id_user, tokens.refreshToken)
+
+            successCode(res, { user, tokens })
+        } catch (error) {
+            failCode(res, error.message)
         }
+    }
 
-        if (!user.role) {
-            user.role = false
+    async refreshToken(res: Response, user: refreshTokensInterface) {
+        try {
+            const checkUser = await this.authRepository.checkUserById(user.id_user);
+
+            if (!checkUser || !checkUser.hashedRt) throw new ForbiddenException('Access Denied');
+
+            const rtMatches = await bcrypt.compare(user.refresh_token, checkUser.hashedRt);
+
+            if (!rtMatches) throw new ForbiddenException('Access Denied');
+
+            const decodedRefreshToken: any = this.jwtService.decode(user.refresh_token);
+
+            const expirationTimeFrame = 7 * 24 * 60 * 60; // 
+
+            if (decodedRefreshToken && decodedRefreshToken.iat && Date.now() / 1000 - decodedRefreshToken.iat > expirationTimeFrame) {
+                throw new ForbiddenException('Refresh token has expired');
+            }
+
+
+            const tokens = await this.getTokens(checkUser);
+
+            await this.updateRtHash(res, user.id_user, tokens.refreshToken);
+
+            successCode(res, tokens)
+
+        } catch (error) {
+            failCode(res, error.message)
+
         }
-
-        if (typeof user.birthday === "string") {
-            user.birthday = new Date(user.birthday)
-        }
-
-        const hash = await this.hashData(user.password);
-        user.password = hash
-
-        const tokenEmail = this.createToken(user.email, "VERIFY_EMAIL", "3d")
-
-        const newDataSignUp: SignUpInterface = {
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            birthday: user.birthday,
-            address: user.address,
-            phone: user.phone,
-            role: user.role,
-            verifyEmail: false,
-            verifyEmailToken: tokenEmail
-        }
-
-        const userSignUp = await this.authRepository.signUp(newDataSignUp)
-
-        if (userSignUp && (!userSignUp.verifyEmail)) {
-            await this.mailService.sendMail({
-                to: newDataSignUp.email,
-                subject: "Welcome",
-                template: './VerifyEmail',
-                context: {
-                    token: userSignUp.verifyEmailToken
-                }
-            })
-        }
-
-        const dataAccess = {
-            id: userSignUp.id_user,
-            name: userSignUp.name,
-            email: userSignUp.email,
-            password: userSignUp.password
-        }
-
-        const token = this.createToken(dataAccess, "SECRET_KEY", "7d")
-
-        const newData = {
-            ...user,
-            accessToken: token,
-        }
-        successCode(res, newData)
     }
 
     async forgotPassword(res: any, user: ForgotPasswordInterface) {
@@ -232,7 +292,7 @@ export class AuthService {
 
     async resetPass(res: any, token: string, body: ResetPassInterface) {
 
-        const checkUser = await this.authRepository.checkUserByToken(token);
+        const checkUser = await this.authRepository.checkUserByTokenPass(token);
 
         if (!checkUser) {
             errCode(res, checkUser, "Không tìm thấy người dùng!")
@@ -290,5 +350,49 @@ export class AuthService {
     createToken(data: any, secret: string, expiresIn: string) {
         return this.jwtService.sign({ data: data }, { secret: this.config.get(secret), expiresIn: expiresIn })
     }
+
+    async getTokens(payload: AuthDto): Promise<Tokens> {
+
+        const data: JwtPayload = {
+            id_user: payload.id_user,
+            name: payload.name,
+            email: payload.email,
+        }
+
+        const [at, rt] = await Promise.all([
+            this.jwtService.signAsync(data, {
+                secret: this.config.get<string>('AT_SECRET'),
+                expiresIn: '3d',
+            }),
+            this.jwtService.signAsync(data, {
+                secret: this.config.get<string>('RT_SECRET'),
+                expiresIn: '7d',
+            }),
+        ]);
+
+
+        return {
+            accessToken: at,
+            refreshToken: rt
+        };
+    }
+
+    async updateRtHash(res: any, userId: number, rt: string) {
+        try {
+            const hash = await this.hashData(rt)
+            await this.prisma.user.update({
+                where: {
+                    id_user: userId
+                },
+                data: {
+                    hashedRt: hash
+                }
+            })
+        } catch (error) {
+            failCode(res, error.message)
+
+        }
+    }
+
 
 }

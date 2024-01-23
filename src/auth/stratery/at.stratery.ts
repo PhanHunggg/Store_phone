@@ -10,7 +10,7 @@ export class JwtStrategy extends
             jwtFromRequest:
                 ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: config.get("SECRET_KEY"),
+            secretOrKey: config.get("AT_SECRET"),
         });
     }
     async validate(payload: any) {

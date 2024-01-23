@@ -4,6 +4,7 @@ import { errCode, failCode, successCode } from 'src/response';
 import { UserRepository } from './user.repository';
 import { UpdateUserInterface } from './interface/update-user';
 import { UserInterface } from './interface/user';
+import { ProfileInterface } from 'src/auth/interface/profile';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,19 @@ export class UserService {
                 errCode(res, checkUser, "Danh sách user rỗng!")
                 return
             }
-            successCode(res, checkUser)
+
+
+            const filteredUsers: ProfileInterface[] = checkUser.map((user) => ({
+                id_user: user.id_user,
+                name: user.name,
+                email: user.email,
+                birthday: user.birthday,
+                address: user.address,
+                phone: user.phone
+            })
+            )
+
+            successCode(res, filteredUsers)
         } catch (error) {
             failCode(res, error.message)
 
@@ -35,7 +48,17 @@ export class UserService {
                 errCode(res, checkUser, "Không tìm thấy user")
                 return
             }
-            successCode(res, checkUser)
+
+            const filteredUser: ProfileInterface = {
+                id_user: checkUser.id_user,
+                name: checkUser.name,
+                email: checkUser.email,
+                birthday: checkUser.birthday,
+                address: checkUser.address,
+                phone: checkUser.phone,
+            };
+
+            successCode(res, filteredUser)
         } catch (error) {
             failCode(res, error.message)
 

@@ -14,7 +14,11 @@ export class AuthRepository {
         return this.prisma.user.findFirst({ where: { email: email } })
     };
 
-    async checkUserByToken(token: string) {
+    async checkUserById(id: number) {
+        return this.prisma.user.findUnique({ where: { id_user: id } })
+    };
+
+    async checkUserByTokenPass(token: string) {
         return await this.prisma.user.findFirst({
             where: {
                 resetPasswordToken: token,

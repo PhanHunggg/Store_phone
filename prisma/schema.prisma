@@ -78,14 +78,16 @@ model User {
   address             String
   phone               String
   role                Boolean
-  verifyEmail         Boolean?
+  verifyEmail         Boolean
   verifyEmailToken    String?
+  hashedRt            String?
   resetPasswordToken  String?
   resetPasswordExpire DateTime?
   order               Order[]
 
   @@map("user")
 }
+
 model Order {
   id_order       Int      @id @default(autoincrement())
   id_user        Int
@@ -98,7 +100,7 @@ model Order {
   created_date   DateTime
   productItem    Json
 
-
   user User? @relation(fields: [id_user], references: [id_user])
+
   @@map("order")
 }
