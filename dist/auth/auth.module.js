@@ -14,13 +14,14 @@ const jwt_1 = require("@nestjs/jwt");
 const at_stratery_1 = require("./stratery/at.stratery");
 const jwt_public_stratery_1 = require("./stratery/jwt-public.stratery");
 const auth_repository_1 = require("./auth.repository");
+const order_repository_1 = require("../order/order.repository");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [jwt_1.JwtModule.register({})],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, at_stratery_1.JwtStrategy, jwt_public_stratery_1.JwtPublicStrategy, auth_repository_1.AuthRepository]
+        providers: [auth_service_1.AuthService, at_stratery_1.JwtStrategy, jwt_public_stratery_1.JwtPublicStrategy, auth_repository_1.AuthRepository, order_repository_1.OrderRepository]
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

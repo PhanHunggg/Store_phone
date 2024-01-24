@@ -10,12 +10,14 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPassInterface } from './interface/reset-pass';
 import { Tokens } from './type/token.type';
 import { refreshTokensInterface } from './interface/refresh-token';
+import { OrderRepository } from 'src/order/order.repository';
 export declare class AuthService {
     private jwtService;
     private config;
     private authRepository;
     private mailService;
-    constructor(jwtService: JwtService, config: ConfigService, authRepository: AuthRepository, mailService: MailerService);
+    private orderRepository;
+    constructor(jwtService: JwtService, config: ConfigService, authRepository: AuthRepository, mailService: MailerService, orderRepository: OrderRepository);
     prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>;
     profile(res: Response, userId: number): Promise<void>;
     login(res: Response, user: LoginInterface): Promise<void>;

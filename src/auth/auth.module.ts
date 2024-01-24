@@ -5,10 +5,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './stratery/at.stratery';
 import { JwtPublicStrategy } from './stratery/jwt-public.stratery';
 import { AuthRepository } from './auth.repository';
+import { OrderRepository } from 'src/order/order.repository';
 
 @Module({
   imports: [JwtModule.register({})],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtPublicStrategy, AuthRepository]
+  providers: [AuthService, JwtStrategy, JwtPublicStrategy, AuthRepository, OrderRepository]
 })
 export class AuthModule {}

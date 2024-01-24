@@ -18,12 +18,14 @@ const response_1 = require("../response");
 const auth_repository_1 = require("./auth.repository");
 const bcrypt = require("bcrypt");
 const mailer_1 = require("@nestjs-modules/mailer");
+const order_repository_1 = require("../order/order.repository");
 let AuthService = class AuthService {
-    constructor(jwtService, config, authRepository, mailService) {
+    constructor(jwtService, config, authRepository, mailService, orderRepository) {
         this.jwtService = jwtService;
         this.config = config;
         this.authRepository = authRepository;
         this.mailService = mailService;
+        this.orderRepository = orderRepository;
         this.prisma = new client_1.PrismaClient();
     }
     async profile(res, userId) {
@@ -31,6 +33,9 @@ let AuthService = class AuthService {
             const checkUser = await this.prisma.user.findUnique({
                 where: {
                     id_user: userId
+                },
+                include: {
+                    order: true,
                 }
             });
             if (!checkUser) {
@@ -43,7 +48,8 @@ let AuthService = class AuthService {
                 email: checkUser.email,
                 birthday: checkUser.birthday,
                 address: checkUser.address,
-                phone: checkUser.phone
+                phone: checkUser.phone,
+                productItem: checkUser.order
             };
             (0, response_1.successCode)(res, user);
         }
@@ -317,7 +323,8 @@ AuthService = __decorate([
     __metadata("design:paramtypes", [jwt_1.JwtService,
         config_1.ConfigService,
         auth_repository_1.AuthRepository,
-        mailer_1.MailerService])
+        mailer_1.MailerService,
+        order_repository_1.OrderRepository])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

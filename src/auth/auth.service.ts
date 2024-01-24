@@ -14,7 +14,8 @@ import { ResetPassInterface } from './interface/reset-pass';
 import { Tokens } from './type/token.type';
 import { JwtPayload } from './type/jwtPayload.type';
 import { refreshTokensInterface } from './interface/refresh-token';
-import { ProfileInterface } from './interface/profile';
+import { ProfileInterface, ProfileOrderInterface } from './interface/profile';
+import { OrderRepository } from 'src/order/order.repository';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,8 @@ export class AuthService {
         private jwtService: JwtService,
         private config: ConfigService,
         private authRepository: AuthRepository,
-        private mailService: MailerService
+        private mailService: MailerService,
+        private orderRepository: OrderRepository,
     ) { }
 
     prisma = new PrismaClient();
@@ -32,6 +34,9 @@ export class AuthService {
             const checkUser = await this.prisma.user.findUnique({
                 where: {
                     id_user: userId
+                },
+                include: {
+                    order: true,
                 }
             })
 
@@ -40,14 +45,14 @@ export class AuthService {
                 return
             }
 
-            const user: ProfileInterface = {
+            const user: ProfileOrderInterface = {
                 id_user: checkUser.id_user,
                 name: checkUser.name,
                 email: checkUser.email,
                 birthday: checkUser.birthday,
                 address: checkUser.address,
-                phone: checkUser.phone
-
+                phone: checkUser.phone,
+                productItem: checkUser.order
             }
 
             successCode(res, user)
