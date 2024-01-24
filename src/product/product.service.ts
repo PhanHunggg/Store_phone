@@ -81,11 +81,6 @@ export class ProductService {
     try {
       const checkProduct = await this.productRepository.getProductList()
 
-      if (!!!checkProduct.length) {
-        errCode(res, checkProduct, "Không tìm thấy product nào!")
-        return
-      }
-
       successCode(res, checkProduct)
     } catch (error) {
       failCode(res, error.message)

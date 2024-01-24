@@ -47,11 +47,6 @@ export class BrandService {
   async getBrandList(res: any) {
     const checkBrand = await this.brandRepository.getBrandList()
 
-    if (!checkBrand) {
-      errCode(res, checkBrand, "Không tìm thấy hãng")
-      return
-    }
-
     successCode(res, checkBrand)
   }
 

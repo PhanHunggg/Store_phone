@@ -29,10 +29,6 @@ let ColorService = class ColorService {
     async getColorList(res) {
         try {
             const checkColor = await this.colorRepository.getColorList();
-            if (!!!checkColor.length) {
-                (0, response_1.errCode)(res, checkColor, "Không tìm thấy danh sách màu!");
-                return;
-            }
             (0, response_1.successCode)(res, checkColor);
         }
         catch (error) {

@@ -22,10 +22,6 @@ let UserService = class UserService {
     async getUserList(res) {
         try {
             const checkUser = await this.userRepository.getUserList();
-            if (!!!checkUser.length) {
-                (0, response_1.errCode)(res, checkUser, "Danh sách user rỗng!");
-                return;
-            }
             const filteredUsers = checkUser.map((user) => ({
                 id_user: user.id_user,
                 name: user.name,

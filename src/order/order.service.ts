@@ -17,10 +17,6 @@ export class OrderService {
         try {
             const checkOrderAll = await this.orderRepository.getOrderList();
 
-            if (!!!checkOrderAll.length) {
-                errCode(res, '', "Không tìm thấy order nào!")
-                return
-            }
 
             successCode(res, checkOrderAll)
         } catch (error) {

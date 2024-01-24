@@ -44,10 +44,6 @@ let BrandService = class BrandService {
     }
     async getBrandList(res) {
         const checkBrand = await this.brandRepository.getBrandList();
-        if (!checkBrand) {
-            (0, response_1.errCode)(res, checkBrand, "Không tìm thấy hãng");
-            return;
-        }
         (0, response_1.successCode)(res, checkBrand);
     }
     async updateBrand(res, brand, id_brand) {

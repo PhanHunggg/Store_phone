@@ -75,10 +75,6 @@ let ProductService = class ProductService {
     async getProductList(res) {
         try {
             const checkProduct = await this.productRepository.getProductList();
-            if (!!!checkProduct.length) {
-                (0, response_1.errCode)(res, checkProduct, "Không tìm thấy product nào!");
-                return;
-            }
             (0, response_1.successCode)(res, checkProduct);
         }
         catch (error) {

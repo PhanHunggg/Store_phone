@@ -14,13 +14,9 @@ export class CategoryService {
 
   async createCategory(res: any, category: CreateCategoryInterface) {
     try {
-
-
       const newData: CreateCategoryInterface = {
         name: category.name,
       };
-
-
       await this.categoryRepository.createCategory(newData)
       successCode(res, newData)
     } catch (error) {
@@ -31,11 +27,6 @@ export class CategoryService {
   async getCategoryList(res: any) {
     try {
       const checkCategory = await this.categoryRepository.getCategoryList()
-
-      if (!!!checkCategory.length) {
-        errCode(res, checkCategory, "Không tìm thấy loại sản phẩm!")
-        return
-      }
 
       successCode(res, checkCategory)
     } catch (error) {

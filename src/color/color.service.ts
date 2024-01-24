@@ -21,11 +21,6 @@ export class ColorService {
     try {
       const checkColor = await this.colorRepository.getColorList()
 
-      if (!!!checkColor.length) {
-        errCode(res, checkColor, "Không tìm thấy danh sách màu!")
-        return
-      }
-
       successCode(res, checkColor)
     } catch (error) {
       failCode(res, error.message)

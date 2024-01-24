@@ -34,10 +34,6 @@ let CategoryService = class CategoryService {
     async getCategoryList(res) {
         try {
             const checkCategory = await this.categoryRepository.getCategoryList();
-            if (!!!checkCategory.length) {
-                (0, response_1.errCode)(res, checkCategory, "Không tìm thấy loại sản phẩm!");
-                return;
-            }
             (0, response_1.successCode)(res, checkCategory);
         }
         catch (error) {

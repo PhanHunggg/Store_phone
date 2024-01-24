@@ -17,11 +17,6 @@ export class UserService {
         try {
             const checkUser = await this.userRepository.getUserList()
 
-            if (!!!checkUser.length) {
-                errCode(res, checkUser, "Danh sách user rỗng!")
-                return
-            }
-
 
             const filteredUsers: ProfileInterface[] = checkUser.map((user) => ({
                 id_user: user.id_user,

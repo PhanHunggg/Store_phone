@@ -24,10 +24,6 @@ let OrderService = class OrderService {
     async getOrderList(res) {
         try {
             const checkOrderAll = await this.orderRepository.getOrderList();
-            if (!!!checkOrderAll.length) {
-                (0, response_1.errCode)(res, '', "Không tìm thấy order nào!");
-                return;
-            }
             (0, response_1.successCode)(res, checkOrderAll);
         }
         catch (error) {
