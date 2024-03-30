@@ -13,7 +13,7 @@ export declare class AuthController {
     loginAdmin(res: Response, body: LoginInterface): Promise<Response>;
     signUp(res: Response, body: SignUpReqInterface): Promise<Response>;
     forgotPassword(res: Response, body: ForgotPasswordInterface): Promise<Response>;
-    refreshToken(res: Response, body: refreshTokensInterface): Promise<void>;
-    resetPass(res: Response, token: string, body: ResetPassInterface): Promise<void>;
-    verifyEmail(res: Response, token: string): Promise<void>;
+    refreshToken(res: Response, body: refreshTokensInterface): Promise<Response>;
+    resetPass(res: Response, token: string, body: ResetPassInterface): Promise<Response>;
+    verifyEmail(res: Response, token: string): Promise<Response<any, Record<string, any>>>;
 }

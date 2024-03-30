@@ -8,6 +8,7 @@ import { ForgotPasswordInterface, TokenForgotInterface } from './interface/forgo
 import { AuthDto } from './dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPassInterface } from './interface/reset-pass';
+import { Tokens } from './type/token.type';
 import { refreshTokensInterface } from './interface/refresh-token';
 import { ProfileOrderInterface } from './interface/profile';
 import { Response } from 'express';
@@ -22,14 +23,14 @@ export declare class AuthService {
     login(res: Response, user: LoginInterface): Promise<LoginPayloadInterface>;
     loginAdmin(user: LoginInterface): Promise<LoginPayloadInterface>;
     signUp(user: SignUpReqInterface): Promise<SignUpInterfaceRes>;
-    refreshToken(res: Response, user: refreshTokensInterface): Promise<void>;
+    refreshToken(user: refreshTokensInterface): Promise<Tokens>;
     forgotPassword(res: any, user: ForgotPasswordInterface): Promise<TokenForgotInterface>;
     createTokenForgotPass(email: string, checkUser: AuthDto, res: any): Promise<{
         resetPasswordToken: string;
         resetPasswordExpire: Date;
     }>;
-    resetPass(res: any, token: string, body: ResetPassInterface): Promise<void>;
-    verifyEmail(res: any, token: string): Promise<void>;
+    resetPass(token: string, body: ResetPassInterface): Promise<String>;
+    verifyEmail(token: string): Promise<string>;
     private sendVerificationEmail;
     private formatResponse;
     private hashData;

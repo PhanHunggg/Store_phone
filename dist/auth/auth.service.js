@@ -14,7 +14,6 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const client_1 = require("@prisma/client");
 const jwt_1 = require("@nestjs/jwt");
-const response_1 = require("../response");
 const auth_repository_1 = require("./auth.repository");
 const bcrypt = require("bcrypt");
 const mailer_1 = require("@nestjs-modules/mailer");
@@ -161,7 +160,7 @@ let AuthService = class AuthService {
             }
         }
     }
-    async refreshToken(res, user) {
+    async refreshToken(user) {
         try {
             const checkUser = await this.authRepository.checkUserById(user.id_user);
             if (!checkUser || !checkUser.hashedRt)
@@ -176,7 +175,7 @@ let AuthService = class AuthService {
             }
             const tokens = await this.getTokens(checkUser);
             await this.updateRtHash(user.id_user, tokens.refreshToken);
-            (0, response_1.successCode)(res, tokens);
+            return tokens;
         }
         catch (error) {
             if (error instanceof common_1.HttpException) {
@@ -242,7 +241,7 @@ let AuthService = class AuthService {
             }
         }
     }
-    async resetPass(res, token, body) {
+    async resetPass(token, body) {
         try {
             const checkUser = await this.authRepository.checkUserByTokenPass(token);
             if (!checkUser)
@@ -253,7 +252,7 @@ let AuthService = class AuthService {
             }
             const hash = await this.hashData(body.password);
             await this.authRepository.resetPass(hash, checkUser.id_user);
-            (0, response_1.successCode)(res, body.password);
+            return body.password;
         }
         catch (error) {
             if (error instanceof common_1.HttpException) {
@@ -264,7 +263,7 @@ let AuthService = class AuthService {
             }
         }
     }
-    async verifyEmail(res, token) {
+    async verifyEmail(token) {
         try {
             const checkUser = await this.prisma.user.findFirst({
                 where: {
@@ -282,7 +281,8 @@ let AuthService = class AuthService {
                     verifyEmailToken: null
                 }
             });
-            (0, response_1.successCode)(res, '');
+            const message = "Verify thành công";
+            return message;
         }
         catch (error) {
             if (error instanceof common_1.HttpException) {

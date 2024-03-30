@@ -26,7 +26,7 @@ let BrandService = class BrandService {
                 img: brand.banner
             };
             await this.brandRepository.createBrand(newData);
-            (0, response_1.successCode)(res, newData);
+            return newData;
         }
         catch (error) {
             (0, response_1.failCode)(res, error.message);

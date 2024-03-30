@@ -13,9 +13,9 @@ export declare class UserRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     getUserList(): Promise<{
         id_user: number;
@@ -28,9 +28,9 @@ export declare class UserRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }[]>;
     findUser(id: number): Promise<{
         id_user: number;
@@ -43,9 +43,9 @@ export declare class UserRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     delete(id: number): Promise<{
         id_user: number;
@@ -58,9 +58,9 @@ export declare class UserRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     updateUser(id: number, data: UserInterface): Promise<{
         id_user: number;
@@ -73,8 +73,8 @@ export declare class UserRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
 }

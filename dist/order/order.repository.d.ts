@@ -5,7 +5,6 @@ export declare class OrderRepository {
     findOrderByIdUser(id: number): Promise<{
         id_order: number;
         id_user: number;
-        name: string;
         phone: string;
         address: string;
         payment_method: string;
@@ -13,11 +12,11 @@ export declare class OrderRepository {
         total: number;
         created_date: Date;
         productItem: import(".prisma/client").Prisma.JsonValue;
+        name: string;
     }[]>;
     findOrderById(id: number): Promise<{
         id_order: number;
         id_user: number;
-        name: string;
         phone: string;
         address: string;
         payment_method: string;
@@ -25,11 +24,11 @@ export declare class OrderRepository {
         total: number;
         created_date: Date;
         productItem: import(".prisma/client").Prisma.JsonValue;
+        name: string;
     }>;
     getOrderList(): Promise<{
         id_order: number;
         id_user: number;
-        name: string;
         phone: string;
         address: string;
         payment_method: string;
@@ -37,11 +36,11 @@ export declare class OrderRepository {
         total: number;
         created_date: Date;
         productItem: import(".prisma/client").Prisma.JsonValue;
+        name: string;
     }[]>;
     deleteOrder(id: number): Promise<{
         id_order: number;
         id_user: number;
-        name: string;
         phone: string;
         address: string;
         payment_method: string;
@@ -49,11 +48,11 @@ export declare class OrderRepository {
         total: number;
         created_date: Date;
         productItem: import(".prisma/client").Prisma.JsonValue;
+        name: string;
     }>;
     createOrder(data: OrderInterface): Promise<{
         id_order: number;
         id_user: number;
-        name: string;
         phone: string;
         address: string;
         payment_method: string;
@@ -61,5 +60,6 @@ export declare class OrderRepository {
         total: number;
         created_date: Date;
         productItem: import(".prisma/client").Prisma.JsonValue;
+        name: string;
     }>;
 }

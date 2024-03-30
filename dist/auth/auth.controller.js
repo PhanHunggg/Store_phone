@@ -97,14 +97,47 @@ let AuthController = class AuthController {
             }
         }
     }
-    refreshToken(res, body) {
-        return this.authService.refreshToken(res, body);
+    async refreshToken(res, body) {
+        try {
+            const tokens = await this.authService.refreshToken(body);
+            return (0, response_1.successCode)(res, tokens);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    resetPass(res, token, body) {
-        return this.authService.resetPass(res, token, body);
+    async resetPass(res, token, body) {
+        try {
+            const password = await this.authService.resetPass(token, body);
+            return (0, response_1.successCode)(res, password);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    verifyEmail(res, token) {
-        return this.authService.verifyEmail(res, token);
+    async verifyEmail(res, token) {
+        try {
+            const message = await this.authService.verifyEmail(token);
+            return (0, response_1.successCode)(res, '', message);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
 };
 __decorate([
@@ -158,7 +191,7 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refreshToken", null);
 __decorate([
     (0, public_decorator_1.Public)(),
@@ -168,7 +201,7 @@ __decorate([
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String, reset_pass_1.ResetPassInterface]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "resetPass", null);
 __decorate([
     (0, public_decorator_1.Public)(),
@@ -177,7 +210,7 @@ __decorate([
     __param(1, (0, common_1.Param)('token')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "verifyEmail", null);
 AuthController = __decorate([
     (0, swagger_1.ApiTags)("Auth"),

@@ -13,9 +13,9 @@ export declare class AuthRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     checkEmailUser(email: string): Promise<{
         id_user: number;
@@ -28,9 +28,9 @@ export declare class AuthRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     checkUserById(id: number): Promise<{
         id_user: number;
@@ -43,15 +43,14 @@ export declare class AuthRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     checkUserOrderById(id_user: number): Promise<{
         order: {
             id_order: number;
             id_user: number;
-            name: string;
             phone: string;
             address: string;
             payment_method: string;
@@ -59,6 +58,7 @@ export declare class AuthRepository {
             total: number;
             created_date: Date;
             productItem: import(".prisma/client").Prisma.JsonValue;
+            name: string;
         }[];
     } & {
         id_user: number;
@@ -71,9 +71,9 @@ export declare class AuthRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     checkUserByTokenPass(token: string): Promise<{
         id_user: number;
@@ -86,9 +86,9 @@ export declare class AuthRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
     resetPass(password: string, id: number): Promise<{
         id_user: number;
@@ -101,8 +101,8 @@ export declare class AuthRepository {
         role: boolean;
         verifyEmail: boolean;
         verifyEmailToken: string;
-        hashedRt: string;
         resetPasswordToken: string;
         resetPasswordExpire: Date;
+        hashedRt: string;
     }>;
 }

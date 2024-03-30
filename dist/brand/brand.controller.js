@@ -18,12 +18,24 @@ const brand_service_1 = require("./brand.service");
 const swagger_1 = require("@nestjs/swagger");
 const interface_1 = require("./interface");
 const public_decorator_1 = require("../common/decorators/public.decorator");
+const response_1 = require("../response");
 let BrandController = class BrandController {
     constructor(brandService) {
         this.brandService = brandService;
     }
-    createBrand(res, body) {
-        return this.brandService.createBrand(res, body);
+    async createBrand(res, body) {
+        try {
+            const brand = await this.brandService.createBrand(res, body);
+            return (0, response_1.successCode)(res, brand);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
     removeBrand(res, id_brand) {
         return this.brandService.removeBrand(res, +id_brand);
@@ -44,7 +56,7 @@ __decorate([
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, interface_1.CreateBrandInterface]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], BrandController.prototype, "createBrand", null);
 __decorate([
     (0, common_1.Delete)('/delete-brand/:id_brand'),
