@@ -18,6 +18,17 @@ export class AuthRepository {
         return this.prisma.user.findUnique({ where: { id_user: id } })
     };
 
+    async checkUserOrderById(id_user: number) {
+        return await this.prisma.user.findUnique({
+            where: {
+                id_user
+            },
+            include: {
+                order: true,
+            }
+        })
+    }
+
     async checkUserByTokenPass(token: string) {
         return await this.prisma.user.findFirst({
             where: {

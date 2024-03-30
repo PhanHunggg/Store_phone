@@ -21,7 +21,7 @@ async function bootstrap() {
 
   app.use(express.static("."))
 
-  await app.listen(port);
+  await app.listen(8080);
 
 
 }

@@ -12,7 +12,7 @@ export class BrandService {
   constructor(private cloudinary: CloudinaryService,
     private brandRepository: BrandRepository) { }
 
-  async createBrand(res: any, brand: CreateBrandInterface,) {
+  async createBrand(res: any, brand: CreateBrandInterface,): Promise<BrandInterface> {
     try {
       const newData: BrandInterface = {
         name: brand.name,
@@ -21,7 +21,7 @@ export class BrandService {
 
 
       await this.brandRepository.createBrand(newData)
-      successCode(res, newData)
+      return newData
     } catch (error) {
       failCode(res, error.message)
     }

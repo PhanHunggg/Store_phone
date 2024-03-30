@@ -1,8 +1,9 @@
 import { UserInterface } from "src/user/interface/user";
+import { LoginPayloadInterface } from "./login";
 declare const SignUpReqInterface_base: import("@nestjs/common").Type<Partial<UserInterface>>;
 export declare class SignUpReqInterface extends SignUpReqInterface_base {
 }
-export declare class SignUpInterface {
+export interface SignUpInterface {
     name: string;
     email: string;
     password: string;
@@ -12,5 +13,7 @@ export declare class SignUpInterface {
     role: boolean;
     verifyEmail: boolean;
     verifyEmailToken: string;
+}
+export interface SignUpInterfaceRes extends LoginPayloadInterface {
 }
 export {};

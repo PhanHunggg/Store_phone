@@ -7,3 +7,8 @@ export class ForgotPasswordInterface {
     @ApiProperty({ description: "email", type: String })
     email: string;
 }
+
+export interface TokenForgotInterface {
+    resetPasswordToken: string,
+    resetPasswordExpire: Date
+}

@@ -58,7 +58,7 @@ AppModule = __decorate([
             {
                 provide: core_1.APP_GUARD,
                 useClass: at_guards_1.AtGuard
-            }
+            },
         ],
     })
 ], AppModule);

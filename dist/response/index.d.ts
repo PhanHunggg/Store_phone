@@ -1,3 +1,5 @@
-export declare const successCode: (res: any, data: any, message?: string) => any;
-export declare const errCode: (res: any, data: any, message: string) => any;
-export declare const failCode: (res: any, message: string) => any;
+import { Response } from 'express';
+export declare const successCode: (res: Response, data: any, message?: string) => Response<any, Record<string, any>>;
+export declare const errCode: (res: Response, data: any, message: string) => Response<any, Record<string, any>>;
+export declare const failCode: (res: Response, message: string) => Response<any, Record<string, any>>;
+export declare const createCode: (res: Response, data: any, message?: string) => Response<any, Record<string, any>>;

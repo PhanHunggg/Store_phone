@@ -13,15 +13,13 @@ export class LoginInterface {
     password: string;
 }
 
-export class LoginPayloadInterface {
+export interface LoginPayloadInterface {
     id_user: number;
     name: string;
     email: string;
-    password: string;
     birthday: Date;
     address: string;
     phone: string;
-    role: boolean;
     accessToken?: string
     refreshToken?: string
 }

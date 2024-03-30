@@ -47,6 +47,34 @@ export declare class AuthRepository {
         resetPasswordToken: string;
         resetPasswordExpire: Date;
     }>;
+    checkUserOrderById(id_user: number): Promise<{
+        order: {
+            id_order: number;
+            id_user: number;
+            name: string;
+            phone: string;
+            address: string;
+            payment_method: string;
+            delivery_by: string;
+            total: number;
+            created_date: Date;
+            productItem: import(".prisma/client").Prisma.JsonValue;
+        }[];
+    } & {
+        id_user: number;
+        name: string;
+        email: string;
+        password: string;
+        birthday: Date;
+        address: string;
+        phone: string;
+        role: boolean;
+        verifyEmail: boolean;
+        verifyEmailToken: string;
+        hashedRt: string;
+        resetPasswordToken: string;
+        resetPasswordExpire: Date;
+    }>;
     checkUserByTokenPass(token: string): Promise<{
         id_user: number;
         name: string;

@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Response, UseInterceptors, UploadedFile, UseGuards, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Response, UseInterceptors, UploadedFile, UseGuards, Put, HttpException, InternalServerErrorException } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PublicGuard } from 'src/common/guards/jwt-public.guards';
 import { ApiTags } from '@nestjs/swagger';
 import { BrandInterface, CreateBrandInterface } from './interface';
 import { Public } from 'src/common/decorators/public.decorator';
+import { successCode } from 'src/response';
 
 @Public()
 @ApiTags("Brand")
@@ -13,8 +13,17 @@ export class BrandController {
   constructor(private readonly brandService: BrandService) { }
 
   @Post("/create-brand")
-  createBrand(@Response() res: any, @Body() body: CreateBrandInterface) {
-    return this.brandService.createBrand(res, body);
+  async createBrand(@Response() res: any, @Body() body: CreateBrandInterface) {
+    try {
+      const brand: BrandInterface = await this.brandService.createBrand(res, body);
+      return successCode(res, brand)
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Delete('/delete-brand/:id_brand')

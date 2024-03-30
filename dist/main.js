@@ -14,7 +14,7 @@ async function bootstrap() {
     swagger_1.SwaggerModule.setup("swagger", app, document);
     app.enableCors();
     app.use(express.static("."));
-    await app.listen(port);
+    await app.listen(8080);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

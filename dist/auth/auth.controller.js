@@ -22,25 +22,80 @@ const sign_up_1 = require("./interface/sign-up");
 const forgot_password_1 = require("./interface/forgot-password");
 const reset_pass_1 = require("./interface/reset-pass");
 const get_current_user_id_decorator_1 = require("../common/decorators/get-current-user-id.decorator");
-const refresh_token_1 = require("./interface/refresh-token");
+const response_1 = require("../response");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    profile(userId, res) {
-        return this.authService.profile(res, userId);
+    async profile(userId, res) {
+        try {
+            const user = await this.authService.profile(userId);
+            return (0, response_1.successCode)(res, user);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    login(res, body) {
-        return this.authService.login(res, body);
+    async login(res, body) {
+        try {
+            const user = await this.authService.login(res, body);
+            return (0, response_1.successCode)(res, user);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    loginAdmin(res, body) {
-        return this.authService.loginAdmin(res, body);
+    async loginAdmin(res, body) {
+        try {
+            const user = await this.authService.loginAdmin(body);
+            return (0, response_1.successCode)(res, user);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    signUp(res, body) {
-        return this.authService.signUp(res, body);
+    async signUp(res, body) {
+        try {
+            const user = await this.authService.signUp(body);
+            return (0, response_1.createCode)(res, user, "Đăng ký người dùng thành công!");
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    forgotPassword(res, body) {
-        return this.authService.forgotPassword(res, body);
+    async forgotPassword(res, body) {
+        try {
+            const tokenForgot = await this.authService.forgotPassword(res, body);
+            return (0, response_1.successCode)(res, tokenForgot);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
     refreshToken(res, body) {
         return this.authService.refreshToken(res, body);
@@ -55,7 +110,7 @@ let AuthController = class AuthController {
 __decorate([
     (0, common_1.Get)('/profile'),
     __param(0, (0, get_current_user_id_decorator_1.GetCurrentUserId)()),
-    __param(1, (0, common_1.Response)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
@@ -63,52 +118,52 @@ __decorate([
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)("/login"),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, login_1.LoginInterface]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)("/admin-login"),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, login_1.LoginInterface]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "loginAdmin", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)("/sign-up"),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, sign_up_1.SignUpReqInterface]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "signUp", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('/forgot-password'),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, forgot_password_1.ForgotPasswordInterface]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "forgotPassword", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Post)('/refresh-token'),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, refresh_token_1.refreshTokensInterface]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "refreshToken", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Put)('/reset-password/:token'),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('token')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -118,7 +173,7 @@ __decorate([
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Put)('/verify-email/:token'),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('token')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),

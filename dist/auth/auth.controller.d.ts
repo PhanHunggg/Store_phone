@@ -4,15 +4,16 @@ import { SignUpReqInterface } from './interface/sign-up';
 import { ForgotPasswordInterface } from './interface/forgot-password';
 import { ResetPassInterface } from './interface/reset-pass';
 import { refreshTokensInterface } from './interface/refresh-token';
+import { Response } from 'express';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
-    profile(userId: number, res: Response): Promise<void>;
-    login(res: any, body: LoginInterface): Promise<void>;
-    loginAdmin(res: any, body: LoginInterface): Promise<void>;
-    signUp(res: any, body: SignUpReqInterface): Promise<void>;
-    forgotPassword(res: any, body: ForgotPasswordInterface): Promise<void>;
+    profile(userId: number, res: Response): Promise<Response>;
+    login(res: Response, body: LoginInterface): Promise<Response>;
+    loginAdmin(res: Response, body: LoginInterface): Promise<Response>;
+    signUp(res: Response, body: SignUpReqInterface): Promise<Response>;
+    forgotPassword(res: Response, body: ForgotPasswordInterface): Promise<Response>;
     refreshToken(res: Response, body: refreshTokensInterface): Promise<void>;
-    resetPass(res: any, token: string, body: ResetPassInterface): Promise<void>;
-    verifyEmail(res: any, token: string): Promise<void>;
+    resetPass(res: Response, token: string, body: ResetPassInterface): Promise<void>;
+    verifyEmail(res: Response, token: string): Promise<void>;
 }
