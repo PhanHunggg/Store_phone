@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { BrandInterface, CreateBrandInterface } from './interface';
 import { BrandRepository } from './brand.repository';
 
@@ -9,7 +8,7 @@ import { BrandRepository } from './brand.repository';
 export class BrandService {
 
 
-  constructor(private cloudinary: CloudinaryService,
+  constructor(
     private brandRepository: BrandRepository) { }
 
   async createBrand(res: any, brand: CreateBrandInterface,): Promise<BrandInterface> {
@@ -27,7 +26,7 @@ export class BrandService {
     }
   }
 
-  async removeBrand(res, id: number) {
+  async removeBrand(res: any, id: number) {
 
     const checkBrand = await this.brandRepository.findBrandById(id)
 
@@ -35,9 +34,6 @@ export class BrandService {
       errCode(res, id, "Không tìm thấy hãng")
       return
     }
-
-
-    await this.cloudinary.deleteImage(checkBrand.img)
 
     await this.brandRepository.deleteBrand(id)
 
