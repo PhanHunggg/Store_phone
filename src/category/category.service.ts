@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateCategoryInterface } from './interface';
-import { PrismaClient } from '@prisma/client';
+import { Category, PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CategoryRepository } from './category.repository';
+import { InternalServerErrorException, NotFoundException } from 'src/exception/exception';
 
 @Injectable()
 export class CategoryService {
@@ -12,76 +13,95 @@ export class CategoryService {
   prisma = new PrismaClient()
 
 
-  async createCategory(res: any, category: CreateCategoryInterface) {
+  async createCategory(category: CreateCategoryInterface): Promise<CreateCategoryInterface> {
     try {
       const newData: CreateCategoryInterface = {
         name: category.name,
       };
       await this.categoryRepository.createCategory(newData)
-      successCode(res, newData)
+      return newData
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
-  async getCategoryList(res: any) {
+  async getCategoryList():Promise<Category[]> {
     try {
-      const checkCategory = await this.categoryRepository.getCategoryList()
+      const checkCategory: Category[] = await this.categoryRepository.getCategoryList()
 
-      successCode(res, checkCategory)
+      return checkCategory;
+
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
 
 
-  async updateCategory(res: any, category: CreateCategoryInterface, id_category: number) {
+  async updateCategory(category: CreateCategoryInterface, id_category: number): Promise<Category> {
     try {
-      const checkCategory = await this.categoryRepository.findCategory(id_category)
+      const checkCategory: Category = await this.categoryRepository.findCategory(id_category)
 
       if (!checkCategory) {
-        errCode(res, id_category, "Không tìm thấy loại sản phẩm!")
-        return
+        throw new NotFoundException("Không tìm thấy loại sản phẩm")
       }
 
       await this.categoryRepository.updateCategory(id_category, category)
 
-      successCode(res, category)
+      return checkCategory;
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
 
   }
 
-  async deleteCategory(id_category: number, res: any) {
+  async deleteCategory(id_category: number): Promise<Category> {
     try {
-      const checkCategory = await this.categoryRepository.findCategory(id_category)
+      const checkCategory: Category = await this.categoryRepository.findCategory(id_category)
 
       if (!checkCategory) {
-        errCode(res, checkCategory, "Không tìm thấy loại sản phẩm!")
-        return
+        throw new NotFoundException("Không tìm thấy loại sản phẩm")
       }
-
       await this.categoryRepository.deleteCategory(id_category)
+      
+      return checkCategory;
 
-      successCode(res, '')
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
-  async findCategory(res: any, id: number) {
+  async findCategory(id: number): Promise<Category> {
     try {
-      const category = await this.categoryRepository.findCategory(id)
+      const category: Category = await this.categoryRepository.findCategory(id)
 
       if (!category) {
-        errCode(res, id, "Không tìm thấy category!")
-        return
+        throw new NotFoundException("Không tìm thấy loại sản phẩm")
       }
-      successCode(res, category)
+      return category;
+
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 }
