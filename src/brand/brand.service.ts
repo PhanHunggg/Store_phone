@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { HttpException, Injectable } from '@nestjs/common';
+import { Brand, PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { BrandInterface, CreateBrandInterface } from './interface';
 import { BrandRepository } from './brand.repository';
+import { InternalServerErrorException, NotFoundException } from 'src/exception/exception';
 
 @Injectable()
 export class BrandService {
@@ -17,33 +18,48 @@ export class BrandService {
         name: brand.name,
         img: brand.banner
       };
-
-
       await this.brandRepository.createBrand(newData)
       return newData
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
-  async removeBrand(res: any, id: number) {
+  async removeBrand(res: any, id: number): Promise<Brand> {
+    try {
+      const checkBrand: Brand = await this.brandRepository.findBrandById(id)
 
-    const checkBrand = await this.brandRepository.findBrandById(id)
+      if (!checkBrand) {
+        throw new NotFoundException('Không tìm thấy brand!')
+      }
 
-    if (!checkBrand) {
-      errCode(res, id, "Không tìm thấy hãng")
-      return
+      await this.brandRepository.deleteBrand(id)
+
+      return checkBrand
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
-
-    await this.brandRepository.deleteBrand(id)
-
-    successCode(res, "")
   }
 
-  async getBrandList(res: any) {
-    const checkBrand = await this.brandRepository.getBrandList()
-
-    successCode(res, checkBrand)
+  async getBrandList(res: any): Promise<Brand[]> {
+    try {
+      const checkBrand: Brand[] = await this.brandRepository.getBrandList()
+      return checkBrand
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   async updateBrand(res: any, brand: CreateBrandInterface, id_brand: number) {

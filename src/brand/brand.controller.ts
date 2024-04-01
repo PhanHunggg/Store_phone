@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { BrandInterface, CreateBrandInterface } from './interface';
 import { Public } from 'src/common/decorators/public.decorator';
 import { successCode } from 'src/response';
+import { Brand } from '@prisma/client';
 
 @Public()
 @ApiTags("Brand")
@@ -27,13 +28,31 @@ export class BrandController {
   }
 
   @Delete('/delete-brand/:id_brand')
-  removeBrand(@Response() res: any, @Param('id_brand') id_brand: string) {
-    return this.brandService.removeBrand(res, +id_brand);
+  async removeBrand(@Response() res: any, @Param('id_brand') id_brand: string) {
+    try {
+      const brand: Brand = await this.brandService.removeBrand(res, +id_brand);
+      return successCode(res, brand)
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Get('/brand-list')
-  getBrandList(@Response() res: any,) {
-    return this.brandService.getBrandList(res);
+  async getBrandList(@Response() res: any,) {
+    try {
+      const brandList: Brand[] = await this.brandService.getBrandList(res);
+      return successCode(res, brandList)
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Put("/update-brand/:id_brand")
