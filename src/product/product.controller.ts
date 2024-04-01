@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, Response } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  Res,
+  HttpException,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
@@ -6,62 +18,157 @@ import { CategoryBrandInterface } from 'src/category-brand/interface';
 import { Public } from 'src/common/decorators/public.decorator';
 import { CreateProductReqInterface } from './interface/create-product';
 import { UpdateProductReqInterface } from './interface/update-product';
+import { successCode } from 'src/response';
+import { Response } from 'express';
+import { InternalServerErrorException } from 'src/exception/exception';
 
-
-@ApiTags("Product")
+@ApiTags('Product')
 @Controller('product')
 export class ProductController {
-
-  constructor(private readonly productService: ProductService) { }
-
+  constructor(private readonly productService: ProductService) {}
 
   @Public()
   @Get('/equivalent-product/:id_categoryBrand')
-  getEquivalentProduct(@Response() res: any, @Param('id_categoryBrand') id_categoryBrand: string) {
-    return this.productService.getEquivalentProduct(res, +id_categoryBrand)
+  async getEquivalentProduct(
+    @Res() res: Response,
+    @Param('id_categoryBrand') id_categoryBrand: string,
+  ) {
+    try {
+      const result = await this.productService.getEquivalentProduct(
+        +id_categoryBrand,
+      );
+
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Public()
   @Get('/find-product-category-brand')
-  findByCategoryBrand(@Response() res: any, @Body() body: CategoryBrandInterface) {
-    return this.productService.findByCategoryBrand(res, body)
+  async findByCategoryBrand(
+    @Res() res: Response,
+    @Body() body: CategoryBrandInterface,
+  ) {
+    try {
+      const result = await this.productService.findByCategoryBrand(body);
+
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Public()
-  @Get("/find-product-brand/:id_brand")
-  findProductByBrand(@Response() res: any, @Param('id_brand') id_brand: string) {
-    return this.productService.findProductByBrand(res, +id_brand)
+  @Get('/find-product-brand/:id_brand')
+  async findProductByBrand(
+    @Res() res: Response,
+    @Param('id_brand') id_brand: string,
+  ) {
+    try {
+      const result = await this.productService.findProductByBrand(+id_brand);
+
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Public()
   @Get('/product-list')
-  getProductList(@Response() res: any): Promise<void> {
-    return this.productService.getProductList(res);
+  async getProductList(@Res() res: Response) {
+    try {
+      const result = await this.productService.getProductList();
+
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Public()
   @Get('/find-product/:id')
-  findProduct(@Param('id') id: string, @Response() res: any) {
-    return this.productService.findProduct(+id, res);
+  async findProduct(@Param('id') id: string, @Res() res: Response) {
+    try {
+      const result = await this.productService.findProduct(+id);
+
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Post('/create-product')
-  createProduct(@Body() createProductDto: CreateProductReqInterface, @Response() res: any,): Promise<void> {
-    return this.productService.createProduct(createProductDto, res);
+  async createProduct(
+    @Body() createProductDto: CreateProductReqInterface,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.productService.createProduct(createProductDto);
+
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Patch('/update-product/:id')
-  updateProduct(@Param('id') id: string, @UploadedFile() file: Express.Multer.File, @Response() res: any, @Body() body: UpdateProductReqInterface) {
-    return this.productService.updateProduct(res, +id, body);
+  async updateProduct(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res: Response,
+    @Body() body: UpdateProductReqInterface,
+  ) {
+    try {
+      const result = await this.productService.updateProduct(+id, body);
+      if (result) return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
 
   @Delete('/delete-product/:id_product')
-  deleteProduct(@Param('id_product') id_product: string, @Response() res: any) {
-    return this.productService.deleteProduct(+id_product, res);
+  async deleteProduct(
+    @Param('id_product') id_product: string,
+    @Res() res: Response,
+  ) {
+    try {
+      const result = await this.productService.deleteProduct(+id_product);
+      return successCode(res, result);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
   }
-
-
-
-
-
 }
