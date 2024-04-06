@@ -1,88 +1,100 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CategoryBrandInterface } from './interface';
-import { PrismaClient } from '@prisma/client';
+import { CategoryBrand, PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CategoryBrandRepository } from './category-brand.repository';
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from 'src/exception/exception';
 
 @Injectable()
 export class CategoryBrandService {
+  constructor(private categoryBrandRepository: CategoryBrandRepository) {}
 
-  constructor(private categoryBrandRepository: CategoryBrandRepository) { }
+  prisma = new PrismaClient();
 
-  prisma = new PrismaClient()
-
-  async create(categoryBrand: CategoryBrandInterface, res: any) {
+  async create(
+    categoryBrand: CategoryBrandInterface,
+  ): Promise<CategoryBrandInterface> {
     try {
-
       const newData: CategoryBrandInterface = {
         id_brand: categoryBrand.id_brand,
-        id_category: categoryBrand.id_category
+        id_category: categoryBrand.id_category,
       };
 
-      await this.categoryBrandRepository.createCategoryBrand(newData)
+      await this.categoryBrandRepository.createCategoryBrand(newData);
 
-      successCode(res, newData)
-
+      return newData;
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
   async findAll(res: any) {
     try {
-      const checkCategoryBrand = await this.categoryBrandRepository.findAll()
-
-      if (!!!checkCategoryBrand.length) {
-        errCode(res, checkCategoryBrand, "Không tìm thấy loại sản phẩm!")
-        return
-      }
-
-      successCode(res, checkCategoryBrand)
+      const checkCategoryBrand: CategoryBrand[] =
+        await this.categoryBrandRepository.findAll();
+      return checkCategoryBrand;
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+          throw error;
+        } else {
+          throw new InternalServerErrorException(error.message);
+        }
     }
   }
 
   async deleteCategoryBrand(id_categoryBrand: number, res: any) {
     try {
-      const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand)
+      const checkCategory: CategoryBrand =
+        await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand);
 
       if (!checkCategory) {
-        errCode(res, checkCategory, "Không tìm thấy loại sản phẩm theo hãng!")
-        return
+        errCode(res, checkCategory, 'Không tìm thấy loại sản phẩm theo hãng!');
+        return;
       }
 
-      await this.categoryBrandRepository.deleteCategoryBrand(id_categoryBrand)
-
-      successCode(res, '')
+      await this.categoryBrandRepository.deleteCategoryBrand(id_categoryBrand);
+      return checkCategory
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+          throw error;
+        } else {
+          throw new InternalServerErrorException(error.message);
+        }
     }
   }
 
-  async updateCategoryBrand(res: any, categoryBrand: CategoryBrandInterface, id_categoryBrand: number) {
+  async updateCategoryBrand(
+    res: any,
+    categoryBrand: CategoryBrandInterface,
+    id_categoryBrand: number,
+  ) {
     try {
-
-      const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand)
+      const checkCategory =
+        await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand);
 
       if (!checkCategory) {
-        errCode(res, id_categoryBrand, "Không tìm thấy loại sản phẩm!")
-        return
+        errCode(res, id_categoryBrand, 'Không tìm thấy loại sản phẩm!');
+        return;
       }
 
-      const newData: CategoryBrandInterface = categoryBrand
+      const newData: CategoryBrandInterface = categoryBrand;
 
-      await this.categoryBrandRepository.updateCategoryBrand(newData, id_categoryBrand)
-
-      successCode(res, newData)
+      await this.categoryBrandRepository.updateCategoryBrand(
+        newData,
+        id_categoryBrand,
+      );
+      return newData
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+          throw error;
+        } else {
+          throw new InternalServerErrorException(error.message);
+        }
     }
-
-
   }
-
 }
-
-
-
