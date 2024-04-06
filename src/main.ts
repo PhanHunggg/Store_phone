@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import * as express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,15 +10,16 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const config = new DocumentBuilder().setTitle("Swagger").addBearerAuth().build()
+  app.enableCors()
+
+  app.use(express.static("."))
+
+  const config = new DocumentBuilder().setTitle("Swagger").addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+    'access-token').build()
 
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup("swagger", app, document);
-
-  app.enableCors()
-
-  app.use(express.static("."))
 
   await app.listen(port);
 

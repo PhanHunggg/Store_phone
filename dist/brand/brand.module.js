@@ -10,14 +10,13 @@ exports.BrandModule = void 0;
 const common_1 = require("@nestjs/common");
 const brand_service_1 = require("./brand.service");
 const brand_controller_1 = require("./brand.controller");
-const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const brand_repository_1 = require("./brand.repository");
 let BrandModule = class BrandModule {
 };
 BrandModule = __decorate([
     (0, common_1.Module)({
         controllers: [brand_controller_1.BrandController],
-        providers: [brand_service_1.BrandService, cloudinary_service_1.CloudinaryService, brand_repository_1.BrandRepository]
+        providers: [brand_service_1.BrandService, brand_repository_1.BrandRepository]
     })
 ], BrandModule);
 exports.BrandModule = BrandModule;

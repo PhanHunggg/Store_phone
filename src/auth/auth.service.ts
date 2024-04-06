@@ -14,7 +14,7 @@ import { ResetPassInterface } from './interface/reset-pass';
 import { Tokens } from './type/token.type';
 import { JwtPayload } from './type/jwtPayload.type';
 import { refreshTokensInterface } from './interface/refresh-token';
-import {  ProfileOrderInterface } from './interface/profile';
+import { ProfileOrderInterface } from './interface/profile';
 import { Response } from 'express';
 import { BadRequestException, ConflictException, CustomException, ForbiddenException, InternalServerErrorException, NotFoundException, PreconditionFailedException, TooManyRequestsException, UnauthorizedException } from 'src/exception/exception';
 @Injectable()
@@ -56,9 +56,9 @@ export class AuthService {
         }
     }
 
-    async login(res: Response, user: LoginInterface): Promise<LoginPayloadInterface> {
+    async login(res: Response, user: LoginInterface): Promise<SignUpInterfaceRes> {
         try {
-            const checkUser = await this.authRepository.checkEmailUser(user.email)
+            const checkUser: User = await this.authRepository.checkEmailUser(user.email)
 
             if (!checkUser)
                 throw new NotFoundException('Tài khoản không đúng!');
@@ -75,18 +75,7 @@ export class AuthService {
 
             await this.updateRtHash(checkUser.id_user, tokens.refreshToken)
 
-            let data: LoginPayloadInterface = {
-                id_user: checkUser.id_user,
-                name: checkUser.name,
-                email: checkUser.email,
-                address: checkUser.address,
-                birthday: checkUser.birthday,
-                phone: checkUser.phone,
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
-            }
-
-            return data
+            return this.formatResponse(checkUser, tokens);
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -242,49 +231,6 @@ export class AuthService {
 
     }
 
-    async createTokenForgotPass(email: string, checkUser: AuthDto, res: any) {
-        try {
-
-            if (
-                checkUser.resetPasswordExpire &&
-                (new Date().getTime() - checkUser.resetPasswordExpire.getTime()) / 60000 < 15
-            ) {
-                throw new TooManyRequestsException('Email đã được gửi trước đó!');
-            } else {
-
-                const newTokenPass = this.createToken(email, "FORGOT_PASS", "15m")
-
-                const updateResetPass = await this.prisma.user.update({
-                    where: {
-                        id_user: checkUser.id_user
-                    },
-                    data: {
-                        resetPasswordToken: newTokenPass,
-                        resetPasswordExpire: new Date()
-                    }
-                })
-
-                if (updateResetPass) {
-                    return {
-                        resetPasswordToken: updateResetPass.resetPasswordToken,
-                        resetPasswordExpire: updateResetPass.resetPasswordExpire
-                    }
-                } else {
-                    throw new HttpException(
-                        "UPDATE_RESET_PASSWORD_EXPIRE_FAIL",
-                        HttpStatus.INTERNAL_SERVER_ERROR
-                    )
-                }
-            }
-        } catch (error) {
-            if (error instanceof HttpException) {
-                throw error;
-            } else {
-                throw new InternalServerErrorException(error.message);
-            }
-        }
-    }
-
     async resetPass(token: string, body: ResetPassInterface): Promise<String> {
         try {
 
@@ -334,6 +280,49 @@ export class AuthService {
             const message: string = "Verify thành công"
             return message
 
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
+        }
+    }
+
+    private async createTokenForgotPass(email: string, checkUser: AuthDto, res: any) {
+        try {
+
+            if (
+                checkUser.resetPasswordExpire &&
+                (new Date().getTime() - checkUser.resetPasswordExpire.getTime()) / 60000 < 15
+            ) {
+                throw new TooManyRequestsException('Email đã được gửi trước đó!');
+            } else {
+
+                const newTokenPass = this.createToken(email, "FORGOT_PASS", "15m")
+
+                const updateResetPass = await this.prisma.user.update({
+                    where: {
+                        id_user: checkUser.id_user
+                    },
+                    data: {
+                        resetPasswordToken: newTokenPass,
+                        resetPasswordExpire: new Date()
+                    }
+                })
+
+                if (updateResetPass) {
+                    return {
+                        resetPasswordToken: updateResetPass.resetPasswordToken,
+                        resetPasswordExpire: updateResetPass.resetPasswordExpire
+                    }
+                } else {
+                    throw new HttpException(
+                        "UPDATE_RESET_PASSWORD_EXPIRE_FAIL",
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                    )
+                }
+            }
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;

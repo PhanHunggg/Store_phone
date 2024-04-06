@@ -37,11 +37,33 @@ let BrandController = class BrandController {
             }
         }
     }
-    removeBrand(res, id_brand) {
-        return this.brandService.removeBrand(res, +id_brand);
+    async removeBrand(res, id_brand) {
+        try {
+            const brand = await this.brandService.removeBrand(res, +id_brand);
+            return (0, response_1.successCode)(res, brand);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    getBrandList(res) {
-        return this.brandService.getBrandList(res);
+    async getBrandList(res) {
+        try {
+            const brandList = await this.brandService.getBrandList(res);
+            return (0, response_1.successCode)(res, brandList);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new common_1.InternalServerErrorException(error.message);
+            }
+        }
     }
     updateBrand(id_brand, res, body) {
         return this.brandService.updateBrand(res, body, +id_brand);
@@ -64,14 +86,14 @@ __decorate([
     __param(1, (0, common_1.Param)('id_brand')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], BrandController.prototype, "removeBrand", null);
 __decorate([
     (0, common_1.Get)('/brand-list'),
     __param(0, (0, common_1.Response)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], BrandController.prototype, "getBrandList", null);
 __decorate([
     (0, common_1.Put)("/update-brand/:id_brand"),

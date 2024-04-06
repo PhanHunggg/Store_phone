@@ -12,11 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrandService = void 0;
 const common_1 = require("@nestjs/common");
 const response_1 = require("../response");
-const cloudinary_service_1 = require("../cloudinary/cloudinary.service");
 const brand_repository_1 = require("./brand.repository");
+const exception_1 = require("../exception/exception");
 let BrandService = class BrandService {
-    constructor(cloudinary, brandRepository) {
-        this.cloudinary = cloudinary;
+    constructor(brandRepository) {
         this.brandRepository = brandRepository;
     }
     async createBrand(res, brand) {
@@ -29,22 +28,45 @@ let BrandService = class BrandService {
             return newData;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
     async removeBrand(res, id) {
-        const checkBrand = await this.brandRepository.findBrandById(id);
-        if (!checkBrand) {
-            (0, response_1.errCode)(res, id, "Không tìm thấy hãng");
-            return;
+        try {
+            const checkBrand = await this.brandRepository.findBrandById(id);
+            if (!checkBrand) {
+                throw new exception_1.NotFoundException('Không tìm thấy brand!');
+            }
+            await this.brandRepository.deleteBrand(id);
+            return checkBrand;
         }
-        await this.cloudinary.deleteImage(checkBrand.img);
-        await this.brandRepository.deleteBrand(id);
-        (0, response_1.successCode)(res, "");
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
     }
     async getBrandList(res) {
-        const checkBrand = await this.brandRepository.getBrandList();
-        (0, response_1.successCode)(res, checkBrand);
+        try {
+            const checkBrand = await this.brandRepository.getBrandList();
+            return checkBrand;
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
     }
     async updateBrand(res, brand, id_brand) {
         try {
@@ -80,8 +102,7 @@ let BrandService = class BrandService {
 };
 BrandService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [cloudinary_service_1.CloudinaryService,
-        brand_repository_1.BrandRepository])
+    __metadata("design:paramtypes", [brand_repository_1.BrandRepository])
 ], BrandService);
 exports.BrandService = BrandService;
 //# sourceMappingURL=brand.service.js.map

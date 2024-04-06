@@ -64,17 +64,7 @@ let AuthService = class AuthService {
                 throw new exception_1.UnauthorizedException('Mật khẩu không đúng!');
             const tokens = await this.getTokens(checkUser);
             await this.updateRtHash(checkUser.id_user, tokens.refreshToken);
-            let data = {
-                id_user: checkUser.id_user,
-                name: checkUser.name,
-                email: checkUser.email,
-                address: checkUser.address,
-                birthday: checkUser.birthday,
-                phone: checkUser.phone,
-                accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
-            };
-            return data;
+            return this.formatResponse(checkUser, tokens);
         }
         catch (error) {
             if (error instanceof common_1.HttpException) {
@@ -204,43 +194,6 @@ let AuthService = class AuthService {
             }
         }
     }
-    async createTokenForgotPass(email, checkUser, res) {
-        try {
-            if (checkUser.resetPasswordExpire &&
-                (new Date().getTime() - checkUser.resetPasswordExpire.getTime()) / 60000 < 15) {
-                throw new exception_1.TooManyRequestsException('Email đã được gửi trước đó!');
-            }
-            else {
-                const newTokenPass = this.createToken(email, "FORGOT_PASS", "15m");
-                const updateResetPass = await this.prisma.user.update({
-                    where: {
-                        id_user: checkUser.id_user
-                    },
-                    data: {
-                        resetPasswordToken: newTokenPass,
-                        resetPasswordExpire: new Date()
-                    }
-                });
-                if (updateResetPass) {
-                    return {
-                        resetPasswordToken: updateResetPass.resetPasswordToken,
-                        resetPasswordExpire: updateResetPass.resetPasswordExpire
-                    };
-                }
-                else {
-                    throw new common_1.HttpException("UPDATE_RESET_PASSWORD_EXPIRE_FAIL", common_1.HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-        }
-        catch (error) {
-            if (error instanceof common_1.HttpException) {
-                throw error;
-            }
-            else {
-                throw new exception_1.InternalServerErrorException(error.message);
-            }
-        }
-    }
     async resetPass(token, body) {
         try {
             const checkUser = await this.authRepository.checkUserByTokenPass(token);
@@ -283,6 +236,43 @@ let AuthService = class AuthService {
             });
             const message = "Verify thành công";
             return message;
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
+    }
+    async createTokenForgotPass(email, checkUser, res) {
+        try {
+            if (checkUser.resetPasswordExpire &&
+                (new Date().getTime() - checkUser.resetPasswordExpire.getTime()) / 60000 < 15) {
+                throw new exception_1.TooManyRequestsException('Email đã được gửi trước đó!');
+            }
+            else {
+                const newTokenPass = this.createToken(email, "FORGOT_PASS", "15m");
+                const updateResetPass = await this.prisma.user.update({
+                    where: {
+                        id_user: checkUser.id_user
+                    },
+                    data: {
+                        resetPasswordToken: newTokenPass,
+                        resetPasswordExpire: new Date()
+                    }
+                });
+                if (updateResetPass) {
+                    return {
+                        resetPasswordToken: updateResetPass.resetPasswordToken,
+                        resetPasswordExpire: updateResetPass.resetPasswordExpire
+                    };
+                }
+                else {
+                    throw new common_1.HttpException("UPDATE_RESET_PASSWORD_EXPIRE_FAIL", common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
         }
         catch (error) {
             if (error instanceof common_1.HttpException) {

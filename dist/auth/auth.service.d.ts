@@ -5,7 +5,6 @@ import { AuthRepository } from './auth.repository';
 import { LoginInterface, LoginPayloadInterface } from './interface/login';
 import { SignUpInterfaceRes, SignUpReqInterface } from './interface/sign-up';
 import { ForgotPasswordInterface, TokenForgotInterface } from './interface/forgot-password';
-import { AuthDto } from './dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPassInterface } from './interface/reset-pass';
 import { Tokens } from './type/token.type';
@@ -20,17 +19,14 @@ export declare class AuthService {
     constructor(jwtService: JwtService, config: ConfigService, authRepository: AuthRepository, mailService: MailerService);
     prisma: PrismaClient<import(".prisma/client").Prisma.PrismaClientOptions, never, import("@prisma/client/runtime/library").DefaultArgs>;
     profile(userId: number): Promise<ProfileOrderInterface>;
-    login(res: Response, user: LoginInterface): Promise<LoginPayloadInterface>;
+    login(res: Response, user: LoginInterface): Promise<SignUpInterfaceRes>;
     loginAdmin(user: LoginInterface): Promise<LoginPayloadInterface>;
     signUp(user: SignUpReqInterface): Promise<SignUpInterfaceRes>;
     refreshToken(user: refreshTokensInterface): Promise<Tokens>;
     forgotPassword(res: any, user: ForgotPasswordInterface): Promise<TokenForgotInterface>;
-    createTokenForgotPass(email: string, checkUser: AuthDto, res: any): Promise<{
-        resetPasswordToken: string;
-        resetPasswordExpire: Date;
-    }>;
     resetPass(token: string, body: ResetPassInterface): Promise<String>;
     verifyEmail(token: string): Promise<string>;
+    private createTokenForgotPass;
     private sendVerificationEmail;
     private formatResponse;
     private hashData;

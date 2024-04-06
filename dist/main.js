@@ -9,12 +9,12 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     const port = process.env.PORT || 8080;
     app.useGlobalPipes(new common_1.ValidationPipe());
-    const config = new swagger_1.DocumentBuilder().setTitle("Swagger").addBearerAuth().build();
-    const document = swagger_1.SwaggerModule.createDocument(app, config);
-    swagger_1.SwaggerModule.setup("swagger", app, document);
     app.enableCors();
     app.use(express.static("."));
-    await app.listen(8080);
+    const config = new swagger_1.DocumentBuilder().setTitle("Swagger").addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'access-token').build();
+    const document = swagger_1.SwaggerModule.createDocument(app, config);
+    swagger_1.SwaggerModule.setup("swagger", app, document);
+    await app.listen(port);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
