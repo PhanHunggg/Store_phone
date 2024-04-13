@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Response, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, HttpException, Res } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { ApiTags } from '@nestjs/swagger';
 import { ColorInterface } from './interface';
 import { Color } from '@prisma/client';
 import { successCode } from 'src/response';
 import { InternalServerErrorException } from 'src/exception/exception';
+import { Response } from 'express';
 
 @ApiTags("Color")
 @Controller('color')
@@ -12,9 +13,9 @@ export class ColorController {
   constructor(private readonly colorService: ColorService) { }
 
   @Post('/create-color')
-  async create(@Body() createColorDto: ColorInterface, @Response() res: any,) {
+  async create(@Body() createColorDto: ColorInterface, @Res() res: Response,) {
     try {
-      const create: ColorInterface = await this.colorService.create(createColorDto, res);
+      const create: Color = await this.colorService.create(createColorDto);
       return successCode(res, create)
     } catch (error) {
       if (error instanceof HttpException) {
@@ -26,11 +27,11 @@ export class ColorController {
   }
 
   @Get('/color-list')
-  async getColorList(@Response() res: any) {
+  async getColorList(@Res() res: Response) {
 
     try {
-      const color: Color[] = await this.colorService.getColorList(res);
-      return successCode(res, color)
+      const colors: Color[] = await this.colorService.getColorList();
+      return successCode(res, colors)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -41,9 +42,9 @@ export class ColorController {
   }
 
   @Delete('/delete-color/:id')
-  async remove(@Param('id') id: string, @Response() res: any) {
+  async remove(@Param('id') id: string, @Res() res: Response) {
     try {
-      const checkColor: Color = await this.colorService.remove(+id, res);
+      const checkColor: Color = await this.colorService.remove(+id);
       return successCode(res, checkColor)
     } catch (error) {
       if (error instanceof HttpException) {
@@ -55,9 +56,9 @@ export class ColorController {
   }
 
   @Get('/find-color/:id')
-  async findColor(@Param('id') id: string, @Response() res: any) {
+  async findColor(@Param('id') id: string, @Res() res: Response) {
     try {
-      const color: Color = await this.colorService.findColor(res, +id);
+      const color: Color = await this.colorService.findColor(+id);
       return successCode(res, color)
     } catch (error) {
       if (error instanceof HttpException) {

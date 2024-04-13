@@ -12,66 +12,83 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CategoryBrandService = void 0;
 const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
-const response_1 = require("../response");
 const category_brand_repository_1 = require("./category-brand.repository");
+const exception_1 = require("../exception/exception");
 let CategoryBrandService = class CategoryBrandService {
     constructor(categoryBrandRepository) {
         this.categoryBrandRepository = categoryBrandRepository;
         this.prisma = new client_1.PrismaClient();
     }
-    async create(categoryBrand, res) {
+    async create(categoryBrand) {
         try {
-            const newData = {
-                id_brand: categoryBrand.id_brand,
-                id_category: categoryBrand.id_category
-            };
-            await this.categoryBrandRepository.createCategoryBrand(newData);
-            (0, response_1.successCode)(res, newData);
+            const checkCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand);
+            if (checkCategoryBrand) {
+                throw new exception_1.ConflictException('Loại sản phẩm trong hãng đã tồn tại!');
+            }
+            const newData = await this.categoryBrandRepository.createCategoryBrand(categoryBrand);
+            return newData;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
-    async findAll(res) {
+    async findAll() {
         try {
             const checkCategoryBrand = await this.categoryBrandRepository.findAll();
-            if (!!!checkCategoryBrand.length) {
-                (0, response_1.errCode)(res, checkCategoryBrand, "Không tìm thấy loại sản phẩm!");
-                return;
-            }
-            (0, response_1.successCode)(res, checkCategoryBrand);
+            return checkCategoryBrand;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
-    async deleteCategoryBrand(id_categoryBrand, res) {
+    async deleteCategoryBrand(id_categoryBrand) {
         try {
             const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand);
             if (!checkCategory) {
-                (0, response_1.errCode)(res, checkCategory, "Không tìm thấy loại sản phẩm theo hãng!");
-                return;
+                throw new exception_1.NotFoundException('Không tìm thấy loại sản phẩm trong hãng!');
             }
             await this.categoryBrandRepository.deleteCategoryBrand(id_categoryBrand);
-            (0, response_1.successCode)(res, '');
+            return checkCategory;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
-    async updateCategoryBrand(res, categoryBrand, id_categoryBrand) {
+    async updateCategoryBrand(categoryBrand, id_categoryBrand) {
         try {
             const checkCategory = await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand);
             if (!checkCategory) {
-                (0, response_1.errCode)(res, id_categoryBrand, "Không tìm thấy loại sản phẩm!");
-                return;
+                throw new exception_1.NotFoundException('Không tìm thấy loại sản phẩm trong hãng!');
             }
-            const newData = categoryBrand;
-            await this.categoryBrandRepository.updateCategoryBrand(newData, id_categoryBrand);
-            (0, response_1.successCode)(res, newData);
+            const foundCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand);
+            if (foundCategoryBrand) {
+                throw new exception_1.ConflictException('Loại sản phẩm trong hãng đã tồn tại!');
+            }
+            const newData = await this.categoryBrandRepository.updateCategoryBrand(categoryBrand, id_categoryBrand);
+            return newData;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
 };

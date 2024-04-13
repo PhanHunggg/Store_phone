@@ -1,10 +1,19 @@
 import { ColorRepository } from './color.repository';
 import { ColorInterface } from './interface';
+import { Color } from '@prisma/client';
 export declare class ColorService {
     private colorRepository;
     constructor(colorRepository: ColorRepository);
-    create(createColorDto: ColorInterface, res: any): Promise<void>;
-    getColorList(res: any): Promise<void>;
-    remove(id: number, res: any): Promise<void>;
-    findColor(res: any, id: number): Promise<void>;
+    create(createColorDto: ColorInterface): Promise<Color>;
+    getColorList(): Promise<Color[]>;
+    remove(id: number): Promise<{
+        id_color: number;
+        name: string;
+        hex: string;
+    }>;
+    findColor(id: number): Promise<{
+        id_color: number;
+        name: string;
+        hex: string;
+    }>;
 }

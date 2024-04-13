@@ -32,8 +32,8 @@ export class CategoryBrandController {
   ) {
 
     try {
-    const brand: CategoryBrandInterface = await this.categoryBrandService.create(createCategoryBrandDto);
-      return successCode(res, brand)
+    const categoryBrand: CategoryBrand = await this.categoryBrandService.create(createCategoryBrandDto);
+      return successCode(res, categoryBrand)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -44,9 +44,9 @@ export class CategoryBrandController {
   }
 
   @Get('/categoryBrand-list')
-  async findAll(@Res() res: any) {
+  async findAll(@Res() res: Response) {
     try {
-    const checkCategoryBrand: CategoryBrand[]  = await this.categoryBrandService.findAll(res);
+    const checkCategoryBrand: CategoryBrand[]  = await this.categoryBrandService.findAll();
       return successCode(res, checkCategoryBrand)
     } catch (error) {
       if (error instanceof HttpException) {
@@ -60,12 +60,11 @@ export class CategoryBrandController {
   @Delete('/delete-categoryBrand/:id_categoryBrand')
   async deleteCategoryBrand(
     @Param('id_categoryBrand') id_categoryBrand: string,
-    @Res() res: any,
+    @Res() res: Response,
   ) {
     try {
       const categoryBrand: CategoryBrand = await this.categoryBrandService.deleteCategoryBrand(
-        +id_categoryBrand,
-        res,
+        +id_categoryBrand
       );
         return successCode(res, categoryBrand, "Xoa thanh cong")
       } catch (error) {
@@ -81,12 +80,11 @@ export class CategoryBrandController {
   async updateCategoryBrand(
     @Param('id_categoryBrand') id_categoryBrand: string,
     @Body() categoryBrand: CategoryBrandInterface,
-    @Res() res: any,
+    @Res() res: Response,
   ) {
   
     try {
       const updateCategoryBrand: CategoryBrandInterface = await this.categoryBrandService.updateCategoryBrand(
-        res,
         categoryBrand,
         +id_categoryBrand,
       );

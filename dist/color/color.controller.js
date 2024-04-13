@@ -17,53 +17,99 @@ const common_1 = require("@nestjs/common");
 const color_service_1 = require("./color.service");
 const swagger_1 = require("@nestjs/swagger");
 const interface_1 = require("./interface");
+const response_1 = require("../response");
+const exception_1 = require("../exception/exception");
 let ColorController = class ColorController {
     constructor(colorService) {
         this.colorService = colorService;
     }
-    create(createColorDto, res) {
-        return this.colorService.create(createColorDto, res);
+    async create(createColorDto, res) {
+        try {
+            const create = await this.colorService.create(createColorDto);
+            return (0, response_1.successCode)(res, create);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    getColorList(res) {
-        return this.colorService.getColorList(res);
+    async getColorList(res) {
+        try {
+            const colors = await this.colorService.getColorList();
+            return (0, response_1.successCode)(res, colors);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    remove(id, res) {
-        return this.colorService.remove(+id, res);
+    async remove(id, res) {
+        try {
+            const checkColor = await this.colorService.remove(+id);
+            return (0, response_1.successCode)(res, checkColor);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
     }
-    findColor(id, res) {
-        return this.colorService.findColor(res, +id);
+    async findColor(id, res) {
+        try {
+            const color = await this.colorService.findColor(+id);
+            return (0, response_1.successCode)(res, color);
+        }
+        catch (error) {
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
+        }
     }
 };
 __decorate([
     (0, common_1.Post)('/create-color'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Response)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [interface_1.ColorInterface, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ColorController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)('/color-list'),
-    __param(0, (0, common_1.Response)()),
+    __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ColorController.prototype, "getColorList", null);
 __decorate([
     (0, common_1.Delete)('/delete-color/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Response)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ColorController.prototype, "remove", null);
 __decorate([
     (0, common_1.Get)('/find-color/:id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Response)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ColorController.prototype, "findColor", null);
 ColorController = __decorate([
     (0, swagger_1.ApiTags)("Color"),

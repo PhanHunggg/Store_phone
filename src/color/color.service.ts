@@ -10,10 +10,10 @@ export class ColorService {
 
   constructor(private colorRepository: ColorRepository) { }
 
-  async create(createColorDto: ColorInterface, res) {
+  async create(createColorDto: ColorInterface): Promise<Color> {
     try {
-      await this.colorRepository.create(createColorDto)
-      return createColorDto
+      const color: Color = await this.colorRepository.create(createColorDto)
+      return color
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -23,7 +23,7 @@ export class ColorService {
     }
   }
 
-  async getColorList(res: any):Promise<Color[]> {
+  async getColorList(): Promise<Color[]> {
     try {
       const checkColor: Color[] = await this.colorRepository.getColorList()
       return checkColor
@@ -37,16 +37,16 @@ export class ColorService {
     }
   }
 
-  async remove(id: number, res: any) {
+  async remove(id: number) {
     try {
-    const checkColor: Color = await this.colorRepository.findColor(id)
+      const checkColor: Color = await this.colorRepository.findColor(id)
 
-    if (!checkColor) {
-      throw new NotFoundException('Color not found')
-    }
+      if (!checkColor) {
+        throw new NotFoundException('Color not found')
+      }
 
-    await this.colorRepository.deleteColor(id)
-    return checkColor
+      await this.colorRepository.deleteColor(id)
+      return checkColor
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -56,7 +56,7 @@ export class ColorService {
     }
   }
 
-  async findColor(res: any, id: number) {
+  async findColor( id: number) {
     try {
       const color: Color = await this.colorRepository.findColor(id)
       return color
