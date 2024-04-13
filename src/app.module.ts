@@ -16,7 +16,7 @@ import { AtGuard } from './common/guards/at.guards';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-
+const path = require('node:path'); 
 @Module({
   imports: [AuthModule, ConfigModule.forRoot({ isGlobal: true }), ProductModule, BrandModule, CategoryModule, CategoryBrandModule, CloudinaryModule, ColorModule, UserModule, OrderModule, MailerModule.forRootAsync({
     imports: [ConfigModule],
@@ -33,7 +33,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
         from: `"No Reply" <${config.get("MAIL_FORM")}>`
       },
       template: {
-        dir: join(__dirname, 'src/template-mail/email'),
+        dir: path.resolve(__dirname, "../src/template-mail/email"),
         adapter: new HandlebarsAdapter(),
         options: {
           strict: true

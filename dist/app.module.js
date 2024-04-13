@@ -23,8 +23,8 @@ const order_module_1 = require("./order/order.module");
 const core_1 = require("@nestjs/core");
 const at_guards_1 = require("./common/guards/at.guards");
 const mailer_1 = require("@nestjs-modules/mailer");
-const path_1 = require("path");
 const handlebars_adapter_1 = require("@nestjs-modules/mailer/dist/adapters/handlebars.adapter");
+const path = require('node:path');
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -44,7 +44,7 @@ AppModule = __decorate([
                         from: `"No Reply" <${config.get("MAIL_FORM")}>`
                     },
                     template: {
-                        dir: (0, path_1.join)(__dirname, 'src/template-mail/email'),
+                        dir: path.resolve(__dirname, "../src/template-mail/email"),
                         adapter: new handlebars_adapter_1.HandlebarsAdapter(),
                         options: {
                             strict: true
