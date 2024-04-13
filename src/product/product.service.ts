@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Product } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ProductRepository } from './product.repository';
@@ -32,7 +32,9 @@ export class ProductService {
 
   prisma = new PrismaClient();
 
-  async createProduct(createProduct: CreateProductReqInterface) {
+  async createProduct(
+    createProduct: CreateProductReqInterface,
+  ): Promise<Product> {
     try {
       const categoryBrand: CategoryBrandInterface = {
         id_brand: createProduct.brand,
@@ -88,7 +90,7 @@ export class ProductService {
     }
   }
 
-  async getProductList() {
+  async getProductList(): Promise<Product[]> {
     try {
       const checkProduct = await this.productRepository.getProductList();
 
@@ -102,7 +104,7 @@ export class ProductService {
     }
   }
 
-  async findProduct(id: number) {
+  async findProduct(id: number): Promise<Product> {
     try {
       const checkProduct = await this.productRepository.findProduct(id);
 
@@ -137,7 +139,7 @@ export class ProductService {
     } catch (error) {}
   }
 
-  async deleteProduct(id_product: number) {
+  async deleteProduct(id_product: number): Promise<string> {
     const checkProduct = await this.productRepository.findProduct(id_product);
 
     if (!checkProduct) {
@@ -149,7 +151,7 @@ export class ProductService {
     return '';
   }
 
-  async updateProduct(id: number, product: UpdateProductReqInterface) {
+  async updateProduct(id: number, product: UpdateProductReqInterface): Promise<UpdateProductInterface> {
     try {
       const checkProduct = await this.productRepository.findProduct(id);
       if (!checkProduct) {
@@ -194,7 +196,7 @@ export class ProductService {
     }
   }
 
-  async getEquivalentProduct(id: number) {
+  async getEquivalentProduct(id: number): Promise<Product[]> {
     try {
       const productList = await this.productRepository.getEquivalentProduct(id);
 
@@ -212,7 +214,9 @@ export class ProductService {
     }
   }
 
-  async findByCategoryBrand(brandCategory: CategoryBrandInterface) {
+  async findByCategoryBrand(
+    brandCategory: CategoryBrandInterface,
+  ): Promise<Product[]> {
     try {
       const checkCategoryBrand =
         await this.categoryBrandRepository.findByBrandCategory(brandCategory);
@@ -239,7 +243,7 @@ export class ProductService {
     }
   }
 
-  async findProductByBrand(id_brand: number) {
+  async findProductByBrand(id_brand: number): Promise<Product[]> {
     try {
       const checkBrand = await this.brandRepository.findBrandById(id_brand);
 

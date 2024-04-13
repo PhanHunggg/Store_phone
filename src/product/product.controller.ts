@@ -17,10 +17,11 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CategoryBrandInterface } from 'src/category-brand/interface';
 import { Public } from 'src/common/decorators/public.decorator';
 import { CreateProductReqInterface } from './interface/create-product';
-import { UpdateProductReqInterface } from './interface/update-product';
+import { UpdateProductInterface, UpdateProductReqInterface } from './interface/update-product';
 import { successCode } from 'src/response';
 import { Response } from 'express';
 import { InternalServerErrorException } from 'src/exception/exception';
+import { Product } from '@prisma/client';
 
 @ApiTags('Product')
 @Controller('product')
@@ -34,7 +35,7 @@ export class ProductController {
     @Param('id_categoryBrand') id_categoryBrand: string,
   ) {
     try {
-      const result = await this.productService.getEquivalentProduct(
+      const result: Product[] = await this.productService.getEquivalentProduct(
         +id_categoryBrand,
       );
 
@@ -55,7 +56,9 @@ export class ProductController {
     @Body() body: CategoryBrandInterface,
   ) {
     try {
-      const result = await this.productService.findByCategoryBrand(body);
+      const result: Product[] = await this.productService.findByCategoryBrand(
+        body,
+      );
 
       if (result) return successCode(res, result);
     } catch (error) {
@@ -74,7 +77,9 @@ export class ProductController {
     @Param('id_brand') id_brand: string,
   ) {
     try {
-      const result = await this.productService.findProductByBrand(+id_brand);
+      const result: Product[] = await this.productService.findProductByBrand(
+        +id_brand,
+      );
 
       if (result) return successCode(res, result);
     } catch (error) {
@@ -90,7 +95,7 @@ export class ProductController {
   @Get('/product-list')
   async getProductList(@Res() res: Response) {
     try {
-      const result = await this.productService.getProductList();
+      const result: Product[] = await this.productService.getProductList();
 
       if (result) return successCode(res, result);
     } catch (error) {
@@ -106,7 +111,7 @@ export class ProductController {
   @Get('/find-product/:id')
   async findProduct(@Param('id') id: string, @Res() res: Response) {
     try {
-      const result = await this.productService.findProduct(+id);
+      const result: Product = await this.productService.findProduct(+id);
 
       if (result) return successCode(res, result);
     } catch (error) {
@@ -124,7 +129,7 @@ export class ProductController {
     @Res() res: Response,
   ) {
     try {
-      const result = await this.productService.createProduct(createProductDto);
+      const result: Product = await this.productService.createProduct(createProductDto);
 
       if (result) return successCode(res, result);
     } catch (error) {
@@ -144,7 +149,7 @@ export class ProductController {
     @Body() body: UpdateProductReqInterface,
   ) {
     try {
-      const result = await this.productService.updateProduct(+id, body);
+      const result: UpdateProductInterface = await this.productService.updateProduct(+id, body);
       if (result) return successCode(res, result);
     } catch (error) {
       if (error instanceof HttpException) {
@@ -161,7 +166,7 @@ export class ProductController {
     @Res() res: Response,
   ) {
     try {
-      const result = await this.productService.deleteProduct(+id_product);
+      const result: string = await this.productService.deleteProduct(+id_product);
       return successCode(res, result);
     } catch (error) {
       if (error instanceof HttpException) {
