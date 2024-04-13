@@ -18,11 +18,11 @@ export class CategoryBrandRepository {
         return await this.prisma.categoryBrand.findMany()
     }
 
-    async findByBrandCategory(brandCategory: CategoryBrandInterface) {
+    async findByBrandCategory(categoryBrand: CategoryBrandInterface) {
         return await this.prisma.categoryBrand.findFirst({
             where: {
-                id_brand: brandCategory.id_brand,
-                id_category: brandCategory.id_category
+                id_brand: categoryBrand.id_brand,
+                id_category: categoryBrand.id_category
             }
         })
     }

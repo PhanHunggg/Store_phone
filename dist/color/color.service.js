@@ -12,50 +12,69 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ColorService = void 0;
 const common_1 = require("@nestjs/common");
 const color_repository_1 = require("./color.repository");
-const response_1 = require("../response");
+const exception_1 = require("../exception/exception");
 let ColorService = class ColorService {
     constructor(colorRepository) {
         this.colorRepository = colorRepository;
     }
-    async create(createColorDto, res) {
+    async create(createColorDto) {
         try {
-            await this.colorRepository.create(createColorDto);
-            (0, response_1.successCode)(res, createColorDto);
+            const color = await this.colorRepository.create(createColorDto);
+            return color;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
-    async getColorList(res) {
+    async getColorList() {
         try {
             const checkColor = await this.colorRepository.getColorList();
-            (0, response_1.successCode)(res, checkColor);
+            return checkColor;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
-    async remove(id, res) {
+    async remove(id) {
         try {
             const checkColor = await this.colorRepository.findColor(id);
             if (!checkColor) {
-                (0, response_1.errCode)(res, checkColor, "Không tìm thấy màu!");
-                return;
+                throw new common_1.NotFoundException('Color not found');
             }
             await this.colorRepository.deleteColor(id);
-            (0, response_1.successCode)(res, '');
+            return checkColor;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
-    async findColor(res, id) {
+    async findColor(id) {
         try {
             const color = await this.colorRepository.findColor(id);
-            (0, response_1.successCode)(res, color);
+            return color;
         }
         catch (error) {
-            (0, response_1.failCode)(res, error.message);
+            if (error instanceof common_1.HttpException) {
+                throw error;
+            }
+            else {
+                throw new exception_1.InternalServerErrorException(error.message);
+            }
         }
     }
 };

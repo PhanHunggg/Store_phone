@@ -12,7 +12,7 @@ export declare class CategoryBrandRepository {
         id_brand: number;
         id_category: number;
     }[]>;
-    findByBrandCategory(brandCategory: CategoryBrandInterface): Promise<{
+    findByBrandCategory(categoryBrand: CategoryBrandInterface): Promise<{
         id_categoryBrand: number;
         id_brand: number;
         id_category: number;
