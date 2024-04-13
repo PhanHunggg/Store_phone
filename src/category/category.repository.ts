@@ -21,6 +21,16 @@ export class CategoryRepository {
         })
     }
 
+    async findCategoryByName(name: string) {
+        return this.prisma.category.findFirst({
+          where: {
+            name: {
+              equals: name,
+            },
+          },
+        });
+      }
+
     async updateCategory(id: number, data: CreateCategoryInterface) {
         return this.prisma.category.update({
             where: {
