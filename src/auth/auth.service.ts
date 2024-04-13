@@ -8,7 +8,6 @@ import * as bcrypt from 'bcrypt';
 import { LoginInterface, LoginPayloadInterface } from './interface/login';
 import { SignUpInterface, SignUpInterfaceRes, SignUpReqInterface } from './interface/sign-up';
 import { ForgotPasswordInterface, TokenForgotInterface } from './interface/forgot-password';
-import { AuthDto } from './dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPassInterface } from './interface/reset-pass';
 import { Tokens } from './type/token.type';
@@ -290,7 +289,7 @@ export class AuthService {
         }
     }
 
-    private async createTokenForgotPass(email: string, checkUser: AuthDto, res: any) {
+    private async createTokenForgotPass(email: string, checkUser: User, res: any) {
         try {
 
             if (
@@ -382,7 +381,7 @@ export class AuthService {
         return this.jwtService.sign({ data: data }, { secret: this.config.get(secret), expiresIn: expiresIn })
     }
 
-    private async getTokens(payload: AuthDto): Promise<Tokens> {
+    private async getTokens(payload: User): Promise<Tokens> {
 
         const data: JwtPayload = {
             id_user: payload.id_user,

@@ -11,7 +11,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ColorModule } from './color/color.module';
 import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards/at.guards';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { join } from 'path';

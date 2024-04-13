@@ -97,7 +97,8 @@ let AuthService = class AuthService {
                 birthday: checkUser.birthday,
                 phone: checkUser.phone,
                 accessToken: tokens.accessToken,
-                refreshToken: tokens.refreshToken
+                refreshToken: tokens.refreshToken,
+                role: checkUser.role
             };
             return data;
         }

@@ -11,4 +11,5 @@ export interface LoginPayloadInterface {
     phone: string;
     accessToken?: string;
     refreshToken?: string;
+    role?: boolean;
 }
