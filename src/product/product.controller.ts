@@ -17,7 +17,10 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CategoryBrandInterface } from 'src/category-brand/interface';
 import { Public } from 'src/common/decorators/public.decorator';
 import { CreateProductReqInterface } from './interface/create-product';
-import { UpdateProductInterface, UpdateProductReqInterface } from './interface/update-product';
+import {
+  UpdateProductInterface,
+  UpdateProductReqInterface,
+} from './interface/update-product';
 import { successCode } from 'src/response';
 import { Response } from 'express';
 import { InternalServerErrorException } from 'src/exception/exception';
@@ -129,7 +132,9 @@ export class ProductController {
     @Res() res: Response,
   ) {
     try {
-      const result: Product = await this.productService.createProduct(createProductDto);
+      const result: Product = await this.productService.createProduct(
+        createProductDto,
+      );
 
       if (result) return successCode(res, result);
     } catch (error) {
@@ -149,7 +154,8 @@ export class ProductController {
     @Body() body: UpdateProductReqInterface,
   ) {
     try {
-      const result: UpdateProductInterface = await this.productService.updateProduct(+id, body);
+      const result: UpdateProductInterface =
+        await this.productService.updateProduct(+id, body);
       if (result) return successCode(res, result);
     } catch (error) {
       if (error instanceof HttpException) {
@@ -166,7 +172,9 @@ export class ProductController {
     @Res() res: Response,
   ) {
     try {
-      const result: string = await this.productService.deleteProduct(+id_product);
+      const result: Product = await this.productService.deleteProduct(
+        +id_product,
+      );
       return successCode(res, result);
     } catch (error) {
       if (error instanceof HttpException) {

@@ -139,16 +139,16 @@ export class ProductService {
     } catch (error) {}
   }
 
-  async deleteProduct(id_product: number): Promise<string> {
+  async deleteProduct(id_product: number): Promise<Product> {
     const checkProduct = await this.productRepository.findProduct(id_product);
-
+    const userDeleted = checkProduct
     if (!checkProduct) {
       throw new NotFoundException('Không tìm thấy sản phẩm!');
     }
 
     await this.productRepository.deleteProduct(id_product);
 
-    return '';
+    return userDeleted;
   }
 
   async updateProduct(id: number, product: UpdateProductReqInterface): Promise<UpdateProductInterface> {
