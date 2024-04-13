@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColorRepository } from './color.repository';
 import { ColorInterface } from './interface';
 import { errCode, failCode, successCode } from 'src/response';
+import { Color } from '@prisma/client';
+import { InternalServerErrorException } from 'src/exception/exception';
 
 @Injectable()
 export class ColorService {
@@ -11,46 +13,60 @@ export class ColorService {
   async create(createColorDto: ColorInterface, res) {
     try {
       await this.colorRepository.create(createColorDto)
-      successCode(res, createColorDto)
+      return createColorDto
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
-  async getColorList(res: any) {
+  async getColorList(res: any):Promise<Color[]> {
     try {
-      const checkColor = await this.colorRepository.getColorList()
+      const checkColor: Color[] = await this.colorRepository.getColorList()
+      return checkColor
 
-      successCode(res, checkColor)
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
   async remove(id: number, res: any) {
     try {
-    const checkColor = await this.colorRepository.findColor(id)
+    const checkColor: Color = await this.colorRepository.findColor(id)
 
     if (!checkColor) {
-      errCode(res, checkColor, "Không tìm thấy màu!")
-      return
+      throw new NotFoundException('Color not found')
     }
 
     await this.colorRepository.deleteColor(id)
-
-    successCode(res, '')
+    return checkColor
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
   async findColor(res: any, id: number) {
     try {
-      const color = await this.colorRepository.findColor(id)
+      const color: Color = await this.colorRepository.findColor(id)
+      return color
 
-      successCode(res, color)
     } catch (error) {
-      failCode(res, error.message)
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
     }
   }
 
