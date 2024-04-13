@@ -3,7 +3,7 @@ import { CreateCategoryInterface } from './interface';
 import { Category, PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { CategoryRepository } from './category.repository';
-import { InternalServerErrorException, NotFoundException } from 'src/exception/exception';
+import { ConflictException, InternalServerErrorException, NotFoundException } from 'src/exception/exception';
 
 @Injectable()
 export class CategoryService {
@@ -15,9 +15,17 @@ export class CategoryService {
 
   async createCategory(category: CreateCategoryInterface): Promise<CreateCategoryInterface> {
     try {
+
+      const checkCategory = await this.categoryRepository.findCategoryByName(category.name);
+      
+      if (checkCategory) {
+        throw new ConflictException('Loại sản phẩm đã tồn tại!');
+      }
+
       const newData: CreateCategoryInterface = {
         name: category.name,
       };
+
       await this.categoryRepository.createCategory(newData)
       return newData
     } catch (error) {

@@ -43,7 +43,7 @@ export class BrandController {
   }
 
   @Get('/brand-list')
-  async getBrandList(@Res() res: Response,): Promise<Response> {
+  async getBrandList(@Res() res: Response): Promise<Response> {
     try {
       const brandList: Brand[] = await this.brandService.getBrandList();
       return successCode(res, brandList)
@@ -74,7 +74,7 @@ export class BrandController {
   @Get('/find-brand/:id')
   async findBrand(@Res() res: Response, @Param('id') id: string): Promise<Response> {
     try {
-      const brand: BrandInterface = await this.brandService.findBrand(+id);
+      const brand: Brand = await this.brandService.findBrand(+id);
       return successCode(res, brand)
     } catch (error) {
       if (error instanceof HttpException) {

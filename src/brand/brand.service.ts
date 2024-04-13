@@ -3,7 +3,7 @@ import { Brand, PrismaClient } from '@prisma/client';
 import { errCode, failCode, successCode } from 'src/response';
 import { BrandInterface, CreateBrandInterface } from './interface';
 import { BrandRepository } from './brand.repository';
-import { InternalServerErrorException, NotFoundException } from 'src/exception/exception';
+import { ConflictException, InternalServerErrorException, NotFoundException } from 'src/exception/exception';
 import { promises } from 'dns';
 import { error } from 'console';
 
@@ -16,6 +16,12 @@ export class BrandService {
 
   async createBrand(brand: CreateBrandInterface,): Promise<BrandInterface> {
     try {
+
+      const checkBrand = await this.brandRepository.findBrandByName(brand.name);
+      
+      if (checkBrand) {
+        throw new ConflictException('Hãng đã tồn tại!');
+      }
       const newData: BrandInterface = {
         name: brand.name,
         img: brand.banner

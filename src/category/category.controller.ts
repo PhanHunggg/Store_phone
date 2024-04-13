@@ -34,8 +34,8 @@ export class CategoryController {
   @Put("/update-category/:id_category")
   async updateCategory(@Param('id_category') id_category: string, @Body() createCategoryDto: CreateCategoryInterface, @Res() res: Response): Promise<Response> {
     try {
-      const brand: CreateCategoryInterface = await this.categoryService.updateCategory(createCategoryDto, +id_category);
-      return createCode(res, brand)
+      const category: Category = await this.categoryService.updateCategory(createCategoryDto, +id_category);
+      return createCode(res, category)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -48,8 +48,8 @@ export class CategoryController {
   @Get('/category-list')
   async getCategoryList(@Res() res: Response): Promise<Response> {
     try {
-      const brand: Category[] = await this.categoryService.getCategoryList();
-      return successCode(res, brand)
+      const category: Category[] = await this.categoryService.getCategoryList();
+      return successCode(res, category)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -62,8 +62,8 @@ export class CategoryController {
   @Get('/find-category/:id')
   async findCategory(@Param('id') id: string, @Res() res: Response): Promise<Response> {
     try {
-      const brand: Category = await this.categoryService.findCategory(+id);
-      return successCode(res, brand)
+      const category: Category = await this.categoryService.findCategory(+id);
+      return successCode(res, category)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -78,8 +78,8 @@ export class CategoryController {
   @Delete('/delete-category/:id_category')
   async deleteCategory(@Param('id_category') id_category: string, @Res() res: Response): Promise<Response> {
     try {
-      const brand: Category = await this.categoryService.deleteCategory(+id_category);
-      return successCode(res, brand)
+      const category: Category = await this.categoryService.deleteCategory(+id_category);
+      return successCode(res, category)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
