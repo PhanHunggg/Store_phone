@@ -17,7 +17,7 @@ export class CategoryService {
     try {
 
       const checkCategory = await this.categoryRepository.findCategoryByName(category.name);
-      
+
       if (checkCategory) {
         throw new ConflictException('Loại sản phẩm đã tồn tại!');
       }
@@ -37,7 +37,7 @@ export class CategoryService {
     }
   }
 
-  async getCategoryList():Promise<Category[]> {
+  async getCategoryList(): Promise<Category[]> {
     try {
       const checkCategory: Category[] = await this.categoryRepository.getCategoryList()
 
@@ -62,9 +62,9 @@ export class CategoryService {
         throw new NotFoundException("Không tìm thấy loại sản phẩm")
       }
 
-      await this.categoryRepository.updateCategory(id_category, category)
+      const newData = await this.categoryRepository.updateCategory(id_category, category)
 
-      return checkCategory;
+      return newData;
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -83,7 +83,7 @@ export class CategoryService {
         throw new NotFoundException("Không tìm thấy loại sản phẩm")
       }
       await this.categoryRepository.deleteCategory(id_category)
-      
+
       return checkCategory;
 
     } catch (error) {
