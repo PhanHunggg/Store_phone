@@ -1,6 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
-import { errCode, failCode, successCode } from 'src/response';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { UpdateUserInterface } from './interface/update-user';
 import { UserInterface } from './interface/user';
@@ -8,113 +6,71 @@ import { ProfileInterface } from 'src/auth/interface/profile';
 
 @Injectable()
 export class UserService {
-
     constructor(private userRepository: UserRepository) { }
 
-    prisma = new PrismaClient()
-
-    async getUserList(res: any) {
+    async getUserList(): Promise<ProfileInterface[]> {
         try {
-            const checkUser = await this.userRepository.getUserList()
+            const users = await this.userRepository.getUserList()
 
-
-            const filteredUsers: ProfileInterface[] = checkUser.map((user) => ({
+            const filteredUsers: ProfileInterface[] = users.map((user) => ({
                 id_user: user.id_user,
                 name: user.name,
                 email: user.email,
                 birthday: user.birthday,
                 address: user.address,
                 phone: user.phone
-            })
-            )
+            }));
 
-            successCode(res, filteredUsers)
+            return filteredUsers;
         } catch (error) {
-            failCode(res, error.message)
-
+            throw new InternalServerErrorException(error.message);
         }
     }
 
-    async findUser(res: any, id: number) {
+    async findUser(id: number): Promise<ProfileInterface> {
+        const user = await this.userRepository.findUser(id)
+
+        if (!user) {
+            throw new NotFoundException("Không tìm thấy user");
+        }
+
+        const filteredUser: ProfileInterface = {
+            id_user: user.id_user,
+            name: user.name,
+            email: user.email,
+            birthday: user.birthday,
+            address: user.address,
+            phone: user.phone,
+        };
+
+        return filteredUser;
+    }
+
+    async updateUser(id: number, updateUser: UserInterface): Promise<UserInterface>  {
+        const user = await this.userRepository.findUser(id)
+
+        if (!user) {
+            throw new NotFoundException("Không tìm thấy user");
+        }
+
         try {
-            const checkUser = await this.userRepository.findUser(id)
-
-            if (!checkUser) {
-                errCode(res, checkUser, "Không tìm thấy user")
-                return
-            }
-
-            const filteredUser: ProfileInterface = {
-                id_user: checkUser.id_user,
-                name: checkUser.name,
-                email: checkUser.email,
-                birthday: checkUser.birthday,
-                address: checkUser.address,
-                phone: checkUser.phone,
-            };
-
-            successCode(res, filteredUser)
+            return await this.userRepository.updateUser(id, updateUser);
         } catch (error) {
-            failCode(res, error.message)
-
+            throw new InternalServerErrorException(error.message);
         }
     }
 
-    async deleteUser(res: any, id: number) {
-        try {
-            const checkUser = await this.userRepository.findUser(id)
+    async deleteUser(id: number): Promise<void> {
+        const user = await this.userRepository.findUser(id)
 
-            if (!checkUser) {
-                errCode(res, checkUser, "Không tìm thấy user")
-                return
-            }
-
-            await this.userRepository.delete(id)
-
-            successCode(res, "")
-        } catch (error) {
-            failCode(res, error.message)
-
+        if (!user) {
+            throw new NotFoundException("Không tìm thấy user");
         }
-    }
 
-    async updateUser(res: any, id: number, user: UpdateUserInterface) {
         try {
-            const checkUserById = await this.userRepository.findUser(id);
-
-            if (user.email !== checkUserById.email) {
-
-                const checkEmailUser = await this.userRepository.findUserByEmail(user.email)
-
-                if (checkEmailUser) {
-                    errCode(res, checkEmailUser.email, "Email đã tồn tại!")
-                    return
-                }
-            }
-            let birthDay: Date
-
-            if (typeof user.birthday === "string") {
-                birthDay = new Date(user.birthday)
-            }
-
-            if (!user.role) user.role = false
-
-            const newData: UserInterface = {
-                name: user.name,
-                email: user.email,
-                password: user.password,
-                birthday: birthDay,
-                address: user.address,
-                phone: user.phone,
-                role: user.role
-            }
-
-            await this.userRepository.updateUser(id, newData)
-
-            successCode(res, newData)
+            await this.userRepository.delete(id);
         } catch (error) {
-            failCode(res, error.message)
-
+            throw new InternalServerErrorException(error.message);
         }
     }
 }

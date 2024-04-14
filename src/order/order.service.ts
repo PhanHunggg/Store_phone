@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { errCode, failCode, successCode } from 'src/response';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
 import { CreateOrderInterface } from './interface/create-order';
@@ -12,101 +11,84 @@ export class OrderService {
         private productRepository: ProductRepository,
         private userRepository: UserRepository) { }
 
-
-    async getOrderList(res: any) {
+    async getOrderList(): Promise<OrderInterface[]> {
         try {
-            const checkOrderAll = await this.orderRepository.getOrderList();
-
-
-            successCode(res, checkOrderAll)
+            return await this.orderRepository.getOrderList();
         } catch (error) {
-            failCode(res, error.message)
+            throw new InternalServerErrorException(error.message);
         }
     }
 
-    async findOrderByIdUser(res: any, id: number) {
+    async findOrderByIdUser(id: number): Promise<OrderInterface> {
         try {
             const order = await this.orderRepository.findOrderByIdUser(id)
 
             if (!order) {
-                errCode(res, id, "Không tìm thấy order!")
-                return
+                throw new NotFoundException("Không tìm thấy order!")
             }
-            successCode(res, order)
+            return order;
         } catch (error) {
-            failCode(res, error.message)
+            throw new InternalServerErrorException(error.message);
         }
     }
 
-    async createOrder(res: any, createOrder: CreateOrderInterface) {
-
-
+    async createOrder(createOrder: CreateOrderInterface): Promise<OrderInterface> {
         const idUser = Number(createOrder.id_user);
 
         createOrder.id_user = idUser;
         createOrder.total = Number(createOrder.total);
         createOrder.id_user = idUser;
-     
-            for (let i = 0; i < createOrder.productItem.length; i++) {
-                createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
 
-                createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
-            }
+        for (let i = 0; i < createOrder.productItem.length; i++) {
+            createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
+            createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
+        }
 
         const checkUser = await this.userRepository.findUser(idUser)
 
         if (!checkUser) {
-            errCode(res, checkUser, "Không tìm thấy user!");
-            return
+            throw new NotFoundException("Không tìm thấy user!");
         }
 
         const currentDate = new Date();
-
 
         const newDataOrder: OrderInterface = {
             ...createOrder,
             created_date: currentDate
         }
 
-        const order = await this.orderRepository.createOrder(newDataOrder)
-
-        successCode(res, order);
-
+        try {
+            return await this.orderRepository.createOrder(newDataOrder);
+        } catch (error) {
+            throw new InternalServerErrorException(error.message);
+        }
     }
 
-    async deleteOrder(res: any, id: number): Promise<void> {
+    async deleteOrder(id: number): Promise<void> {
+        const checkOrder = await this.orderRepository.findOrderById(id);
+
+        if (!checkOrder) {
+            throw new NotFoundException("Không tìm thấy order!")
+        }
+
         try {
-
-            const checkOrder = await this.orderRepository.findOrderById(id);
-
-            if (!checkOrder) {
-                errCode(res, checkOrder, "Không tìm thấy order!")
-                return
-            }
-
             await this.orderRepository.deleteOrder(id)
-
-            successCode(res, '')
         } catch (error) {
-            failCode(res, error.message)
+            throw new InternalServerErrorException(error.message);
         }
     }
 
-    async findOrderById(res: any, id: number) {
+    async findOrderById(id: number): Promise<OrderInterface> {
+        const checkOrder = await this.orderRepository.findOrderById(id);
+
+        if (!checkOrder) {
+            throw new NotFoundException("Không tìm thấy order!")
+        }
+
         try {
-            const checkOrder = await this.orderRepository.findOrderById(id);
-
-            if (!checkOrder) {
-                errCode(res, checkOrder, "Không tìm thấy order!")
-                return
-            }
-
-            successCode(res, checkOrder)
-
+            return checkOrder;
         } catch (error) {
-            failCode(res, error.message)
-
+            throw new InternalServerErrorException(error.message);
         }
     }
-
 }
