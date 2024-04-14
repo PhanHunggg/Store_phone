@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, HttpException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { UpdateUserInterface } from './interface/update-user';
 import { UserInterface } from './interface/user';
@@ -24,54 +24,95 @@ export class UserService {
 
             return filteredUsers;
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 
     async findUser(id: number): Promise<ProfileInterface> {
-        const user = await this.userRepository.findUser(id)
-
-        if (!user) {
-            throw new NotFoundException("Không tìm thấy user");
-        }
-
-        const filteredUser: ProfileInterface = {
-            id_user: user.id_user,
-            name: user.name,
-            email: user.email,
-            birthday: user.birthday,
-            address: user.address,
-            phone: user.phone,
-        };
-
-        return filteredUser;
-    }
-
-    async updateUser(id: number, updateUser: User): Promise<User>  {
-        const user = await this.userRepository.findUser(id)
-
-        if (!user) {
-            throw new NotFoundException("Không tìm thấy user");
-        }
-
         try {
-            return await this.userRepository.updateUser(id, updateUser);
+            const user = await this.userRepository.findUser(id)
+
+            if (!user) {
+                throw new NotFoundException("Không tìm thấy user");
+            }
+
+            const filteredUser: ProfileInterface = {
+                id_user: user.id_user,
+                name: user.name,
+                email: user.email,
+                birthday: user.birthday,
+                address: user.address,
+                phone: user.phone,
+            };
+
+            return filteredUser;
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 
-    async deleteUser(id: number): Promise<void> {
-        const user = await this.userRepository.findUser(id)
-
-        if (!user) {
-            throw new NotFoundException("Không tìm thấy user");
-        }
-
+    async updateUser(id: number, updateUser: UserInterface): Promise<ProfileInterface> {
         try {
-            await this.userRepository.delete(id);
+            const user = await this.userRepository.findUser(id)
+
+            if (!user) {
+                throw new NotFoundException("Không tìm thấy user");
+            }
+
+            const newData = await this.userRepository.updateUser(id, updateUser);
+
+            const filteredUser: ProfileInterface = {
+                id_user: newData.id_user,
+                name: newData.name,
+                email: newData.email,
+                birthday: newData.birthday,
+                address: newData.address,
+                phone: newData.phone,
+            };
+
+            return filteredUser
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
+        }
+    }
+
+    async deleteUser(id: number): Promise<ProfileInterface> {
+        try {
+            const user = await this.userRepository.findUser(id)
+
+            if (!user) {
+                throw new NotFoundException("Không tìm thấy user");
+            }
+            const newData = await this.userRepository.delete(id);
+
+            const filteredUser: ProfileInterface = {
+                id_user: newData.id_user,
+                name: newData.name,
+                email: newData.email,
+                birthday: newData.birthday,
+                address: newData.address,
+                phone: newData.phone,
+            };
+
+            return filteredUser
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 }

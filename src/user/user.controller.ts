@@ -1,18 +1,21 @@
-import { Body, Controller, Delete, Get, Param, Put, Response, HttpException, InternalServerErrorException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, HttpException, InternalServerErrorException, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserInterface } from './interface/update-user';
 import { createCode, successCode } from 'src/response';
 import { UserInterface } from './interface/user';
+import { Response } from 'express';
+import { ProfileInterface } from 'src/auth/interface/profile';
+import { User } from '@prisma/client';
 @ApiTags("User")
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get("/get-user-list")
-  async getUserList(@Response() res: Response): Promise<Response> {
+  async getUserList(@Res() res: Response): Promise<Response> {
     try {
-      const users = await this.userService.getUserList();
+      const users: ProfileInterface[] = await this.userService.getUserList();
 
       return successCode(res, users);
     } catch (error) {
@@ -25,9 +28,9 @@ export class UserController {
   }
 
   @Get("/find-user/:id")
-  async findUser(@Response() res: Response, @Param('id') id: string): Promise<Response> {
+  async findUser(@Res() res: Response, @Param('id') id: string): Promise<Response> {
     try {
-      const user = await this.userService.findUser(+id);
+      const user: ProfileInterface = await this.userService.findUser(+id);
 
       return successCode(res, user);
     } catch (error) {
@@ -40,11 +43,11 @@ export class UserController {
   }
 
   @Delete("/delete-user/:id")
-  async deleteUser(@Response() res: Response, @Param('id') id: string): Promise<Response> {
+  async deleteUser(@Res() res: Response, @Param('id') id: string): Promise<Response> {
     try {
-      await this.userService.deleteUser(+id);
+      const user: ProfileInterface = await this.userService.deleteUser(+id);
 
-      return successCode(res, "Xóa user thành công");
+      return successCode(res, user);
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -55,9 +58,9 @@ export class UserController {
   }
 
   @Put("/update-user/:id")
-  async updateUser(@Response() res: Response, @Param('id') id: string, @Body() body: UserInterface): Promise<Response> {
+  async updateUser(@Res() res: Response, @Param('id') id: string, @Body() body: UserInterface): Promise<Response> {
     try {
-      const updatedUser = await this.userService.updateUser(+id, body);
+      const updatedUser: ProfileInterface = await this.userService.updateUser(+id, body);
 
       return successCode(res, updatedUser);
     } catch (error) {

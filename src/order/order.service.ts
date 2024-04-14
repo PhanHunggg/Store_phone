@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, HttpException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
@@ -9,27 +9,34 @@ import { Order } from '@prisma/client';
 @Injectable()
 export class OrderService {
     constructor(private orderRepository: OrderRepository,
-        private productRepository: ProductRepository,
         private userRepository: UserRepository) { }
 
     async getOrderList(): Promise<Order[]> {
         try {
             return await this.orderRepository.getOrderList();
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 
     async findOrderByIdUser(id: number): Promise<Order[]> {
         try {
-            const order = await this.orderRepository.findOrderByIdUser(id)
+            const orders: Order[] = await this.orderRepository.findOrderByIdUser(id)
 
-            if (!order) {
+            if (!orders) {
                 throw new NotFoundException("Không tìm thấy order!")
             }
-            return order;
+            return orders;
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 
@@ -61,11 +68,15 @@ export class OrderService {
         try {
             return await this.orderRepository.createOrder(newDataOrder);
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 
-    async deleteOrder(id: number): Promise<void> {
+    async deleteOrder(id: number): Promise<Order> {
         const checkOrder = await this.orderRepository.findOrderById(id);
 
         if (!checkOrder) {
@@ -74,8 +85,13 @@ export class OrderService {
 
         try {
             await this.orderRepository.deleteOrder(id)
+            return checkOrder
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 
@@ -89,7 +105,11 @@ export class OrderService {
         try {
             return checkOrder;
         } catch (error) {
-            throw new InternalServerErrorException(error.message);
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
         }
     }
 }
