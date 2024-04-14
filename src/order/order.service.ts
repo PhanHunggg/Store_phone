@@ -41,18 +41,16 @@ export class OrderService {
     }
 
     async createOrder(createOrder: CreateOrderInterface): Promise<Order> {
-        const idUser = Number(createOrder.id_user);
+        createOrder.id_user = Number(createOrder.id_user);
 
-        createOrder.id_user = idUser;
         createOrder.total = Number(createOrder.total);
-        createOrder.id_user = idUser;
 
         for (let i = 0; i < createOrder.productItem.length; i++) {
             createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
             createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
         }
 
-        const checkUser = await this.userRepository.findUser(idUser)
+        const checkUser = await this.userRepository.findUser(createOrder.id_user)
 
         if (!checkUser) {
             throw new NotFoundException("Không tìm thấy user!");

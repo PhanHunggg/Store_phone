@@ -67,6 +67,10 @@ export class UserService {
                 throw new NotFoundException("Không tìm thấy user");
             }
 
+            if (typeof updateUser.birthday === "string") {
+                updateUser.birthday = new Date(updateUser.birthday)
+            }
+
             const newData = await this.userRepository.updateUser(id, updateUser);
 
             const filteredUser: ProfileInterface = {
