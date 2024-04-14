@@ -3,9 +3,9 @@ import { Prisma } from "@prisma/client";
 export interface ProfileInterface {
     id_user: number,
     name: string,
-    email: string
-    birthday: Date
-    address: string
+    email: string,
+    birthday: Date |string,
+    address: string,
     phone: string
 }
 
