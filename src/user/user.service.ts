@@ -3,6 +3,7 @@ import { UserRepository } from './user.repository';
 import { UpdateUserInterface } from './interface/update-user';
 import { UserInterface } from './interface/user';
 import { ProfileInterface } from 'src/auth/interface/profile';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -46,7 +47,7 @@ export class UserService {
         return filteredUser;
     }
 
-    async updateUser(id: number, updateUser: UserInterface): Promise<UserInterface>  {
+    async updateUser(id: number, updateUser: User): Promise<User>  {
         const user = await this.userRepository.findUser(id)
 
         if (!user) {

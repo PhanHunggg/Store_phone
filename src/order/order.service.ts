@@ -4,6 +4,7 @@ import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
 import { CreateOrderInterface } from './interface/create-order';
 import { OrderInterface } from './interface/order';
+import { Order } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
@@ -11,7 +12,7 @@ export class OrderService {
         private productRepository: ProductRepository,
         private userRepository: UserRepository) { }
 
-    async getOrderList(): Promise<OrderInterface[]> {
+    async getOrderList(): Promise<Order[]> {
         try {
             return await this.orderRepository.getOrderList();
         } catch (error) {
@@ -19,7 +20,7 @@ export class OrderService {
         }
     }
 
-    async findOrderByIdUser(id: number): Promise<OrderInterface> {
+    async findOrderByIdUser(id: number): Promise<Order[]> {
         try {
             const order = await this.orderRepository.findOrderByIdUser(id)
 
@@ -32,7 +33,7 @@ export class OrderService {
         }
     }
 
-    async createOrder(createOrder: CreateOrderInterface): Promise<OrderInterface> {
+    async createOrder(createOrder: CreateOrderInterface): Promise<Order> {
         const idUser = Number(createOrder.id_user);
 
         createOrder.id_user = idUser;
@@ -78,7 +79,7 @@ export class OrderService {
         }
     }
 
-    async findOrderById(id: number): Promise<OrderInterface> {
+    async findOrderById(id: number): Promise<Order> {
         const checkOrder = await this.orderRepository.findOrderById(id);
 
         if (!checkOrder) {
