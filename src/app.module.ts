@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -44,7 +44,7 @@ const path = require('node:path');
   })]
   ,
   controllers: [AppController],
-  providers: [AppService,
+  providers: [AppService, Logger,
     {
       provide: APP_GUARD,
       useClass: AtGuard

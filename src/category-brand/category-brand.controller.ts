@@ -29,7 +29,7 @@ export class CategoryBrandController {
   async create(
     @Body() createCategoryBrandDto: CategoryBrandInterface,
     @Res() res: Response,
-  ) {
+  ): Promise<Response> {
 
     try {
     const categoryBrand: CategoryBrand = await this.categoryBrandService.create(createCategoryBrandDto);
@@ -44,7 +44,7 @@ export class CategoryBrandController {
   }
 
   @Get('/categoryBrand-list')
-  async findAll(@Res() res: Response) {
+  async findAll(@Res() res: Response): Promise<Response> {
     try {
     const checkCategoryBrand: CategoryBrand[]  = await this.categoryBrandService.findAll();
       return successCode(res, checkCategoryBrand)
@@ -61,7 +61,7 @@ export class CategoryBrandController {
   async deleteCategoryBrand(
     @Param('id_categoryBrand') id_categoryBrand: string,
     @Res() res: Response,
-  ) {
+  ): Promise<Response> {
     try {
       const categoryBrand: CategoryBrand = await this.categoryBrandService.deleteCategoryBrand(
         +id_categoryBrand
@@ -81,7 +81,7 @@ export class CategoryBrandController {
     @Param('id_categoryBrand') id_categoryBrand: string,
     @Body() categoryBrand: CategoryBrandInterface,
     @Res() res: Response,
-  ) {
+  ): Promise<Response> {
   
     try {
       const updateCategoryBrand: CategoryBrandInterface = await this.categoryBrandService.updateCategoryBrand(

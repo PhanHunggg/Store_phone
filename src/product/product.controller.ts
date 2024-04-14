@@ -36,7 +36,7 @@ export class ProductController {
   async getEquivalentProduct(
     @Res() res: Response,
     @Param('id_categoryBrand') id_categoryBrand: string,
-  ) {
+  ): Promise<Response> {
     try {
       const result: Product[] = await this.productService.getEquivalentProduct(
         +id_categoryBrand,
@@ -57,7 +57,7 @@ export class ProductController {
   async findByCategoryBrand(
     @Res() res: Response,
     @Body() body: CategoryBrandInterface,
-  ) {
+  ): Promise<Response> {
     try {
       const result: Product[] = await this.productService.findByCategoryBrand(
         body,
@@ -78,7 +78,7 @@ export class ProductController {
   async findProductByBrand(
     @Res() res: Response,
     @Param('id_brand') id_brand: string,
-  ) {
+  ): Promise<Response> {
     try {
       const result: Product[] = await this.productService.findProductByBrand(
         +id_brand,
@@ -96,7 +96,7 @@ export class ProductController {
 
   @Public()
   @Get('/product-list')
-  async getProductList(@Res() res: Response) {
+  async getProductList(@Res() res: Response): Promise<Response> {
     try {
       const result: Product[] = await this.productService.getProductList();
 
@@ -112,7 +112,7 @@ export class ProductController {
 
   @Public()
   @Get('/find-product/:id')
-  async findProduct(@Param('id') id: string, @Res() res: Response) {
+  async findProduct(@Param('id') id: string, @Res() res: Response): Promise<Response> {
     try {
       const result: Product = await this.productService.findProduct(+id);
 
@@ -130,7 +130,7 @@ export class ProductController {
   async createProduct(
     @Body() createProductDto: CreateProductReqInterface,
     @Res() res: Response,
-  ) {
+  ): Promise<Response> {
     try {
       const result: Product = await this.productService.createProduct(
         createProductDto,
@@ -149,10 +149,9 @@ export class ProductController {
   @Patch('/update-product/:id')
   async updateProduct(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
     @Res() res: Response,
     @Body() body: UpdateProductReqInterface,
-  ) {
+  ): Promise<Response> {
     try {
       const result: UpdateProductInterface =
         await this.productService.updateProduct(+id, body);
@@ -170,7 +169,7 @@ export class ProductController {
   async deleteProduct(
     @Param('id_product') id_product: string,
     @Res() res: Response,
-  ) {
+  ): Promise<Response> {
     try {
       const result: Product = await this.productService.deleteProduct(
         +id_product,
