@@ -4,15 +4,15 @@ import { BrandInterface } from "./interface";
 
 @Injectable()
 export class BrandRepository {
-    prisma = new PrismaClient();
+  prisma = new PrismaClient();
 
-    async createBrand(userData: BrandInterface) {
-        return this.prisma.brand.create({ data: userData });
-    }
+  async createBrand(userData: BrandInterface) {
+    return this.prisma.brand.create({ data: userData });
+  }
 
-    async findBrandById(id: number) {
-        return this.prisma.brand.findUnique({ where: { id_brand: id } })
-    };
+  async findBrandById(id: number) {
+    return this.prisma.brand.findUnique({ where: { id_brand: id } });
+  }
 
     async findBrandByName(name: string): Promise<Brand | null> {
         return this.prisma.brand.findFirst({
@@ -28,17 +28,16 @@ export class BrandRepository {
         return this.prisma.brand.delete({ where: { id_brand: id } });
     }
 
-    async getBrandList() {
-        return this.prisma.brand.findMany()
-    }
+  async getBrandList() {
+    return this.prisma.brand.findMany();
+  }
 
-    async updateBrand(data: BrandInterface, id: number) {
-        return this.prisma.brand.update({
-            where: {
-                id_brand: id
-            },
-            data: data
-        })
-    }
-
+  async updateBrand(data: BrandInterface, id: number) {
+    return this.prisma.brand.update({
+      where: {
+        id_brand: id,
+      },
+      data: data,
+    });
+  }
 }
