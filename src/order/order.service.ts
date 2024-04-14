@@ -1,112 +1,115 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, InternalServerErrorException, HttpException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { errCode, failCode, successCode } from 'src/response';
 import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
 import { CreateOrderInterface } from './interface/create-order';
 import { OrderInterface } from './interface/order';
+import { Order } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
     constructor(private orderRepository: OrderRepository,
-        private productRepository: ProductRepository,
         private userRepository: UserRepository) { }
 
-
-    async getOrderList(res: any) {
+    async getOrderList(): Promise<Order[]> {
         try {
-            const checkOrderAll = await this.orderRepository.getOrderList();
-
-
-            successCode(res, checkOrderAll)
+            return await this.orderRepository.getOrderList();
         } catch (error) {
-            failCode(res, error.message)
-        }
-    }
-
-    async findOrderByIdUser(res: any, id: number) {
-        try {
-            const order = await this.orderRepository.findOrderByIdUser(id)
-
-            if (!order) {
-                errCode(res, id, "Không tìm thấy order!")
-                return
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
             }
-            successCode(res, order)
-        } catch (error) {
-            failCode(res, error.message)
         }
     }
 
-    async createOrder(res: any, createOrder: CreateOrderInterface) {
+    async findOrderByIdUser(id: number): Promise<Order[]> {
+        try {
+            const orders: Order[] = await this.orderRepository.findOrderByIdUser(id)
 
+            if (!orders) {
+                throw new NotFoundException("Không tìm thấy order!")
+            }
+            return orders;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
+        }
+    }
 
+    async createOrder(createOrder: CreateOrderInterface): Promise<Order> {
         const idUser = Number(createOrder.id_user);
 
         createOrder.id_user = idUser;
         createOrder.total = Number(createOrder.total);
         createOrder.id_user = idUser;
-     
-            for (let i = 0; i < createOrder.productItem.length; i++) {
-                createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
 
-                createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
-            }
+        for (let i = 0; i < createOrder.productItem.length; i++) {
+            createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
+            createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
+        }
 
         const checkUser = await this.userRepository.findUser(idUser)
 
         if (!checkUser) {
-            errCode(res, checkUser, "Không tìm thấy user!");
-            return
+            throw new NotFoundException("Không tìm thấy user!");
         }
 
         const currentDate = new Date();
-
 
         const newDataOrder: OrderInterface = {
             ...createOrder,
             created_date: currentDate
         }
 
-        const order = await this.orderRepository.createOrder(newDataOrder)
-
-        successCode(res, order);
-
+        try {
+            return await this.orderRepository.createOrder(newDataOrder);
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
+        }
     }
 
-    async deleteOrder(res: any, id: number): Promise<void> {
+    async deleteOrder(id: number): Promise<Order> {
+        const checkOrder = await this.orderRepository.findOrderById(id);
+
+        if (!checkOrder) {
+            throw new NotFoundException("Không tìm thấy order!")
+        }
+
         try {
-
-            const checkOrder = await this.orderRepository.findOrderById(id);
-
-            if (!checkOrder) {
-                errCode(res, checkOrder, "Không tìm thấy order!")
-                return
-            }
-
             await this.orderRepository.deleteOrder(id)
-
-            successCode(res, '')
+            return checkOrder
         } catch (error) {
-            failCode(res, error.message)
-        }
-    }
-
-    async findOrderById(res: any, id: number) {
-        try {
-            const checkOrder = await this.orderRepository.findOrderById(id);
-
-            if (!checkOrder) {
-                errCode(res, checkOrder, "Không tìm thấy order!")
-                return
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
             }
-
-            successCode(res, checkOrder)
-
-        } catch (error) {
-            failCode(res, error.message)
-
         }
     }
 
+    async findOrderById(id: number): Promise<Order> {
+        const checkOrder = await this.orderRepository.findOrderById(id);
+
+        if (!checkOrder) {
+            throw new NotFoundException("Không tìm thấy order!")
+        }
+
+        try {
+            return checkOrder;
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
+        }
+    }
 }
