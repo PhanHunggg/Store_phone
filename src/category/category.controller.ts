@@ -1,7 +1,6 @@
 
 import { Controller, Get, Post, Body, Patch, Param, Delete,  Put, HttpException, Res } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryInterface } from './interface';
 
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -9,6 +8,7 @@ import { createCode, successCode } from 'src/response';
 import { InternalServerErrorException } from 'src/exception/exception';
 import { Response } from 'express';
 import { Category } from '@prisma/client';
+import { CreateCategoryDTO } from 'src/category/dto/ctrate-category.dto';
 
   @Public()
   @ApiTags("Category")
@@ -17,10 +17,10 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
   @Post("/create-category")
-  async createCategory(@Body() createCategoryDto: CreateCategoryInterface, @Res() res: Response): Promise<Response> {
+  async createCategory(@Body() createCategoryDto: CreateCategoryDTO, @Res() res: Response): Promise<Response> {
     try {
-      const brand: CreateCategoryInterface = await this.categoryService.createCategory(createCategoryDto);
-      return createCode(res, brand)
+      const category: Category = await this.categoryService.createCategory(createCategoryDto);
+      return createCode(res, category)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;
@@ -32,7 +32,7 @@ export class CategoryController {
 
 
   @Put("/update-category/:id_category")
-  async updateCategory(@Param('id_category') id_category: string, @Body() createCategoryDto: CreateCategoryInterface, @Res() res: Response): Promise<Response> {
+  async updateCategory(@Param('id_category') id_category: string, @Body() createCategoryDto: CreateCategoryDTO, @Res() res: Response): Promise<Response> {
     try {
       const category: Category = await this.categoryService.updateCategory(createCategoryDto, +id_category);
       return createCode(res, category)

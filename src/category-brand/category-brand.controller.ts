@@ -11,13 +11,13 @@ import {
   Res,
 } from '@nestjs/common';
 import { CategoryBrandService } from './category-brand.service';
-import { CategoryBrandInterface } from './interface';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { successCode } from 'src/response';
 import { InternalServerErrorException } from 'src/exception/exception';
 import { Response } from 'express';
 import { CategoryBrand } from '@prisma/client';
+import { CreateCategoryBrandDTO } from 'src/category-brand/dto/create-category-brand.dto';
 
 @Public()
 @ApiTags('CategoryBrand')
@@ -27,7 +27,7 @@ export class CategoryBrandController {
 
   @Post('/create-categoryBrand')
   async create(
-    @Body() createCategoryBrandDto: CategoryBrandInterface,
+    @Body() createCategoryBrandDto: CreateCategoryBrandDTO,
     @Res() res: Response,
   ): Promise<Response> {
 
@@ -79,12 +79,12 @@ export class CategoryBrandController {
   @Put('/update-categoryBrand/:id_categoryBrand')
   async updateCategoryBrand(
     @Param('id_categoryBrand') id_categoryBrand: string,
-    @Body() categoryBrand: CategoryBrandInterface,
+    @Body() categoryBrand: CreateCategoryBrandDTO,
     @Res() res: Response,
   ): Promise<Response> {
   
     try {
-      const updateCategoryBrand: CategoryBrandInterface = await this.categoryBrandService.updateCategoryBrand(
+      const updateCategoryBrand: CategoryBrand = await this.categoryBrandService.updateCategoryBrand(
         categoryBrand,
         +id_categoryBrand,
       );

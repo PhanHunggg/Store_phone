@@ -1,11 +1,9 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { Brand, PrismaClient } from '@prisma/client';
-import { errCode, failCode, successCode } from 'src/response';
-import { BrandInterface, CreateBrandInterface } from './interface';
+import { BrandInterface } from './interface';
 import { BrandRepository } from './brand.repository';
 import { ConflictException, InternalServerErrorException, NotFoundException } from 'src/exception/exception';
-import { promises } from 'dns';
-import { error } from 'console';
+import { CreateBrandDTO } from 'src/brand/dto/create-brand.dto';
 
 @Injectable()
 export class BrandService {
@@ -14,7 +12,7 @@ export class BrandService {
   constructor(
     private brandRepository: BrandRepository) { }
 
-  async createBrand(brand: CreateBrandInterface,): Promise<BrandInterface> {
+  async createBrand(brand: CreateBrandDTO,): Promise<BrandInterface> {
     try {
 
       const checkBrand = await this.brandRepository.findBrandByName(brand.name);
@@ -70,7 +68,7 @@ export class BrandService {
     }
   }
 
-  async updateBrand(brand: CreateBrandInterface, id_brand: number): Promise<BrandInterface> {
+  async updateBrand(brand: CreateBrandDTO, id_brand: number): Promise<BrandInterface> {
     try {
       const newData: BrandInterface = {
         name: brand.name,

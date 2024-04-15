@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException, InternalServerErrorException, HttpException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
-import { UpdateUserInterface } from './interface/update-user';
-import { UserInterface } from './interface/user';
 import { ProfileInterface } from 'src/auth/interface/profile';
 import { User } from '@prisma/client';
+import { UpdateUserDTO } from 'src/user/dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -59,7 +58,7 @@ export class UserService {
         }
     }
 
-    async updateUser(id: number, updateUser: UserInterface): Promise<ProfileInterface> {
+    async updateUser(id: number, updateUser: UpdateUserDTO): Promise<ProfileInterface> {
         try {
             const user = await this.userRepository.findUser(id)
 

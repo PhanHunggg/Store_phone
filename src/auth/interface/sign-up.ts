@@ -1,12 +1,4 @@
-import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, IsString } from "class-validator";
-import { UserInterface } from "src/user/interface/user";
-import { LoginPayloadInterface } from "./login";
-
-export class SignUpReqInterface extends PartialType(UserInterface) {
-
-}
-
+import { LoginResInterface } from "./login";
 export interface SignUpInterface {
     name: string;
     email: string;
@@ -19,4 +11,4 @@ export interface SignUpInterface {
     verifyEmailToken: string;
 }
 
-export interface SignUpInterfaceRes extends LoginPayloadInterface { }
+export interface SignUpInterfaceRes extends LoginResInterface { }

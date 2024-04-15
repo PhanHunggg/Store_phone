@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { UpdateProductInterface } from "./interface/update-product";
 import { CreateProductInterface } from "./interface/create-product";
-import { CategoryBrandInterface } from "src/category-brand/interface";
 
 @Injectable()
 export class ProductRepository {

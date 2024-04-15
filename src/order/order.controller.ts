@@ -1,10 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post, HttpException, InternalServerErrorException, Res } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateOrderInterface } from './interface/create-order';
 import { createCode, successCode } from 'src/response';
 import { Response } from 'express';
 import { Order } from '@prisma/client';
+import { CreateOrderDTO } from 'src/order/dto/create-order.dto';
 @ApiTags("Order")
 @Controller('order')
 export class OrderController {
@@ -26,7 +26,7 @@ export class OrderController {
   }
 
   @Post("/create-order")
-  async createOrder(@Res() res: Response, @Body() body: CreateOrderInterface): Promise<Response> {
+  async createOrder(@Res() res: Response, @Body() body: CreateOrderDTO): Promise<Response> {
     try {
       const order: Order = await this.orderService.createOrder(body);
 

@@ -1,17 +1,19 @@
-import { Body, Controller, Get, HttpException, InternalServerErrorException, Param, Post, Put, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, InternalServerErrorException, Param, Post, Put, Res} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
-import { LoginInterface } from './interface/login';
-import { SignUpInterfaceRes, SignUpReqInterface } from './interface/sign-up';
-import { ForgotPasswordInterface } from './interface/forgot-password';
-import { ResetPassInterface } from './interface/reset-pass';
-import { RtGuards } from 'src/common/guards/rt.guards';
+import { LoginResInterface } from './interface/login';
+import { SignUpInterfaceRes } from './interface/sign-up';
+import {  TokenForgotInterface } from './interface/forgot-password';
 import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
-import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
-import { refreshTokensInterface } from './interface/refresh-token';
 import { Response } from 'express';
 import { createCode, successCode } from 'src/response';
+import { SignUpDTO } from 'src/auth/dto/signup.dto';
+import { LoginDTO } from 'src/auth/dto/login.dto';
+import { ForgotPasswordDTO } from 'src/auth/dto/forgot-pass.dto';
+import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
+import { refreshTokensDTO } from 'src/auth/dto/refresh-token.dto';
+import { Tokens } from 'src/auth/type/token.type';
 
 @ApiTags("Auth")
 @Controller('auth')
@@ -36,9 +38,9 @@ export class AuthController {
 
   @Public()
   @Post("/login")
-  async login(@Res() res: Response, @Body() body: LoginInterface): Promise<Response> {
+  async login(@Res() res: Response, @Body() body: LoginDTO): Promise<Response> {
     try {
-      const user = await this.authService.login(res, body);
+      const user: LoginResInterface = await this.authService.login(body);
 
       return successCode(res, user)
     } catch (error) {
@@ -52,9 +54,9 @@ export class AuthController {
 
   @Public()
   @Post("/admin-login")
-  async loginAdmin(@Res() res: Response, @Body() body: LoginInterface): Promise<Response> {
+  async loginAdmin(@Res() res: Response, @Body() body: LoginDTO): Promise<Response> {
     try {
-      const user = await this.authService.loginAdmin(body);
+      const user: LoginResInterface = await this.authService.loginAdmin(body);
 
       return successCode(res, user)
     } catch (error) {
@@ -68,9 +70,9 @@ export class AuthController {
 
   @Public()
   @Post("/sign-up")
-  async signUp(@Res() res: Response, @Body() body: SignUpReqInterface): Promise<Response> {
+  async signUp(@Res() res: Response, @Body() body: SignUpDTO): Promise<Response> {
     try {
-      const user = await this.authService.signUp(body);
+      const user: SignUpInterfaceRes = await this.authService.signUp(body);
 
       return createCode(res, user, "Đăng ký người dùng thành công!")
     } catch (error) {
@@ -84,9 +86,9 @@ export class AuthController {
 
   @Public()
   @Post('/forgot-password')
-  async forgotPassword(@Res() res: Response, @Body() body: ForgotPasswordInterface): Promise<Response> {
+  async forgotPassword(@Res() res: Response, @Body() body: ForgotPasswordDTO): Promise<Response> {
     try {
-      const tokenForgot = await this.authService.forgotPassword(res, body);
+      const tokenForgot: TokenForgotInterface = await this.authService.forgotPassword(body);
 
       return successCode(res, tokenForgot)
     } catch (error) {
@@ -101,10 +103,10 @@ export class AuthController {
 
   @Public()
   @Post('/refresh-token')
-  async refreshToken(@Res() res: Response, @Body() body: refreshTokensInterface): Promise<Response> {
+  async refreshToken(@Res() res: Response, @Body() body: refreshTokensDTO): Promise<Response> {
     try {
 
-      const tokens = await this.authService.refreshToken(body);
+      const tokens: Tokens = await this.authService.refreshToken(body);
       return successCode(res, tokens)
     } catch (error) {
       if (error instanceof HttpException) {
@@ -117,10 +119,10 @@ export class AuthController {
 
   @Public()
   @Put('/reset-password/:token')
-  async resetPass(@Res() res: Response, @Param('token') token: string, @Body() body: ResetPassInterface): Promise<Response> {
+  async resetPass(@Res() res: Response, @Param('token') token: string, @Body() body: ResetPassDTO): Promise<Response> {
     try {
 
-      const password = await this.authService.resetPass(token, body);
+      const password: string = await this.authService.resetPass(token, body);
       return successCode(res, password)
     } catch (error) {
       if (error instanceof HttpException) {

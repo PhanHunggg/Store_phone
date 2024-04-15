@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CategoryBrandInterface } from "./interface";
+import { CreateCategoryBrandDTO } from "src/category-brand/dto/create-category-brand.dto";
 
 @Injectable()
 export class CategoryBrandRepository {
@@ -18,7 +18,7 @@ export class CategoryBrandRepository {
         return await this.prisma.categoryBrand.findMany()
     }
 
-    async findByBrandCategory(categoryBrand: CategoryBrandInterface) {
+    async findByBrandCategory(categoryBrand: CreateCategoryBrandDTO) {
         return await this.prisma.categoryBrand.findFirst({
             where: {
                 id_brand: categoryBrand.id_brand,
@@ -27,7 +27,7 @@ export class CategoryBrandRepository {
         })
     }
 
-    async createCategoryBrand(data: CategoryBrandInterface) {
+    async createCategoryBrand(data: CreateCategoryBrandDTO) {
         return await this.prisma.categoryBrand.create({
             data
         });
@@ -43,7 +43,7 @@ export class CategoryBrandRepository {
         })
     }
 
-    async updateCategoryBrand(data: CategoryBrandInterface, id: number) {
+    async updateCategoryBrand(data: CreateCategoryBrandDTO, id: number) {
         return await this.prisma.categoryBrand.update({
             where: {
                 id_categoryBrand: id

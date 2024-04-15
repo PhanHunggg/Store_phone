@@ -1,13 +1,12 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CategoryBrandInterface } from './interface';
 import { CategoryBrand, PrismaClient } from '@prisma/client';
-import { errCode, failCode, successCode } from 'src/response';
 import { CategoryBrandRepository } from './category-brand.repository';
 import {
   ConflictException,
   InternalServerErrorException,
   NotFoundException,
 } from 'src/exception/exception';
+import { CreateCategoryBrandDTO } from 'src/category-brand/dto/create-category-brand.dto';
 
 @Injectable()
 export class CategoryBrandService {
@@ -16,11 +15,11 @@ export class CategoryBrandService {
   prisma = new PrismaClient();
 
   async create(
-    categoryBrand: CategoryBrandInterface,
+    categoryBrand: CreateCategoryBrandDTO,
   ): Promise<CategoryBrand> {
     try {
 
-      const checkCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand)
+      const checkCategoryBrand: CategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand)
 
       if (checkCategoryBrand) {
         throw new ConflictException('Loại sản phẩm trong hãng đã tồn tại!');
@@ -73,18 +72,18 @@ export class CategoryBrandService {
   }
 
   async updateCategoryBrand(
-    categoryBrand: CategoryBrandInterface,
+    categoryBrand: CreateCategoryBrandDTO,
     id_categoryBrand: number,
   ): Promise<CategoryBrand> {
     try {
-      const checkCategory =
+      const checkCategory: CategoryBrand =
         await this.categoryBrandRepository.findCategoryBrand(id_categoryBrand);
 
       if (!checkCategory) {
         throw new NotFoundException('Không tìm thấy loại sản phẩm trong hãng!');
       }
 
-      const foundCategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand)
+      const foundCategoryBrand:CategoryBrand = await this.categoryBrandRepository.findByBrandCategory(categoryBrand)
 
       if (foundCategoryBrand) {
         throw new ConflictException('Loại sản phẩm trong hãng đã tồn tại!');

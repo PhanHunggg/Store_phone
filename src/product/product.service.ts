@@ -1,16 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { PrismaClient, Product } from '@prisma/client';
-import { errCode, failCode, successCode } from 'src/response';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CategoryBrand, PrismaClient, Product } from '@prisma/client';
 import { ProductRepository } from './product.repository';
-import { CategoryBrandInterface } from 'src/category-brand/interface';
 import {
   CreateProductInterface,
-  CreateProductReqInterface,
 } from './interface/create-product';
 import {
   UpdateProductInterface,
-  UpdateProductReqInterface,
 } from './interface/update-product';
 import { BrandRepository } from 'src/brand/brand.repository';
 import { CategoryRepository } from 'src/category/category.repository';
@@ -19,29 +14,31 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from 'src/exception/exception';
+import { CreateCategoryBrandDTO } from 'src/category-brand/dto/create-category-brand.dto';
+import { CreateProductDTO } from 'src/product/dto/create-product.dto';
+import { UpdateProductDTO } from 'src/product/dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
   constructor(
-    private cloudinary: CloudinaryService,
     private productRepository: ProductRepository,
     private brandRepository: BrandRepository,
     private categoryRepository: CategoryRepository,
     private categoryBrandRepository: CategoryBrandRepository,
-  ) {}
+  ) { }
 
   prisma = new PrismaClient();
 
   async createProduct(
-    createProduct: CreateProductReqInterface,
+    createProduct: CreateProductDTO,
   ): Promise<Product> {
     try {
-      const categoryBrand: CategoryBrandInterface = {
+      const categoryBrand: CreateCategoryBrandDTO = {
         id_brand: createProduct.brand,
         id_category: createProduct.categories,
       };
 
-      const checkCategoryBrand =
+      const checkCategoryBrand: CategoryBrand =
         await this.categoryBrandRepository.findByBrandCategory(categoryBrand);
 
       if (!checkCategoryBrand) {
@@ -78,7 +75,7 @@ export class ProductService {
         color: createProduct.color,
       };
 
-      const newData = await this.productRepository.createProduct(data);
+      const newData: Product = await this.productRepository.createProduct(data);
 
       return newData;
     } catch (error) {
@@ -122,23 +119,6 @@ export class ProductService {
     }
   }
 
-  async updateThumbnail(id: number, img: Express.Multer.File, res: any) {
-    try {
-      const checkProduct = await this.productRepository.findProduct(id);
-
-      if (!checkProduct) {
-        errCode(res, checkProduct, 'Không tìm thấy product!');
-        return;
-      }
-
-      const imgUrl: string = await this.cloudinary.uploadImage(img);
-
-      await this.productRepository.updateThumbnail(id, imgUrl);
-
-      successCode(res, imgUrl);
-    } catch (error) {}
-  }
-
   async deleteProduct(id_product: number): Promise<Product> {
     const checkProduct = await this.productRepository.findProduct(id_product);
     const userDeleted = checkProduct
@@ -151,14 +131,14 @@ export class ProductService {
     return userDeleted;
   }
 
-  async updateProduct(id: number, product: UpdateProductReqInterface): Promise<UpdateProductInterface> {
+  async updateProduct(id: number, product: UpdateProductDTO): Promise<UpdateProductInterface> {
     try {
-      const checkProduct = await this.productRepository.findProduct(id);
+      const checkProduct: Product = await this.productRepository.findProduct(id);
       if (!checkProduct) {
         throw new NotFoundException('Không tìm thấy sản phẩm!');
       }
 
-      const categoryBrand: CategoryBrandInterface = {
+      const categoryBrand: CreateCategoryBrandDTO = {
         id_brand: product.brand,
         id_category: product.categories,
       };
@@ -215,7 +195,7 @@ export class ProductService {
   }
 
   async findByCategoryBrand(
-    brandCategory: CategoryBrandInterface,
+    brandCategory: CreateCategoryBrandDTO,
   ): Promise<Product[]> {
     try {
       const checkCategoryBrand =
@@ -257,7 +237,7 @@ export class ProductService {
         throw new NotFoundException('Không tìm thấy loại sản phẩm!');
       }
 
-      const brandCategory: CategoryBrandInterface = {
+      const brandCategory: CreateCategoryBrandDTO = {
         id_brand: checkBrand.id_brand,
         id_category: checkCategory.id_category,
       };

@@ -1,12 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Put, HttpException, InternalServerErrorException, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
-import { UpdateUserInterface } from './interface/update-user';
-import { createCode, successCode } from 'src/response';
-import { UserInterface } from './interface/user';
+import { successCode } from 'src/response';
 import { Response } from 'express';
 import { ProfileInterface } from 'src/auth/interface/profile';
-import { User } from '@prisma/client';
+import { UpdateUserDTO } from 'src/user/dto/update-user.dto';
 @ApiTags("User")
 @Controller('user')
 export class UserController {
@@ -58,7 +56,7 @@ export class UserController {
   }
 
   @Put("/update-user/:id")
-  async updateUser(@Res() res: Response, @Param('id') id: string, @Body() body: UserInterface): Promise<Response> {
+  async updateUser(@Res() res: Response, @Param('id') id: string, @Body() body: UpdateUserDTO): Promise<Response> {
     try {
       const updatedUser: ProfileInterface = await this.userService.updateUser(+id, body);
 

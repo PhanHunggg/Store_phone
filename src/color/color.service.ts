@@ -1,16 +1,15 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColorRepository } from './color.repository';
-import { ColorInterface } from './interface';
-import { errCode, failCode, successCode } from 'src/response';
 import { Color } from '@prisma/client';
 import { InternalServerErrorException } from 'src/exception/exception';
+import { ColorDTO } from 'src/color/dto/create-color.dto';
 
 @Injectable()
 export class ColorService {
 
   constructor(private colorRepository: ColorRepository) { }
 
-  async create(createColorDto: ColorInterface): Promise<Color> {
+  async create(createColorDto: ColorDTO): Promise<Color> {
     try {
       const color: Color = await this.colorRepository.create(createColorDto)
       return color

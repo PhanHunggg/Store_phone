@@ -13,18 +13,17 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiTags } from '@nestjs/swagger';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { CategoryBrandInterface } from 'src/category-brand/interface';
 import { Public } from 'src/common/decorators/public.decorator';
-import { CreateProductReqInterface } from './interface/create-product';
 import {
   UpdateProductInterface,
-  UpdateProductReqInterface,
 } from './interface/update-product';
 import { successCode } from 'src/response';
 import { Response } from 'express';
 import { InternalServerErrorException } from 'src/exception/exception';
 import { Product } from '@prisma/client';
+import { CreateCategoryBrandDTO } from 'src/category-brand/dto/create-category-brand.dto';
+import { CreateProductDTO } from 'src/product/dto/create-product.dto';
+import { UpdateProductDTO } from 'src/product/dto/update-product.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -56,7 +55,7 @@ export class ProductController {
   @Get('/find-product-category-brand')
   async findByCategoryBrand(
     @Res() res: Response,
-    @Body() body: CategoryBrandInterface,
+    @Body() body: CreateCategoryBrandDTO,
   ): Promise<Response> {
     try {
       const result: Product[] = await this.productService.findByCategoryBrand(
@@ -128,7 +127,7 @@ export class ProductController {
 
   @Post('/create-product')
   async createProduct(
-    @Body() createProductDto: CreateProductReqInterface,
+    @Body() createProductDto: CreateProductDTO,
     @Res() res: Response,
   ): Promise<Response> {
     try {
@@ -150,7 +149,7 @@ export class ProductController {
   async updateProduct(
     @Param('id') id: string,
     @Res() res: Response,
-    @Body() body: UpdateProductReqInterface,
+    @Body() body: UpdateProductDTO,
   ): Promise<Response> {
     try {
       const result: UpdateProductInterface =

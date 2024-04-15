@@ -2,20 +2,22 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient, User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { errCode, failCode, successCode } from 'src/response';
 import { AuthRepository } from './auth.repository';
 import * as bcrypt from 'bcrypt';
-import { LoginInterface, LoginPayloadInterface } from './interface/login';
-import { SignUpInterface, SignUpInterfaceRes, SignUpReqInterface } from './interface/sign-up';
-import { ForgotPasswordInterface, TokenForgotInterface } from './interface/forgot-password';
+import {  LoginResInterface } from './interface/login';
+import { SignUpInterface, SignUpInterfaceRes } from './interface/sign-up';
+import { TokenForgotInterface } from './interface/forgot-password';
 import { MailerService } from '@nestjs-modules/mailer';
-import { ResetPassInterface } from './interface/reset-pass';
 import { Tokens } from './type/token.type';
 import { JwtPayload } from './type/jwtPayload.type';
-import { refreshTokensInterface } from './interface/refresh-token';
 import { ProfileOrderInterface } from './interface/profile';
 import { Response } from 'express';
-import { BadRequestException, ConflictException, CustomException, ForbiddenException, InternalServerErrorException, NotFoundException, PreconditionFailedException, TooManyRequestsException, UnauthorizedException } from 'src/exception/exception';
+import { ConflictException, CustomException, ForbiddenException, InternalServerErrorException, NotFoundException, PreconditionFailedException, TooManyRequestsException, UnauthorizedException } from 'src/exception/exception';
+import { LoginDTO } from 'src/auth/dto/login.dto';
+import { SignUpDTO } from 'src/auth/dto/signup.dto';
+import { ForgotPasswordDTO } from 'src/auth/dto/forgot-pass.dto';
+import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
+import { refreshTokensDTO } from 'src/auth/dto/refresh-token.dto';
 @Injectable()
 export class AuthService {
     constructor(
@@ -55,7 +57,7 @@ export class AuthService {
         }
     }
 
-    async login(res: Response, user: LoginInterface): Promise<SignUpInterfaceRes> {
+    async login(user: LoginDTO): Promise<LoginResInterface> {
         try {
             const checkUser: User = await this.authRepository.checkEmailUser(user.email)
 
@@ -85,7 +87,7 @@ export class AuthService {
 
     }
 
-    async loginAdmin(user: LoginInterface): Promise<LoginPayloadInterface> {
+    async loginAdmin(user: LoginDTO): Promise<LoginResInterface> {
 
         try {
             const checkUser = await this.authRepository.checkEmailUser(user.email)
@@ -105,7 +107,7 @@ export class AuthService {
 
             await this.updateRtHash(checkUser.id_user, tokens.refreshToken)
 
-            let data: LoginPayloadInterface = {
+            let data: LoginResInterface = {
                 id_user: checkUser.id_user,
                 name: checkUser.name,
                 email: checkUser.email,
@@ -127,7 +129,7 @@ export class AuthService {
         }
     }
 
-    async signUp(user: SignUpReqInterface): Promise<SignUpInterfaceRes> {
+    async signUp(user: SignUpDTO): Promise<SignUpInterfaceRes> {
         try {
             const checkEmail = await this.authRepository.checkEmailUser(user.email)
 
@@ -177,7 +179,7 @@ export class AuthService {
         }
     }
 
-    async refreshToken(user: refreshTokensInterface): Promise<Tokens> {
+    async refreshToken(user: refreshTokensDTO): Promise<Tokens> {
         try {
             const checkUser = await this.authRepository.checkUserById(user.id_user);
 
@@ -210,13 +212,13 @@ export class AuthService {
         }
     }
 
-    async forgotPassword(res: any, user: ForgotPasswordInterface): Promise<TokenForgotInterface> {
+    async forgotPassword(user: ForgotPasswordDTO): Promise<TokenForgotInterface> {
         try {
             const checkUser = await this.authRepository.checkEmailUser(user.email)
 
             if (!checkUser) throw new NotFoundException('Tài khoản không đúng!');
 
-            const tokenForgot: TokenForgotInterface = await this.createTokenForgotPass(user.email, checkUser, res)
+            const tokenForgot: TokenForgotInterface = await this.createTokenForgotPass(user.email, checkUser)
 
             await this.sendVerificationEmail(checkUser, tokenForgot)
 
@@ -231,7 +233,7 @@ export class AuthService {
 
     }
 
-    async resetPass(token: string, body: ResetPassInterface): Promise<String> {
+    async resetPass(token: string, body: ResetPassDTO): Promise<string> {
         try {
 
             const checkUser = await this.authRepository.checkUserByTokenPass(token);
@@ -277,8 +279,8 @@ export class AuthService {
                     verifyEmailToken: null
                 }
             })
-            const message: string = "Verify thành công"
-            return message
+            return "Verify thành công"
+
 
         } catch (error) {
             if (error instanceof HttpException) {
@@ -289,7 +291,7 @@ export class AuthService {
         }
     }
 
-    private async createTokenForgotPass(email: string, checkUser: User, res: any) {
+    private async createTokenForgotPass(email: string, checkUser: User) {
         try {
 
             if (

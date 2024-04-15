@@ -6,15 +6,3 @@ export class BrandInterface {
     img: string
 }
 
-
-export class CreateBrandInterface {
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty({ description: "name", type: String })
-    name: string
-
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty({ description: "banner", type: String })
-    banner: string
-}

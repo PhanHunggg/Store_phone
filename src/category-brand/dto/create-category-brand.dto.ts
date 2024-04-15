@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber } from "class-validator";
 
-export class CategoryBrandInterface {
+export class CreateCategoryBrandDTO {
     @IsNotEmpty()
     @IsNumber()
     @ApiProperty({ description: "id_brand", type: Number })
