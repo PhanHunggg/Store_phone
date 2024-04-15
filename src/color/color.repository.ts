@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { ColorInterface } from "./interface";
+import { ColorDTO } from "src/color/dto/create-color.dto";
 
 @Injectable()
 export class ColorRepository {
     prisma = new PrismaClient()
 
-    async create(data: ColorInterface) {
+    async create(data: ColorDTO) {
         return await this.prisma.color.create({
             data
         })

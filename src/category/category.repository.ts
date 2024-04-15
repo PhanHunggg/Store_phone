@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CreateCategoryInterface } from "./interface";
 import { CreateCategoryDTO } from "src/category/dto/ctrate-category.dto";
 
 @Injectable()
