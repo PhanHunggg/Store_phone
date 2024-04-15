@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateCategoryInterface {
+export class ForgotPasswordDTO {
     @IsNotEmpty()
     @IsString()
-    @ApiProperty({ description: "name", type: String })
-    name: string;
+    @ApiProperty({ description: "email", type: String })
+    email: string;
 }

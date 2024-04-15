@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { SignUpInterface, SignUpReqInterface } from "./interface/sign-up";
+import { SignUpInterface } from "./interface/sign-up";
 
 @Injectable()
 export class AuthRepository {

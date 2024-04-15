@@ -16,10 +16,10 @@ export interface ProfileOrderInterface {
   birthday: Date;
   address: string;
   phone: string;
-  productItem: ProductItem2[];
+  productItem: ProductItem[];
 }
 
-interface ProductItem2 {
+interface ProductItem {
     id_order: number;
     id_user: number;
     name: string;

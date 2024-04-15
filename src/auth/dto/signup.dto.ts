@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class UserInterface {
+export class SignUpDTO {
     @IsNotEmpty()
     @IsString()
     @ApiProperty({ description: "name", type: String })
@@ -32,5 +32,5 @@ export class UserInterface {
     @ApiProperty({ description: "phone", type: String })
     phone: string;
 
-    role: boolean;
+    role?: boolean;
 }

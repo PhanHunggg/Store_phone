@@ -1,9 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateCategoryInterface } from './interface';
 import { Category, PrismaClient } from '@prisma/client';
-import { errCode, failCode, successCode } from 'src/response';
 import { CategoryRepository } from './category.repository';
 import { ConflictException, InternalServerErrorException, NotFoundException } from 'src/exception/exception';
+import { CreateCategoryDTO } from 'src/category/dto/ctrate-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -13,20 +12,16 @@ export class CategoryService {
   prisma = new PrismaClient()
 
 
-  async createCategory(category: CreateCategoryInterface): Promise<CreateCategoryInterface> {
+  async createCategory(category: CreateCategoryDTO): Promise<Category> {
     try {
 
-      const checkCategory = await this.categoryRepository.findCategoryByName(category.name);
+      const checkCategory: Category = await this.categoryRepository.findCategoryByName(category.name);
 
       if (checkCategory) {
         throw new ConflictException('Loại sản phẩm đã tồn tại!');
       }
 
-      const newData: CreateCategoryInterface = {
-        name: category.name,
-      };
-
-      await this.categoryRepository.createCategory(newData)
+      const newData: Category = await this.categoryRepository.createCategory(category)
       return newData
     } catch (error) {
       if (error instanceof HttpException) {
@@ -54,7 +49,7 @@ export class CategoryService {
 
 
 
-  async updateCategory(category: CreateCategoryInterface, id_category: number): Promise<Category> {
+  async updateCategory(category: CreateCategoryDTO, id_category: number): Promise<Category> {
     try {
       const checkCategory: Category = await this.categoryRepository.findCategory(id_category)
 
@@ -62,7 +57,7 @@ export class CategoryService {
         throw new NotFoundException("Không tìm thấy loại sản phẩm")
       }
 
-      const newData = await this.categoryRepository.updateCategory(id_category, category)
+      const newData: Category = await this.categoryRepository.updateCategory(id_category, category)
 
       return newData;
     } catch (error) {

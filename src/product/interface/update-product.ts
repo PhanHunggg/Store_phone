@@ -1,7 +1,3 @@
-import { OmitType } from "@nestjs/swagger";
-import { CreateProductReqInterface } from "./create-product";
-
-export class UpdateProductReqInterface extends OmitType(CreateProductReqInterface, ['img'] as const) { }
 
 export class UpdateProductInterface {
     id_categoryBrand: number;

@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { CreateCategoryInterface } from "./interface";
+import { CreateCategoryDTO } from "src/category/dto/ctrate-category.dto";
 
 @Injectable()
 export class CategoryRepository {
     prisma = new PrismaClient();
 
-    async createCategory(data: CreateCategoryInterface) {
+    async createCategory(data: CreateCategoryDTO) {
         return this.prisma.category.create({ data });
     }
     async getCategoryList() {
@@ -23,15 +24,15 @@ export class CategoryRepository {
 
     async findCategoryByName(name: string) {
         return this.prisma.category.findFirst({
-          where: {
-            name: {
-              equals: name,
+            where: {
+                name: {
+                    equals: name,
+                },
             },
-          },
         });
-      }
+    }
 
-    async updateCategory(id: number, data: CreateCategoryInterface) {
+    async updateCategory(id: number, data: CreateCategoryDTO) {
         return this.prisma.category.update({
             where: {
                 id_category: id
@@ -40,7 +41,7 @@ export class CategoryRepository {
         })
     }
 
-    async deleteCategory(id) {
+    async deleteCategory(id: number) {
         return this.prisma.category.delete({
             where: {
                 id_category: id

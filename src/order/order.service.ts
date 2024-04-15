@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException, InternalServerErrorException, HttpException } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { ProductRepository } from 'src/product/product.repository';
 import { UserRepository } from 'src/user/user.repository';
-import { CreateOrderInterface } from './interface/create-order';
 import { OrderInterface } from './interface/order';
-import { Order } from '@prisma/client';
+import { Order, User } from '@prisma/client';
+import { CreateOrderDTO } from 'src/order/dto/create-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -40,38 +39,40 @@ export class OrderService {
         }
     }
 
-    async createOrder(createOrder: CreateOrderInterface): Promise<Order> {
-        createOrder.id_user = Number(createOrder.id_user);
-
-        createOrder.total = Number(createOrder.total);
-
-        for (let i = 0; i < createOrder.productItem.length; i++) {
-            createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
-            createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
-        }
-
-        const checkUser = await this.userRepository.findUser(createOrder.id_user)
-
-        if (!checkUser) {
-            throw new NotFoundException("Không tìm thấy user!");
-        }
-
-        const currentDate = new Date();
-
-        const newDataOrder: OrderInterface = {
-            ...createOrder,
-            created_date: currentDate
-        }
-
+    async createOrder(createOrder: CreateOrderDTO): Promise<Order> {
         try {
+            createOrder.id_user = Number(createOrder.id_user);
+
+            createOrder.total = Number(createOrder.total);
+
+            for (let i = 0; i < createOrder.productItem.length; i++) {
+                createOrder.productItem[i].price = Number(createOrder.productItem[i].price)
+                createOrder.productItem[i].quantity = Number(createOrder.productItem[i].quantity)
+            }
+
+            const checkUser: User = await this.userRepository.findUser(createOrder.id_user)
+
+            if (!checkUser) {
+                throw new NotFoundException("Không tìm thấy user!");
+            }
+
+            const currentDate = new Date();
+
+            const newDataOrder: OrderInterface = {
+                ...createOrder,
+                created_date: currentDate
+            }
+
+
             return await this.orderRepository.createOrder(newDataOrder);
         } catch (error) {
             if (error instanceof HttpException) {
-                throw error;
+              throw error;
             } else {
-                throw new InternalServerErrorException(error.message);
+              throw new InternalServerErrorException(error.message);
             }
-        }
+          }
+
     }
 
     async deleteOrder(id: number): Promise<Order> {

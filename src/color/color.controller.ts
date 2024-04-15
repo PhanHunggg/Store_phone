@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Param, Delete, HttpException, Res } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { ApiTags } from '@nestjs/swagger';
-import { ColorInterface } from './interface';
 import { Color } from '@prisma/client';
 import { successCode } from 'src/response';
 import { InternalServerErrorException } from 'src/exception/exception';
 import { Response } from 'express';
+import { ColorDTO } from 'src/color/dto/create-color.dto';
 
 @ApiTags("Color")
 @Controller('color')
@@ -13,7 +13,7 @@ export class ColorController {
   constructor(private readonly colorService: ColorService) { }
 
   @Post('/create-color')
-  async create(@Body() createColorDto: ColorInterface, @Res() res: Response,): Promise<Response> {
+  async create(@Body() createColorDto: ColorDTO, @Res() res: Response,): Promise<Response> {
     try {
       const create: Color = await this.colorService.create(createColorDto);
       return successCode(res, create)
