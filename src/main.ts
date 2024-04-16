@@ -6,6 +6,7 @@ import {  Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import * as morgan from 'morgan-body';
+import {  ClusterService } from 'src/cluster/cluster.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 8080;
@@ -38,4 +39,4 @@ async function bootstrap() {
 
 
 }
-bootstrap();
+ClusterService.clusterize(bootstrap);

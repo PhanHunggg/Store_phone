@@ -1,8 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, Injectable } from '@nestjs/common';
 import { Brand, PrismaClient } from '@prisma/client';
 import { BrandInterface } from './interface';
 import { BrandRepository } from './brand.repository';
-import { ConflictException, InternalServerErrorException, NotFoundException } from 'src/exception/exception';
+import { InternalServerErrorException, NotFoundException } from 'src/exception/exception';
 import { CreateBrandDTO } from 'src/brand/dto/create-brand.dto';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class BrandService {
     try {
 
       const checkBrand = await this.brandRepository.findBrandByName(brand.name);
-      
+
       if (checkBrand) {
         throw new ConflictException('Hãng đã tồn tại!');
       }
@@ -89,7 +89,7 @@ export class BrandService {
   async findBrand(id: number): Promise<Brand> {
     try {
       const brand: Brand = await this.brandRepository.findBrandById(id)
-      if(!brand) throw new NotFoundException("Không tìm thấy brand")
+      if (!brand) throw new NotFoundException("Không tìm thấy brand")
       return brand;
     } catch (error) {
       if (error instanceof HttpException) {

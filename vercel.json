@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "name": "nest-store-phone-server",
+  "builds": [
+    {
+      "src": "dist/main.js",
+      "use": "@vercel/node",
+      "config": {
+        "buildCommand": "npm run vercel-build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/main.js"
+    }
+  ]
+}
