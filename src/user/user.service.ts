@@ -3,6 +3,7 @@ import { UserRepository } from './user.repository';
 import { ProfileInterface } from 'src/auth/interface/profile';
 import { User } from '@prisma/client';
 import { UpdateUserDTO } from 'src/user/dto/update-user.dto';
+import { BadRequestException } from 'src/exception/exception';
 
 @Injectable()
 export class UserService {
@@ -91,8 +92,10 @@ export class UserService {
         }
     }
 
-    async deleteUser(id: number): Promise<ProfileInterface> {
+    async deleteUser(id: number, userId: number): Promise<ProfileInterface> {
         try {
+            if (userId === id) throw new BadRequestException("Không thể xóa chính mình");
+
             const user = await this.userRepository.findUser(id)
 
             if (!user) {

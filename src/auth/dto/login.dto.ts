@@ -1,14 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches } from "class-validator";
+import { Regexp, RegexpMessage } from "src/constants";
 
 export class LoginDTO {
     @IsNotEmpty()
-    @IsString()
+    @IsEmail({}, { message: RegexpMessage.EMAIL })
     @ApiProperty({ description: "email", type: String })
     email: string;
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty({ description: "password", type: String })
+    @Matches(Regexp.PASSWORD, "", {
+        message: RegexpMessage.PASSWORD
+    })
     password: string;
 }
