@@ -5,6 +5,7 @@ import { successCode } from 'src/response';
 import { Response } from 'express';
 import { ProfileInterface } from 'src/auth/interface/profile';
 import { UpdateUserDTO } from 'src/user/dto/update-user.dto';
+import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
 @ApiTags("User")
 @Controller('user')
 export class UserController {
@@ -41,9 +42,9 @@ export class UserController {
   }
 
   @Delete("/delete-user/:id")
-  async deleteUser(@Res() res: Response, @Param('id') id: string): Promise<Response> {
+  async deleteUser(@GetCurrentUserId() userId: number, @Res() res: Response, @Param('id') id: string): Promise<Response> {
     try {
-      const user: ProfileInterface = await this.userService.deleteUser(+id);
+      const user: ProfileInterface = await this.userService.deleteUser(+id, userId);
 
       return successCode(res, user);
     } catch (error) {
