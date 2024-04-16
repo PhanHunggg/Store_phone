@@ -1,19 +1,20 @@
-import { Body, Controller, Get, HttpException, InternalServerErrorException, Param, Post, Put, Res} from '@nestjs/common';
+import { Body, Controller, Get, HttpException, InternalServerErrorException, Param, Patch, Post, Put, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LoginResInterface } from './interface/login';
 import { SignUpInterfaceRes } from './interface/sign-up';
-import {  TokenForgotInterface } from './interface/forgot-password';
+import { TokenForgotInterface } from './interface/forgot-password';
 import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
 import { Response } from 'express';
 import { createCode, successCode } from 'src/response';
 import { SignUpDTO } from 'src/auth/dto/signup.dto';
 import { LoginDTO } from 'src/auth/dto/login.dto';
 import { ForgotPasswordDTO } from 'src/auth/dto/forgot-pass.dto';
-import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
+import { ResetPassTokenDTO } from 'src/auth/dto/reset-pass-token.dto';
 import { refreshTokensDTO } from 'src/auth/dto/refresh-token.dto';
 import { Tokens } from 'src/auth/type/token.type';
+import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
 
 @ApiTags("Auth")
 @Controller('auth')
@@ -119,10 +120,10 @@ export class AuthController {
 
   @Public()
   @Put('/reset-password/:token')
-  async resetPass(@Res() res: Response, @Param('token') token: string, @Body() body: ResetPassDTO): Promise<Response> {
+  async resetPassToken(@Res() res: Response, @Param('token') token: string, @Body() body: ResetPassTokenDTO): Promise<Response> {
     try {
 
-      const password: string = await this.authService.resetPass(token, body);
+      const password: string = await this.authService.resetPassToken(token, body);
       return successCode(res, password)
     } catch (error) {
       if (error instanceof HttpException) {
@@ -140,6 +141,21 @@ export class AuthController {
 
       const message = await this.authService.verifyEmail(token);
       return successCode(res, '', message)
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+  }
+
+  @Patch('/reset-password')
+  async resetPass(@GetCurrentUserId() userId: number, @Res() res: Response, @Body() body: ResetPassDTO): Promise<Response> {
+    try {
+
+      const password: string = await this.authService.resetPass(userId, body);
+      return successCode(res, password)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;

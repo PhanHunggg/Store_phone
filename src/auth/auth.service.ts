@@ -4,7 +4,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from './auth.repository';
 import * as bcrypt from 'bcrypt';
-import {  LoginResInterface } from './interface/login';
+import { LoginResInterface } from './interface/login';
 import { SignUpInterface, SignUpInterfaceRes } from './interface/sign-up';
 import { TokenForgotInterface } from './interface/forgot-password';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -12,12 +12,13 @@ import { Tokens } from './type/token.type';
 import { JwtPayload } from './type/jwtPayload.type';
 import { ProfileOrderInterface } from './interface/profile';
 import { Response } from 'express';
-import { ConflictException, CustomException, ForbiddenException, InternalServerErrorException, NotFoundException, PreconditionFailedException, TooManyRequestsException, UnauthorizedException } from 'src/exception/exception';
+import { BadRequestException, ConflictException, CustomException, ForbiddenException, InternalServerErrorException, NotFoundException, PreconditionFailedException, TooManyRequestsException, UnauthorizedException } from 'src/exception/exception';
 import { LoginDTO } from 'src/auth/dto/login.dto';
 import { SignUpDTO } from 'src/auth/dto/signup.dto';
 import { ForgotPasswordDTO } from 'src/auth/dto/forgot-pass.dto';
-import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
+import { ResetPassTokenDTO } from 'src/auth/dto/reset-pass-token.dto';
 import { refreshTokensDTO } from 'src/auth/dto/refresh-token.dto';
+import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
 @Injectable()
 export class AuthService {
     constructor(
@@ -233,7 +234,7 @@ export class AuthService {
 
     }
 
-    async resetPass(token: string, body: ResetPassDTO): Promise<string> {
+    async resetPassToken(token: string, body: ResetPassTokenDTO): Promise<string> {
         try {
 
             const checkUser = await this.authRepository.checkUserByTokenPass(token);
@@ -245,6 +246,32 @@ export class AuthService {
             if (exp > 15) {
                 throw new PreconditionFailedException('Reset Password quá thời hạn!');
             }
+
+            const hash = await this.hashData(body.password);
+
+            await this.authRepository.resetPass(hash, checkUser.id_user)
+
+            return body.password
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            } else {
+                throw new InternalServerErrorException(error.message);
+            }
+        }
+    }
+    async resetPass(userId: number, body: ResetPassDTO): Promise<string> {
+        try {
+            const checkUser = await this.authRepository.checkUserById(userId);
+
+            if (!checkUser) throw new NotFoundException('User not found')
+
+            const passwordMatches = await bcrypt.compare(body.old_password, checkUser.password);
+
+            if (!passwordMatches)
+                throw new UnauthorizedException('Mật khẩu cũ không đúng!');
+
+            if(body.old_password === body.password) throw new BadRequestException("Mật khẩu mới không được trùng mật khẩu cũ!")
 
             const hash = await this.hashData(body.password);
 
