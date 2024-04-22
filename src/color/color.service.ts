@@ -1,7 +1,7 @@
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { ColorRepository } from './color.repository';
 import { Color } from '@prisma/client';
-import { InternalServerErrorException } from 'src/exception/exception';
+import { ConflictException, InternalServerErrorException } from 'src/exception/exception';
 import { ColorDTO } from 'src/color/dto/create-color.dto';
 
 @Injectable()
@@ -11,6 +11,10 @@ export class ColorService {
 
   async create(createColorDto: ColorDTO): Promise<Color> {
     try {
+      const checkColor: Color = await this.colorRepository.findColorByHex(createColorDto.hex)
+      if (checkColor) {
+        throw new ConflictException('Color already exists')
+      }
       const color: Color = await this.colorRepository.create(createColorDto)
       return color
     } catch (error) {
@@ -58,6 +62,9 @@ export class ColorService {
   async findColor( id: number) {
     try {
       const color: Color = await this.colorRepository.findColor(id)
+      if (!color) {
+        throw new NotFoundException('Color not found')
+      }
       return color
 
     } catch (error) {

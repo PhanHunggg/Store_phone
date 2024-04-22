@@ -11,6 +11,12 @@ export class ColorRepository {
             data
         })
     }
+    
+    async findColorByHex(hex: string){
+        return await this.prisma.color.findFirst({
+            where: { hex }
+        })
+    }
 
     async getColorList() {
         return await this.prisma.color.findMany()
