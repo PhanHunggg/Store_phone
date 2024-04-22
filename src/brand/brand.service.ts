@@ -57,9 +57,9 @@ export class BrandService {
 
   async getBrandList(): Promise<Brand[]> {
     try {
-      const checkBrand: Brand[] = await this.brandRepository.getBrandList()
+      const checkBrand: Brand[] = await this.brandRepository.getBrandList()   
       return checkBrand
-    } catch (error) {
+    } catch (error) {  
       if (error instanceof HttpException) {
         throw error;
       } else {

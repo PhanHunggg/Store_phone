@@ -11,7 +11,6 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Tokens } from './type/token.type';
 import { JwtPayload } from './type/jwtPayload.type';
 import { ProfileOrderInterface } from './interface/profile';
-import { Response } from 'express';
 import { BadRequestException, ConflictException, CustomException, ForbiddenException, InternalServerErrorException, NotFoundException, PreconditionFailedException, TooManyRequestsException, UnauthorizedException } from 'src/exception/exception';
 import { LoginDTO } from 'src/auth/dto/login.dto';
 import { SignUpDTO } from 'src/auth/dto/signup.dto';

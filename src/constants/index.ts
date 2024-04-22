@@ -15,6 +15,4 @@ export const RegexpMessage: RegexpMessageType ={
     PHONE: "Số điện thoại không hợp lệ!",
     BIRTHDAY: "Ngày sinh không hợp lệ, ngày sinh phải có dạng yyyy-mm-dd!",
     EMAIL: "Email không hợp lệ!"
-
-
 }

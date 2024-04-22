@@ -6,8 +6,8 @@ import { BrandInterface } from "./interface";
 export class BrandRepository {
   prisma = new PrismaClient();
 
-  async createBrand(userData: BrandInterface) {
-    return this.prisma.brand.create({ data: userData });
+  async createBrand(data: BrandInterface) {
+    return this.prisma.brand.create({ data });
   }
 
   async findBrandById(id: number) {

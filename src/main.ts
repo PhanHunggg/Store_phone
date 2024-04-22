@@ -5,14 +5,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
-import { AllExceptionsFilter } from 'src/common/exceptions/all-exceptions.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 8080;
 
   app.useGlobalPipes(new ValidationPipe());
   
-  app.useGlobalFilters(new AllExceptionsFilter());
 
   app.use(helmet());
   app.use(compression());
