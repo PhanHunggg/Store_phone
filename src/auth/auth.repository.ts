@@ -18,6 +18,15 @@ export class AuthRepository {
         return this.prisma.user.findUnique({ where: { id_user: id } })
     };
 
+    async logout(id: number) {
+        return this.prisma.user.update({
+            where: { id_user: id, hashedRt: { not: null } },
+            data: {
+                hashedRt: null
+            }
+        })
+    }
+
     async checkUserOrderById(id_user: number) {
         return await this.prisma.user.findUnique({
             where: {

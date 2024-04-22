@@ -2,30 +2,23 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as express from 'express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import {  Logger, ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as compression from 'compression';
-import * as morgan from 'morgan-body';
-import {  ClusterService } from 'src/cluster/cluster.service';
+import { AllExceptionsFilter } from 'src/common/exceptions/all-exceptions.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const port = process.env.PORT || 8080;
 
   app.useGlobalPipes(new ValidationPipe());
-
-  const logger = app.get(Logger);
-  (morgan as any)(app.getHttpAdapter().getInstance(), {
-    stream: {
-      write: (message: string) => {
-        logger.log(message.replace('\n', ''));
-        return true;
-      },
-    },
-  });
+  
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   app.use(helmet());
   app.use(compression());
-  app.enableCors()
+  app.enableCors(/*{
+    origin: ['https://phone-ecommerce-delta.vercel.app', 'https://admin-dashboard-two-lemon.vercel.app']
+  }*/)
 
   app.use(express.static("."))
 
@@ -36,7 +29,5 @@ async function bootstrap() {
   SwaggerModule.setup("swagger", app, document);
 
   await app.listen(port);
-
-
 }
-ClusterService.clusterize(bootstrap);
+bootstrap();

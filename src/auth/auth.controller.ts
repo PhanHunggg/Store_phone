@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, InternalServerErrorException, Param, Patch, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, InternalServerErrorException, Param, Patch, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -12,9 +12,10 @@ import { SignUpDTO } from 'src/auth/dto/signup.dto';
 import { LoginDTO } from 'src/auth/dto/login.dto';
 import { ForgotPasswordDTO } from 'src/auth/dto/forgot-pass.dto';
 import { ResetPassTokenDTO } from 'src/auth/dto/reset-pass-token.dto';
-import { refreshTokensDTO } from 'src/auth/dto/refresh-token.dto';
 import { Tokens } from 'src/auth/type/token.type';
 import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
+import { RtGuard } from 'src/common/guards/rt.guard';
+import { GetCurrentUser } from 'src/common/decorators/get-current-user.decorator';
 
 @ApiTags("Auth")
 @Controller('auth')
@@ -101,13 +102,13 @@ export class AuthController {
     }
   }
 
-
   @Public()
+  @UseGuards(RtGuard)
   @Post('/refresh-token')
-  async refreshToken(@Res() res: Response, @Body() body: refreshTokensDTO): Promise<Response> {
+  async refreshToken(@GetCurrentUserId() userId: number, @GetCurrentUser('refreshToken') refreshToken: string, @Res() res: Response): Promise<Response> {
     try {
-
-      const tokens: Tokens = await this.authService.refreshToken(body);
+      console.log(userId, refreshToken)
+      const tokens: Tokens = await this.authService.refreshToken(userId, refreshToken);
       return successCode(res, tokens)
     } catch (error) {
       if (error instanceof HttpException) {
@@ -156,6 +157,21 @@ export class AuthController {
 
       const password: string = await this.authService.resetPass(userId, body);
       return successCode(res, password)
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      } else {
+        throw new InternalServerErrorException(error.message);
+      }
+    }
+  }
+
+  @Patch('/logout')
+  async logout(@GetCurrentUserId() userId: number, @Res() res: Response): Promise<Response> {
+    try {
+      const message = await this.authService.logout(userId);
+
+      return successCode(res, message)
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;

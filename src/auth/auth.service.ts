@@ -17,7 +17,6 @@ import { LoginDTO } from 'src/auth/dto/login.dto';
 import { SignUpDTO } from 'src/auth/dto/signup.dto';
 import { ForgotPasswordDTO } from 'src/auth/dto/forgot-pass.dto';
 import { ResetPassTokenDTO } from 'src/auth/dto/reset-pass-token.dto';
-import { refreshTokensDTO } from 'src/auth/dto/refresh-token.dto';
 import { ResetPassDTO } from 'src/auth/dto/reset-pass.dto';
 @Injectable()
 export class AuthService {
@@ -180,17 +179,17 @@ export class AuthService {
         }
     }
 
-    async refreshToken(user: refreshTokensDTO): Promise<Tokens> {
+    async refreshToken(userId:number, refreshToken:string): Promise<Tokens> {
         try {
-            const checkUser = await this.authRepository.checkUserById(user.id_user);
+            const checkUser = await this.authRepository.checkUserById(userId);
 
             if (!checkUser || !checkUser.hashedRt) throw new ForbiddenException('Access Denied');
 
-            const rtMatches = await bcrypt.compare(user.refresh_token, checkUser.hashedRt);
+            const rtMatches = await bcrypt.compare(refreshToken, checkUser.hashedRt);
 
             if (!rtMatches) throw new ForbiddenException('Access Denied');
 
-            const decodedRefreshToken: any = this.jwtService.decode(user.refresh_token);
+            const decodedRefreshToken: any = this.jwtService.decode(refreshToken);
 
             const expirationTimeFrame = 7 * 24 * 60 * 60; // 
 
@@ -200,7 +199,7 @@ export class AuthService {
 
             const tokens: Tokens = await this.getTokens(checkUser);
 
-            await this.updateRtHash(user.id_user, tokens.refreshToken);
+            await this.updateRtHash(checkUser.id_user, tokens.refreshToken);
 
             return tokens
 
@@ -271,7 +270,7 @@ export class AuthService {
             if (!passwordMatches)
                 throw new UnauthorizedException('Mật khẩu cũ không đúng!');
 
-            if(body.old_password === body.password) throw new BadRequestException("Mật khẩu mới không được trùng mật khẩu cũ!")
+            if (body.old_password === body.password) throw new BadRequestException("Mật khẩu mới không được trùng mật khẩu cũ!")
 
             const hash = await this.hashData(body.password);
 
@@ -316,6 +315,16 @@ export class AuthService {
                 throw new InternalServerErrorException(error.message);
             }
         }
+    }
+
+    async logout(userId: number) {
+        const checkUser: User = await this.authRepository.checkUserById(userId)
+
+        if (!checkUser) throw new NotFoundException("Người dùng không tồn tại!!")
+
+        await this.authRepository.logout(checkUser.id_user)
+
+        return "Logout success!"
     }
 
     private async createTokenForgotPass(email: string, checkUser: User) {
