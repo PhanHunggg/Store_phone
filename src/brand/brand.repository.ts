@@ -14,19 +14,19 @@ export class BrandRepository {
     return this.prisma.brand.findUnique({ where: { id_brand: id } });
   }
 
-    async findBrandByName(name: string): Promise<Brand | null> {
-        return this.prisma.brand.findFirst({
-          where: {
-            name: {
-              equals: name,
-            },
-          },
-        });
-      }
+  async findBrandByName(name: string): Promise<Brand | null> {
+    return this.prisma.brand.findFirst({
+      where: {
+        name: {
+          equals: name,
+        },
+      },
+    });
+  }
 
-    async deleteBrand(id: number) {
-        return this.prisma.brand.delete({ where: { id_brand: id } });
-    }
+  async deleteBrand(id: number) {
+    return this.prisma.brand.delete({ where: { id_brand: id } });
+  }
 
   async getBrandList() {
     return this.prisma.brand.findMany();

@@ -1,4 +1,4 @@
-export class OrderInterface {
+export interface OrderInterface {
     id_user: number;
     name: string
     phone: string;

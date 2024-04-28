@@ -10,8 +10,8 @@ import { Response } from 'express';
 import { Category } from '@prisma/client';
 import { CreateCategoryDTO } from 'src/category/dto/ctrate-category.dto';
 
-  @Public()
-  @ApiTags("Category")
+@Public()
+@ApiTags("Category")
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }

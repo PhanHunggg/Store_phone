@@ -16,6 +16,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-rt') {
                 }
                 return null;
             },
+            ignoreExpiration: false,
             secretOrKey: config.get<string>('RT_SECRET'),
             passReqToCallback: true
         })

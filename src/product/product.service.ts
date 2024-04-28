@@ -131,7 +131,7 @@ export class ProductService {
     return userDeleted;
   }
 
-  async updateProduct(id: number, product: UpdateProductDTO): Promise<UpdateProductInterface> {
+  async updateProduct(id: number, product: UpdateProductDTO): Promise<Product> {
     try {
       const checkProduct: Product = await this.productRepository.findProduct(id);
       if (!checkProduct) {
@@ -165,8 +165,9 @@ export class ProductService {
         storage: product.storage,
         color: product.color,
       };
-      await this.productRepository.updateProduct(id, newData);
-      return newData;
+      const newProduct: Product = await this.productRepository.updateProduct(id, newData);
+      
+      return newProduct;
     } catch (error) {
       if (error instanceof HttpException) {
         throw error;

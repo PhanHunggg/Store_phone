@@ -67,11 +67,11 @@ export class OrderService {
             return await this.orderRepository.createOrder(newDataOrder);
         } catch (error) {
             if (error instanceof HttpException) {
-              throw error;
+                throw error;
             } else {
-              throw new InternalServerErrorException(error.message);
+                throw new InternalServerErrorException(error.message);
             }
-          }
+        }
 
     }
 

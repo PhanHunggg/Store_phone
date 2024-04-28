@@ -152,7 +152,7 @@ export class ProductController {
     @Body() body: UpdateProductDTO,
   ): Promise<Response> {
     try {
-      const result: UpdateProductInterface =
+      const result: Product =
         await this.productService.updateProduct(+id, body);
       if (result) return successCode(res, result);
     } catch (error) {
