@@ -4,11 +4,13 @@ import { UserRepository } from 'src/user/user.repository';
 import { OrderInterface } from './interface/order';
 import { Order, User } from '@prisma/client';
 import { CreateOrderDTO } from 'src/order/dto/create-order.dto';
+import { ProductRepository } from 'src/product/product.repository';
 
 @Injectable()
 export class OrderService {
-    constructor(private orderRepository: OrderRepository,
-        private userRepository: UserRepository) { }
+    constructor(private readonly orderRepository: OrderRepository,
+        private readonly userRepository: UserRepository, 
+        private readonly productRepository: ProductRepository) { }
 
     async getOrderList(): Promise<Order[]> {
         try {

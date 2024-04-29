@@ -1,0 +1,1241 @@
+{
+	"info": {
+		"_postman_id": "22a5697a-dbdb-44a8-b315-f1f09b738568",
+		"name": "Phone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29819175"
+	},
+	"item": [
+		{
+			"name": "Brand",
+			"item": [
+				{
+					"name": "Create brand",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Apple\",\r\n    \"banner\": \"sdfgdfgdg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{brand}}/create-brand",
+							"host": [
+								"{{brand}}"
+							],
+							"path": [
+								"create-brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"upfate\",\r\n    \"banner\": \"sdfasfasdfasdfsdf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{brand}}/update-brand/10",
+							"host": [
+								"{{brand}}"
+							],
+							"path": [
+								"update-brand",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get brand list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "SamSung",
+									"type": "text"
+								},
+								{
+									"key": "img",
+									"type": "file",
+									"src": "/D:/Wordspace/Nest/Img/phone_img/brand/0021910_banner iphone 15-3_PC_1600.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{brand}}/brand-list",
+							"host": [
+								"{{brand}}"
+							],
+							"path": [
+								"brand-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete brand",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "SamSung",
+									"type": "text"
+								},
+								{
+									"key": "img",
+									"type": "file",
+									"src": "/D:/Wordspace/Nest/Img/phone_img/brand/0021910_banner iphone 15-3_PC_1600.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{brand}}/delete-brand/6",
+							"host": [
+								"{{brand}}"
+							],
+							"path": [
+								"delete-brand",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Tablet\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category}}/create-category",
+							"host": [
+								"{{category}}"
+							],
+							"path": [
+								"create-category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCatagory",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"iPad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category}}/update-category/3",
+							"host": [
+								"{{category}}"
+							],
+							"path": [
+								"update-category",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Điện thoại\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category}}/delete-category/1",
+							"host": [
+								"{{category}}"
+							],
+							"path": [
+								"delete-category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get categorylist",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Điện thoại\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category}}/category-list",
+							"host": [
+								"{{category}}"
+							],
+							"path": [
+								"category-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Điện thoại\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category}}/find-category/1",
+							"host": [
+								"{{category}}"
+							],
+							"path": [
+								"find-category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"\",\r\n    \"email\": \"phanhung@gmail.com\",\r\n    \"password\": \"djfhgdkjhgkdjgh\",\r\n    \"birthday\": \"2002-07-28\",\r\n    \"address\":\"Quận 8, tp.Hồ Chí Minh\",\r\n    \"phone\": \"456456\",\r\n    \"role\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/sign-up",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"sign-up"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"phanquochung.pqh.ttnt@gmail.com\",\r\n    \"password\": \"QuocHung28@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/login",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forgot pass",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"phanquochung.pqh.ttnt@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/forgot-password",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzNzY3NDc5LCJleHAiOjE3MTQwMjY2Nzl9.443pIf8CGpDKSLRiEwmRUdnCAHPq4YmM9aCggbPWWro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "RefreshToken",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzE0MzE2MjA3LCJleHAiOjE3MTQ5MjEwMDd9.toV-SGdgl1NaL9hloQB1-0OTaGlaAjQiCqev5variG0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/refresh-token",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"PhanHung28@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/reset-password/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicGhhbnF1b2NodW5nLnBxaC50dG50QGdtYWlsLmNvbSIsImlhdCI6MTcxMzI1MDc2NywiZXhwIjoxNzEzMjUxNjY3fQ.WntSjEoWP-qg-rqPQipD48kqg8_bzL-DZTRCb6CPaag",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"reset-password",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicGhhbnF1b2NodW5nLnBxaC50dG50QGdtYWlsLmNvbSIsImlhdCI6MTcxMzI1MDc2NywiZXhwIjoxNzEzMjUxNjY3fQ.WntSjEoWP-qg-rqPQipD48kqg8_bzL-DZTRCb6CPaag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify email",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{auth}}/verify-email/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicGhhbnF1b2NodW5nLnBxaC50dG50QGdtYWlsLmNvbSIsImlhdCI6MTcxMTcyNjg1MywiZXhwIjoxNzExOTg2MDUzfQ.5kVLVkOgXbkTOGOb89A6XcyZO5VOJQZpt_ud5VT3i5U",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"verify-email",
+								"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoicGhhbnF1b2NodW5nLnBxaC50dG50QGdtYWlsLmNvbSIsImlhdCI6MTcxMTcyNjg1MywiZXhwIjoxNzExOTg2MDUzfQ.5kVLVkOgXbkTOGOb89A6XcyZO5VOJQZpt_ud5VT3i5U"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjoxOSwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcyODA3MDJAZ21haWwuY29tIiwiaWF0IjoxNzEyMjg0MjQ0LCJleHAiOjE3MTI1NDM0NDR9.1DJjbEOetswVxySuirLjD00n4D6lFQcu39bxL8w8aGI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{auth}}/profile",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMjUwODIxLCJleHAiOjE3MTM1MTAwMjF9.CtOWKipYrOHh2tKJQ55SZT-INBHFLDCFS0gnLFqvtjY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"old_password\": \"PhanHung28@\",\r\n    \"password\": \"QuocHung28@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{auth}}/reset-password",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzNzY3NDc5LCJleHAiOjE3MTQwMjY2Nzl9.443pIf8CGpDKSLRiEwmRUdnCAHPq4YmM9aCggbPWWro",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{auth}}/logout",
+							"host": [
+								"{{auth}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CategoryBrand",
+			"item": [
+				{
+					"name": "CreateCategoryBrand",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_brand\": 1,\r\n    \"id_category\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category-brand}}/create-categoryBrand",
+							"host": [
+								"{{category-brand}}"
+							],
+							"path": [
+								"create-categoryBrand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCategoryBrandList",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_brand\": 5,\r\n    \"id_category\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category-brand}}/categoryBrand-list",
+							"host": [
+								"{{category-brand}}"
+							],
+							"path": [
+								"categoryBrand-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{category-brand}}/delete-categoryBrand/17",
+							"host": [
+								"{{category-brand}}"
+							],
+							"path": [
+								"delete-categoryBrand",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_brand\": 1,\r\n    \"id_category\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{category-brand}}/update-categoryBrand/17",
+							"host": [
+								"{{category-brand}}"
+							],
+							"path": [
+								"update-categoryBrand",
+								"17"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "ProductList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTksIm5hbWUiOiJQaGFuSHVuZyIsImVtYWlsIjoicGhhbnF1b2NodW5nMjgwNzAyQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJG55aWMzamZ0WDM5Yzljc2o4ZnJud2VwN0tqbVRKRUpaUTZTNC4vbFVJNlYuTkNSeDVMZWUuIiwiaWF0IjoxNzA1OTE1ODMyLCJleHAiOjE3MDYxNzUwMzJ9.ya6Wish-dBIEAmiZ4w1ALKx2g6uL_b_6nJwE10d9EbQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product}}/product-list",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"product-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindProduct",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product}}/find-product/2",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"find-product",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Equivalent product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product}}/equivalent-product/1",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"equivalent-product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find by category brand",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_brand\": 1,\r\n    \"id_category\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{product}}/find-product-category-brand",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"find-product-category-brand"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo2LCJuYW1lIjoiUGhhbiBRdeG7kWMgSMO5bmciLCJlbWFpbCI6InBoYW5xdW9jaHVuZzFAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkMHVLMU56bTZPbDVlNkdGRWZoQ1JIdUIzZVVGeE8uWjJtQTNLL1NzcENvdnpUOVBLSkZUS3EifSwiaWF0IjoxNzAyODA3MjI5LCJleHAiOjE3MDM0MTIwMjl9.FKCw9Ir2gDGGEqWDo12Ss9-DYhvT8L7eHFEhvP3xcyw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{product}}/delete-product/85",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"delete-product",
+								"85"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateProduct2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo2LCJuYW1lIjoiUGhhbiBRdeG7kWMgSMO5bmciLCJlbWFpbCI6InBoYW5xdW9jaHVuZzFAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkMHVLMU56bTZPbDVlNkdGRWZoQ1JIdUIzZVVGeE8uWjJtQTNLL1NzcENvdnpUOVBLSkZUS3EifSwiaWF0IjoxNzAyODA3MjI5LCJleHAiOjE3MDM0MTIwMjl9.FKCw9Ir2gDGGEqWDo12Ss9-DYhvT8L7eHFEhvP3xcyw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brand\": 6,\r\n    \"categories\": 2,\r\n    \"name\": \"string\",\r\n    \"chip\": \"string\",\r\n    \"price\": 0,\r\n    \"original_price\": 0,\r\n    \"battery\": \"string\",\r\n    \"quantity\": 0,\r\n    \"new_release\": true,\r\n    \"screen\": \"string\",\r\n    \"front_camera\": \"string\",\r\n    \"rear_camera\": \"string\",\r\n    \"img\": [\r\n        {\r\n            \"url\": \"2132\"\r\n        },\r\n        {\r\n            \"url\": \"132\"\r\n        },\r\n        {\r\n            \"url\": \"321\"\r\n        }\r\n    ],\r\n    \"color\": [\r\n        {\r\n            \"name\": \"Red\",\r\n            \"hex\": \"123456\"\r\n        },\r\n        {\r\n            \"name\": \"Blu\",\r\n            \"hex\": \"123456\"\r\n        }\r\n    ],\r\n    \"storage\": [\r\n        {\r\n            \"name\": \"128GB\"\r\n        },\r\n        {\r\n            \"name\": \"64GB\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{product}}/create-product",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"create-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiUGhhbkh1bmciLCJlbWFpbCI6InBoYW5xdW9jaHVuZzI4MDcwMkBnbWFpbC5jb20ifSwiaWF0IjoxNzA1NDgyMjMzLCJleHAiOjE3MDYwODcwMzN9.qFMmh_DLtuN8RX3q27dDztjEfcjIbsK-WoX6UlY_p0A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brand\": 1,\r\n    \"categories\": 5,\r\n    \"name\": \"Apple Vision Pro\",\r\n    \"chip\": \"Apple M2 and R1\",\r\n    \"price\": 100000000,\r\n    \"original_price\": 95000000,\r\n    \"battery\": \"Up to two hours\",\r\n    \"quantity\": 5,\r\n    \"new_release\": true,\r\n    \"screen\": \"\\\"EyeSight\\\" curved OLED[3]\",\r\n    \"front_camera\": \"23 MP total (equivalent to WUHD for each eye) dual micro-OLED (RGBB π subpixel geometry) up to 96 Hz refresh rate[2]\",\r\n    \"rear_camera\": \"23 MP total (equivalent to WUHD for each eye) dual micro-OLED (RGBB π subpixel geometry) up to 96 Hz refresh rate[2]\",\r\n    \"storage\": [\r\n        {\r\n            \"name\": \"256GB\"\r\n        }\r\n    ],\r\n    \"color\": [\r\n        {\r\n            \"hex\": \"#fff\",\r\n            \"name\": \"White\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{product}}/update-product/34",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"update-product",
+								"34"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FindProductByBrand",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{product}}/find-product-brand/3",
+							"host": [
+								"{{product}}"
+							],
+							"path": [
+								"find-product-brand",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GetUserList",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDIxNTgxLCJleHAiOjE3MTMyODA3ODF9.KIzV1u2faYe4YPBXqpnuJ1gV0GAHz3vRx1nV7z5Xixc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user}}/get-user-list",
+							"host": [
+								"{{user}}"
+							],
+							"path": [
+								"get-user-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjoxOSwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcyODA3MDJAZ21haWwuY29tIiwiaWF0IjoxNzA1OTgwMTM4LCJleHAiOjE3MDYyMzkzMzh9.ie7mrdb7bUoo3x8QYYNmQt8-dKNB9ZFvk6x2u3WC-Io",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user}}/find-user/19",
+							"host": [
+								"{{user}}"
+							],
+							"path": [
+								"find-user",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMjUwODIxLCJleHAiOjE3MTM1MTAwMjF9.CtOWKipYrOHh2tKJQ55SZT-INBHFLDCFS0gnLFqvtjY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{user}}/delete-user/34",
+							"host": [
+								"{{user}}"
+							],
+							"path": [
+								"delete-user",
+								"34"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDc2MzY3LCJleHAiOjE3MTMzMzU1Njd9.2w3owyVukedg_nn_vcrSZrF0GINTRim91gtarZCdMCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Phan Quốc Hùng\",\r\n    \"email\": \"phanhung@gmail.com\",\r\n    \"password\": \"11111\",\r\n    \"birthday\": \"2000-12-09\",\r\n    \"address\":\"Quan 8\",\r\n    \"phone\": \"0795523684\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{user}}/update-user/19",
+							"host": [
+								"{{user}}"
+							],
+							"path": [
+								"update-user",
+								"19"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDIxNTgxLCJleHAiOjE3MTMyODA3ODF9.KIzV1u2faYe4YPBXqpnuJ1gV0GAHz3vRx1nV7z5Xixc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{order}}/order-list",
+							"host": [
+								"{{order}}"
+							],
+							"path": [
+								"order-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateOrder",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDc2MzY3LCJleHAiOjE3MTMzMzU1Njd9.2w3owyVukedg_nn_vcrSZrF0GINTRim91gtarZCdMCE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id_user\": 19,\r\n    \"name\": \"Phan Quốc Hùng\",\r\n    \"phone\": \"0797720574\",\r\n    \"address\": \"Quận 1, Tp. Hồ Chí Minh\",\r\n    \"payment_method\": \"Momo\",\r\n    \"delivery_by\": \"Shopee Express\",\r\n    \"total\": 26190000,\r\n    \"productItem\": [\r\n        {\r\n            \"name\": \"Samsung Galaxy S23 Ultra\",\r\n            \"storage\": \"512GB\",\r\n            \"color\": \"Green\",\r\n            \"price\": 26190000,\r\n            \"quantity\": 1\r\n        }\r\n        \r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{order}}/create-order",
+							"host": [
+								"{{order}}"
+							],
+							"path": [
+								"create-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoxLCJuYW1lIjoiUGhhbkh1bmciLCJlbWFpbCI6InBoYW5xdW9jaHVuZzI4MDcwMkBnbWFpbC5jb20ifSwiaWF0IjoxNzA1OTEwMzM0LCJleHAiOjE3MDY1MTUxMzR9.gBO_QF470rJdFkbyli8Nm3bUn0sgUkQ6C2UGQuGDRX0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{order}}/delete-order/21",
+							"host": [
+								"{{order}}"
+							],
+							"path": [
+								"delete-order",
+								"21"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Color",
+			"item": [
+				{
+					"name": "Get color",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDE5NzUxLCJleHAiOjE3MTMyNzg5NTF9.5OMKyWGizExFygJPwtkHnN-UHPclkTOQZXZl_K0IQ_k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{color}}/color-list",
+							"host": [
+								"{{color}}"
+							],
+							"path": [
+								"color-list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete color",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDE5NzUxLCJleHAiOjE3MTMyNzg5NTF9.5OMKyWGizExFygJPwtkHnN-UHPclkTOQZXZl_K0IQ_k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{color}}/delete-color/11",
+							"host": [
+								"{{color}}"
+							],
+							"path": [
+								"delete-color",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c2VyIjozNCwibmFtZSI6IlBoYW5IdW5nIiwiZW1haWwiOiJwaGFucXVvY2h1bmcucHFoLnR0bnRAZ21haWwuY29tIiwiaWF0IjoxNzEzMDE5NzUxLCJleHAiOjE3MTMyNzg5NTF9.5OMKyWGizExFygJPwtkHnN-UHPclkTOQZXZl_K0IQ_k",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test\",\r\n    \"hex\": \"#000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{color}}/create-color",
+							"host": [
+								"{{color}}"
+							],
+							"path": [
+								"create-color"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "brand",
+			"value": "http://localhost:10000/brand",
+			"type": "string"
+		},
+		{
+			"key": "category",
+			"value": "http://localhost:10000/category",
+			"type": "string"
+		},
+		{
+			"key": "auth",
+			"value": "http://localhost:10000/auth",
+			"type": "string"
+		},
+		{
+			"key": "category-brand",
+			"value": "http://localhost:10000/category-brand",
+			"type": "string"
+		},
+		{
+			"key": "product",
+			"value": "http://localhost:10000/product",
+			"type": "string"
+		},
+		{
+			"key": "user",
+			"value": "http://localhost:10000/user",
+			"type": "string"
+		},
+		{
+			"key": "order",
+			"value": "http://localhost:10000/order",
+			"type": "string"
+		},
+		{
+			"key": "color",
+			"value": "http://localhost:10000/color",
+			"type": "string"
+		}
+	]
+}
