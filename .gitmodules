@@ -1,0 +1,6 @@
+[submodule "admin-dashboard-phone-shop"]
+	path = admin-dashboard-phone-shop
+	url = https://github.com/longvo00221/admin-dashboard-phone-shop.git
+[submodule "phone-ecommerce"]
+	path = phone-ecommerce
+	url = https://github.com/ThanhDat3105/phone-ecommerce.git
